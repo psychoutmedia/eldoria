@@ -1,0 +1,127 @@
+{
+  "name": "Tstwiczfq",
+  "level": 18,
+  "experience": 23400,
+  "title": "Syntax Adept",
+  "suffix": "",
+  "currentHP": 585,
+  "maxHP": 585,
+  "currentMana": 270,
+  "maxMana": 270,
+  "currentRoom": "room_200",
+  "displayMode": "verbose",
+  "inventory": [
+    {
+      "id": "leather_vest",
+      "name": "Leather Vest",
+      "type": "armor",
+      "levelReq": 1,
+      "damageBonus": 0,
+      "armorBonus": 2,
+      "healAmount": 0,
+      "value": 10,
+      "description": "Simple leather armor offering basic protection."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "tuning_fork",
+      "name": "Initiate's Tuning Fork",
+      "type": "weapon",
+      "levelReq": 15,
+      "damageBonus": 8,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 0,
+      "description": "A small silver fork that hums a single pure note when struck. Weak as a weapon, but it cuts through illusion where steel cannot."
+    },
+    {
+      "name": "Drum-Stave Resonator",
+      "type": "instrument",
+      "levelReq": 0,
+      "value": 0,
+      "description": "A resonant echo of the Obsidian Drum-Stave, keyed to the Note of Matter. One of the five Primordial Instruments."
+    },
+    {
+      "name": "Silver Harp of Creation",
+      "type": "instrument",
+      "levelReq": 0,
+      "value": 0,
+      "description": "Valdris's Silver Harp of Creation. Its strings are spun from light; when played, reality briefly writes itself."
+    },
+    {
+      "name": "Golden Trumpet of Change",
+      "type": "instrument",
+      "levelReq": 0,
+      "value": 0,
+      "description": "Zephyros's trumpet. Its note is the note of transformation - nothing that hears it stays the same."
+    },
+    {
+      "name": "Lute of Whispering Shadows",
+      "type": "instrument",
+      "levelReq": 0,
+      "value": 0,
+      "description": "Nyxara's lute. Its strings are woven of void; it plays only what has been forgotten."
+    },
+    {
+      "name": "Crystal Flute of Wisdom",
+      "type": "instrument",
+      "levelReq": 0,
+      "value": 0,
+      "description": "Thessarian's flute. Each note is a paradox resolved; each silence is a question answered."
+    }
+  ],
+  "equipped": {
+    "weapon": null,
+    "armor": null,
+    "shield": null
+  },
+  "gold": 50,
+  "stats": {
+    "monstersKilled": 0,
+    "deaths": 0,
+    "bossesDefeated": [],
+    "totalDamageDealt": 0,
+    "totalDamageTaken": 0,
+    "roomsExplored": [
+      "room_001"
+    ],
+    "itemsCollected": 5,
+    "pvpKills": 0,
+    "pvpDeaths": 0,
+    "storyFlags": {
+      "gatekeeperTriggered": true,
+      "tuningForkGranted": true,
+      "drumStaveForged": false,
+      "instrumentsPlayed": {
+        "drum": false,
+        "harp": false,
+        "trumpet": false,
+        "lute": false,
+        "flute": false
+      },
+      "finaleCompleted": false
+    }
+  },
+  "lastPlayed": "2026-04-22T09:07:41.070Z"
+}

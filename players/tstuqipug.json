@@ -1,0 +1,147 @@
+{
+  "name": "Tstuqipug",
+  "level": 28,
+  "experience": 123400,
+  "title": "Cursor-Bearer",
+  "suffix": "the Harmonist",
+  "currentHP": 1180,
+  "maxHP": 1180,
+  "currentMana": 420,
+  "maxMana": 420,
+  "currentRoom": "room_001",
+  "displayMode": "verbose",
+  "inventory": [
+    {
+      "id": "leather_vest",
+      "name": "Leather Vest",
+      "type": "armor",
+      "levelReq": 1,
+      "damageBonus": 0,
+      "armorBonus": 2,
+      "healAmount": 0,
+      "value": 10,
+      "description": "Simple leather armor offering basic protection."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "tuning_fork",
+      "name": "Initiate's Tuning Fork",
+      "type": "weapon",
+      "levelReq": 15,
+      "damageBonus": 8,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 0,
+      "description": "A small silver fork that hums a single pure note when struck. Weak as a weapon, but it cuts through illusion where steel cannot."
+    },
+    {
+      "id": "obsidian_drum_stave_instrument",
+      "name": "Drum-Stave Resonator",
+      "type": "instrument",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 0,
+      "description": "A resonant echo of the Obsidian Drum-Stave, keyed to the Note of Matter. One of the five Primordial Instruments."
+    },
+    {
+      "id": "silver_harp_of_creation",
+      "name": "Silver Harp of Creation",
+      "type": "instrument",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 0,
+      "description": "Valdris's Silver Harp of Creation. Its strings are spun from light; when played, reality briefly writes itself."
+    },
+    {
+      "id": "golden_trumpet_of_change",
+      "name": "Golden Trumpet of Change",
+      "type": "instrument",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 0,
+      "description": "Zephyros's trumpet. Its note is the note of transformation - nothing that hears it stays the same."
+    },
+    {
+      "id": "lute_of_whispering_shadows",
+      "name": "Lute of Whispering Shadows",
+      "type": "instrument",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 0,
+      "description": "Nyxara's lute. Its strings are woven of void; it plays only what has been forgotten."
+    },
+    {
+      "id": "crystal_flute_of_wisdom",
+      "name": "Crystal Flute of Wisdom",
+      "type": "instrument",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 0,
+      "description": "Thessarian's flute. Each note is a paradox resolved; each silence is a question answered."
+    }
+  ],
+  "equipped": {
+    "weapon": null,
+    "armor": null,
+    "shield": null
+  },
+  "gold": 10050,
+  "stats": {
+    "monstersKilled": 0,
+    "deaths": 0,
+    "bossesDefeated": [],
+    "totalDamageDealt": 0,
+    "totalDamageTaken": 0,
+    "roomsExplored": [
+      "room_001"
+    ],
+    "itemsCollected": 5,
+    "pvpKills": 0,
+    "pvpDeaths": 0,
+    "storyFlags": {
+      "gatekeeperTriggered": true,
+      "tuningForkGranted": true,
+      "drumStaveForged": false,
+      "instrumentsPlayed": {
+        "drum": true,
+        "harp": true,
+        "trumpet": true,
+        "lute": true,
+        "flute": true
+      },
+      "finaleCompleted": true
+    }
+  },
+  "lastPlayed": "2026-04-22T09:15:18.280Z"
+}

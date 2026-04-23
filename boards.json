@@ -1,0 +1,29 @@
+{
+  "announcements": [
+    {
+      "author": "Testadmin",
+      "title": "Test Title",
+      "body": "Hello world from Tier 1 tests",
+      "timestamp": 1776887387898
+    },
+    {
+      "author": "Testadmin",
+      "title": "Test Title",
+      "body": "Hello world from Tier 1 tests",
+      "timestamp": 1776887960827
+    },
+    {
+      "author": "Testadmin",
+      "title": "Test Title",
+      "body": "Hello world from Tier 1 tests",
+      "timestamp": 1776888006889
+    },
+    {
+      "author": "Testadmin",
+      "title": "test title",
+      "body": "hello world from tier 1 tests",
+      "posted": 1776934432408
+    }
+  ],
+  "players": []
+}

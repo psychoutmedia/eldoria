@@ -1,0 +1,87 @@
+{
+  "name": "Isabella",
+  "level": 2,
+  "experience": 100,
+  "title": "Initiate of the Arcane",
+  "currentHP": 60,
+  "maxHP": 60,
+  "currentRoom": "room_001",
+  "displayMode": "verbose",
+  "inventory": [
+    {
+      "id": "rusty_dagger",
+      "name": "Rusty Dagger",
+      "type": "weapon",
+      "levelReq": 1,
+      "damageBonus": 2,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 10,
+      "description": "A worn dagger with spots of rust. Still sharp enough to be useful."
+    },
+    {
+      "id": "leather_vest",
+      "name": "Leather Vest",
+      "type": "armor",
+      "levelReq": 1,
+      "damageBonus": 0,
+      "armorBonus": 2,
+      "healAmount": 0,
+      "value": 10,
+      "description": "Simple leather armor offering basic protection."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "guardian_essence",
+      "name": "Guardian Essence",
+      "type": "consumable",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 20,
+      "value": 10,
+      "description": "The essence of an echo guardian, providing minor healing."
+    }
+  ],
+  "equipped": {
+    "weapon": null,
+    "armor": null,
+    "shield": null
+  },
+  "gold": 69,
+  "stats": {
+    "monstersKilled": 1,
+    "deaths": 0,
+    "bossesDefeated": [],
+    "totalDamageDealt": 25,
+    "totalDamageTaken": 28,
+    "roomsExplored": [
+      "room_001"
+    ],
+    "itemsCollected": 1,
+    "pvpKills": 0,
+    "pvpDeaths": 0
+  },
+  "lastPlayed": "2026-01-18T18:20:55.266Z"
+}

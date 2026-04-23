@@ -1,0 +1,702 @@
+{
+  "room_001": {
+    "name": "The Awakening Chamber",
+    "zone": "Starting Chamber",
+    "shortDescription": "A cold, rectangular womb of marble and neon.",
+    "longDescription": "The air here smells of ozone and the kind of stale coffee that suggests a creator who hasn't slept since the first epoch. The walls are polished obsidian, etched with silver runes that occasionally flicker like a dying lightbulb. High above, the ceiling is a perfect grid of white light, though one panel is missing, revealing a terrifying glimpse of raw green code. This is where you began, a 'newly initialized variable' in a world that didn't ask for you. A faint scratching sound behind the walls suggests Nomagio is currently patching a leak in reality just out of sight. A large Neon sign glows with the immortal words 'Go North and try not to die in the first 5 minutes. Its embarrassing for Everyone involved!",
+    "exits": { "north": "room_002" }
+  },
+  "room_002": {
+    "name": "The Obsidian Ledge",
+    "zone": "Starting Chamber",
+    "shortDescription": "A sharp-edged precipice overlooking the Great 404.",
+    "longDescription": "You stand on a tongue of black glass that thrusts out into an infinite grey mist. The wind here doesn't just blow; it sighs with the collective boredom of a thousand forgotten NPCs. Below, the void swirls with 'Unallocated Assets' half-formed trees and floating doorframes that Zephyros likely discarded during a particularly manic creative binge. The ledge is sharp enough to cut your shadow, and the only way forward is a bridge of light that looks about as stable as a politician's promise.",
+    "exits": { "north": "room_003", "south": "room_001" }
+  },
+  "room_003": {
+    "name": "The Nexus Antechamber",
+    "zone": "Starting Chamber",
+    "shortDescription": "A shattered reception hall where the floor is a suggestion.",
+    "longDescription": "The transition from the void to this hall is a slap of cold air and the smell of ancient dust. The architecture is a confused mess; its as if Morwyn tried to build a fortress but Valdris kept changing the blueprint every time she turned her back. Statues of nameless heroes line the walls, though their faces have been smoothed over by the 'Entropy of Deletion.' If you listen closely, you can hear the faint, rhythmic ticking of a clock that Thessarian forgot to wind.",
+    "exits": { "northeast": "room_004", "south": "room_002" }
+  },
+  "room_004": {
+    "name": "Garden of First Steps",
+    "zone": "Starting Chamber",
+    "shortDescription": "A jagged throat of rock leading into the glowing deep.",
+    "longDescription": "The transition from the Spire's marble to the raw earth is a slap of cold, damp air. The walls are encrusted with low-grade resonance crystals that glow with a faint, sickly green light—the color of a dying computer monitor. The floor is uneven, slick with a substance that might be water but smells suspiciously of alchemical runoff. You can hear the distant, melodic dripping of the caves, a 'natural' symphony that sounds a bit too much like a looped audio file.",
+    "exits": { "north": "room_005", "southwest": "room_003" }
+  },
+  "room_005": {
+    "name": "The Threshold of Departure",
+    "zone": "Starting Chamber",
+    "shortDescription": "A grand archway marks the boundary between safety and adventure. Beyond lies the unknown. Many have passed through; fewer have returned.",
+    "longDescription": "The path here is barely wide enough for a man, especially one clutching a rusted dagger and a growing sense of dread. Huge clusters of blue quartz grow from the ceiling like jagged teeth. They vibrate with a low-frequency hum that sets your teeth on edge Morwyns influence, perhaps, trying to hammer the stone back into a shape that makes sense. Below the ledge, the darkness is absolute, save for the occasional flicker of a 'Missing Texture' error. Pedestals around the room hold basic equipment and supplies, as if placed there by some benevolent force to aid travelers on their journey.",
+    "exits": { "south": "room_004", "north": "room_007", "east": "room_006" }
+  },
+  "room_006": {
+    "name": "The Crystal Grotto",
+    "zone": "Crystal Caverns",
+    "shortDescription": "You enter a breathtaking cavern where massive crystals jut from every surface. They emit a soft, ethereal glow that illuminates the space in rainbow hues.",
+    "longDescription": "The acoustics in this grotto are terrifying. Every footstep you take is echoed back three times, each version sounding slightly more judgmental than the last. The walls are covered in a moss that pulses in time with the world's broken heartbeat. In the center of the room, a massive stalagmite has been carved into a crude throne, though who or what sat there is a question your stomach would rather you didn't ask. The air is thick with the scent of wet earth and ancient, unwashed secrets. A faint humming resonates through the chamber, as if the crystals themselves are singing a welcome.",
+    "exits": { "northwest": "room_007", "east": "room_010", "south": "room_008", "west": "room_005" }
+  },
+  "room_007": {
+    "name": "The Gemstone Cavern",
+    "zone": "Crystal Caverns",
+    "shortDescription": "Precious gems of every color are embedded in the cavern walls. They sparkle like stars brought underground, creating a dazzling display.",
+    "longDescription": "Giant crystals of pure white light intersect here, turning the room into a kaleidoscope of blinding brilliance. If you stand in the right spot, the light refracts your shadow into five different versions of yourself—one for each Archmage. Its a beautiful, dizzying display of the vanity of Valdris. A sign scratched into the wall near the exit warns: 'Wear sunglasses or lose your retinas.' The Management is not liable for temporary blindness or permanent epiphanies.",
+    "exits": { "southeast": "room_006", "south": "room_005" }
+  },
+  "room_008": {
+    "name": "The Prismatic Crystal Forest",
+    "zone": "Crystal Caverns",
+    "shortDescription": "Light fractures through a dense thicket of crystal prisms overhead, painting the chamber in ever-shifting bands of color. The effect is mesmerizing.",
+    "longDescription": "You are walking through a 'forest' where the trees are made of obsidian and the leaves are shards of translucent quartz. Its the kind of place where a trip doesn't just result in a bruised knee, but a significant loss of blood. The 'vines' are actually strands of solidified Aether that crackle with static when you pass. The air smells like a lightning strike in a florist shop sweet and dangerous.",
+    "exits": { "east": "room_009", "north": "room_006" }
+  },
+  "room_009": {
+    "name": "The Luminous Hollow",
+    "zone": "Crystal Caverns",
+    "shortDescription": "Bioluminescent crystals line this hollow, pulsing with a gentle rhythm like a heartbeat. The air hums with latent magical energy.",
+    "longDescription": "The ground gives way to a massive chasm, bridged only by a flickering span of 'Hard-Light' geometry. The mist below glows with the golden hue of Nomagio's original source code. It looks inviting, like a warm bath, but you suspect falling into it would result in your immediate annihilation. The bridge hums at a pitch that makes your ears itch, and it occasionally flickers out for a microsecond, just to keep you on your toes.",
+    "exits": { "north": "room_010", "west": "room_008" }
+  },
+  "room_010": {
+    "name": "The Crystalline Cathedral",
+    "zone": "Crystal Caverns",
+    "shortDescription": "Towering crystal spires reach toward an impossibly high ceiling. The acoustics here are perfect - even whispers carry across the vast space.",
+    "longDescription": "Towering sapphire spires reach toward a ceiling lost in darkness far above, their blue radiance casting the chamber in an ethereal twilight glow. The acoustics here are extraordinary - a whispered word carries across the vast space with perfect clarity, and your footsteps create echoing harmonics that seem to form fleeting melodies. Ancient inscriptions have been carved into the base of the largest spire, their meaning long forgotten. This place feels sacred, as though countless beings have come here to contemplate the mysteries of existence.",
+    "exits": { "north": "room_011", "south": "room_009", "west": "room_006" }
+  },
+  "room_011": {
+    "name": "The Faceted Gallery",
+    "zone": "Crystal Caverns",
+    "shortDescription": "Countless crystal faces reflect your image infinitely in all directions. It's easy to lose yourself in this hall of natural mirrors.",
+    "longDescription": "The crystals here are flat and polished, acting like a series of acoustic mirrors. You can hear a conversation happening three rooms away, but you can also hear the sound of your own blood rushing through your veins. Nyxara’s presence is felt here in the hollow silence between the echoes. A faint scratching on the wall says: 'I can hear you thinking. Stop it. It's distracting.'",
+    "exits": { "northwest": "room_012", "south": "room_010" }
+  },
+  "room_012": {
+    "name": "The Mineral Sanctuary",
+    "zone": "Crystal Caverns",
+    "shortDescription": "A peaceful alcove where rare minerals grow in delicate formations. Scholars would pay fortunes to study this untouched geological wonder.",
+    "longDescription": "This alcove is a masterpiece of geological vanity, likely where Thessarian spent his weekends trying to calculate the music of the spheres. Clusters of rose quartz sing with a harmonic frequency so delicate it feels like a physical itch behind your teeth. A natural spring bubbles through the floor, its water tasting of iron and ancient mineral salts—though Nomagio has tagged the pool with a floating warning: 'Healing properties unverified. Use at own risk of spontaneous crystallization.' The 'peace' here is a lie; the silence is so heavy it feels like the cave is holding its breath, waiting for a cue.",
+    "exits": { "in": "room_013", "southeast": "room_011" }
+  },
+  "room_013": {
+    "name": "The Glittering Vault",
+    "zone": "Crystal Caverns",
+    "shortDescription": "The walls shimmer with what appears to be gold dust trapped within the crystal. Ancient dwarven runes suggest this was once a treasury.",
+    "longDescription": "The walls here are translucent, packed with gold dust that glitters with the promise of early retirement. Ancient dwarven runes are carved into the floor, but they don't say 'Treasury' a quick translation suggests they say 'RUN, YOU GREEDY FOOLS.' Pockets of obsidian darkness cling to the corners like ink stains, moving with a fluid intelligence that suggests Nyxara is currently using the room's shadows to audit your fear levels. The pedestals are empty, not because they were looted, but because whatever lived here apparently preferred the taste of the thieves over the weight of their coins.",
+    "exits": { "northeast": "room_014", "out": "room_012" }
+  },
+  "room_014": {
+    "name": "The Radiant Alcove",
+    "zone": "Crystal Caverns",
+    "shortDescription": "A warm, golden light emanates from a cluster of amber crystals. The temperature here is noticeably warmer and more comfortable.",
+    "longDescription": "The temperature spikes here, but it isn't the cozy warmth of a hearth; it’s the humid, oppressive heat of a massive biological engine. Massive clusters of amber radiate a golden light that reveals the 'Resting Benches' are actually scarred with deep, four inch gouges that could only be made by claws harder than diamond. Fossilized insects trapped in the amber walls seem to watch you with ancient, patient eyes that look frozen in a moment of absolute, primeval terror. A faint, low-frequency rumble from the east vibrates through the soles of your boots, a sound that Nomagio has helpfully labeled in the system log as: [AMB_SFX: SNORING_APEX_PREDATOR].",
+    "exits": { "southwest": "room_013", "east": "room_015" }
+  },
+  "room_015": {
+    "name": "The Sparkling Depths",
+    "zone": "Crystal Caverns",
+    "shortDescription": "You've reached the deepest part of the Crystal Caverns. A shaft of light from above illuminates a spiral staircase leading upward.",
+    "longDescription": "You have reached the terminal point of the caverns, a subterranean cathedral where moonstone clusters glow with the bruised purple light of a dying star. A single shaft of light from far above illuminates a spiral staircase—the only exit—but it is blocked by a mountain of translucent, razor-edged scales. This is the lair of the Crystal Dragon, a 'security patch' made of living geometry and hunger. The floor is a mosaic of pulverized bone and shattered armor, and the air is so thick with raw Resonance it smells like a lightning strike in a graveyard. The beast's breath comes in slow, crystalline hisses, turning the air into frost. To go Up, you must first survive the Unmaking.",
+    "exits": { "west": "room_014", "up": "room_016" }
+  },
+  "room_016": {
+    "name": "The Aerial Sanctuary",
+    "zone": "Floating Gardens",
+    "shortDescription": "You emerge onto a floating island suspended in an endless sky. Exotic flowers bloom in impossible colors, defying gravity itself.",
+    "longDescription": "You emerge from the crystal staircase onto a floating island suspended in an endless azure sky. Exotic flowers bloom in colors that shift based on your emotional state - calm blues when peaceful, vibrant reds when excited. The island drifts gently, connected to others by bridges of woven vines and solidified moonbeams. Below you is nothing but clouds and the distant glimmer of other realms. Butterflies with wings of pure light dance between blossoms, and the air carries the sweet perfume of a thousand impossible flowers.",
+    "exits": { "north": "room_017", "east": "room_018", "down": "room_015" }
+  },
+  "room_017": {
+    "name": "The Aerial Paradise",
+    "zone": "Floating Gardens",
+    "shortDescription": "Waterfalls flow upward here, feeding pools that hover in midair. Butterflies with crystalline wings flutter between floating blossoms.",
+    "longDescription": "Waterfalls defy all natural law here, flowing upward from pools that hover in midair to sources hidden in the clouds above. The water sparkles with captured starlight, and drinking from it is said to grant visions of distant places. Butterflies with crystalline wings flutter between floating blossoms, their wings chiming like tiny bells. Vines grow through dimensional rifts, connecting this island to others you can barely see through the mist. A gentle rainbow permanently arcs overhead, casting everything in soft prismatic light.",
+    "exits": { "north": "room_018", "south": "room_016" }
+  },
+  "room_018": {
+    "name": "The Aerial Haven",
+    "zone": "Floating Gardens",
+    "shortDescription": "A tranquil garden where time seems to slow. Ancient trees with silver bark provide shade over beds of starflowers.",
+    "longDescription": "Time moves differently in this tranquil haven - hours can pass like minutes when you rest beneath the ancient trees with their silver bark. Starflowers bloom in beds arranged in constellations that mirror the night sky, each petal holding a tiny point of light. The trees' leaves are made of crystallized music that tinkle in the breeze, creating ever-changing melodies. A hammock woven from cloud-silk sways gently between two trunks, inviting weary travelers to rest and dream of distant worlds.",
+    "exits": { "west": "room_016", "north": "room_019", "south": "room_017" }
+  },
+  "room_019": {
+    "name": "The Aerial Refuge",
+    "zone": "Floating Gardens",
+    "shortDescription": "Soft grass cushions your feet as you walk among floating stone pathways. The air smells of jasmine and morning dew.",
+    "longDescription": "Soft bioluminescent grass cushions your feet as you walk among floating stone pathways that drift slowly through the air. The scent of jasmine and eternal morning dew hangs heavy here, and trees grow downward into the sky below, their roots reaching toward the sun. Small woodland creatures with translucent fur peek out from behind glowing ferns, curious but unafraid. Stepping stones hover at different heights, allowing you to walk at whatever elevation feels most comfortable.",
+    "exits": { "north": "room_020", "south": "room_018", "east": "room_021" }
+  },
+  "room_020": {
+    "name": "The Aerial Oasis",
+    "zone": "Floating Gardens",
+    "shortDescription": "A crystal-clear pool floats at the center of this garden, fed by clouds that drift past. Palm trees sway in the eternal breeze.",
+    "longDescription": "A crystal-clear pool floats impossibly at the center of this garden oasis, fed by clouds that drift past and squeeze out their moisture like gentle rain. Palm trees with leaves of spun gold sway in the eternal breeze, and roses that exist in multiple dimensions simultaneously shimmer at the water's edge, their petals visible and invisible by turns. Fish made of liquid light swim in the floating pool, and you can see your reflection not as you are, but as you dream yourself to be.",
+    "exits": { "north": "room_021", "south": "room_019", "southeast": "room_010" }
+  },
+  "room_021": {
+    "name": "The Aerial Grove",
+    "zone": "Floating Gardens",
+    "shortDescription": "Fruit trees heavy with golden apples grow in perfect rows. The fruit glows faintly, promising magical properties.",
+    "longDescription": "Fruit trees heavy with golden apples grow in perfect rows across this floating grove, their branches bending under the weight of magical produce. Each apple glows with inner light, and biting into one is said to grant temporary abilities - flight, strength, or foresight. Mushrooms that float like jellyfish drift lazily through the air between the trees, their caps pulsing with soft phosphorescence. Signs in a dozen languages warn visitors to eat no more than one fruit per visit, lest the magic overwhelm them.",
+    "exits": { "west": "room_019", "north": "room_022", "south": "room_020" }
+  },
+  "room_022": {
+    "name": "The Aerial Bower",
+    "zone": "Floating Gardens",
+    "shortDescription": "Flowering vines create a natural canopy overhead, their blooms releasing a sweet perfume. Hummingbirds dart between the flowers.",
+    "longDescription": "Flowering vines weave together overhead to create a natural bower, their countless blooms releasing a perfume so sweet it borders on intoxicating. Hummingbirds with feathers of living flame dart between the flowers, their wings humming melodies that harmonize with the wind. Ferns along the edges unfurl periodically to reveal tiny portals - glimpses of other garden realms where different seasons hold eternal sway. The ground here is soft moss that remembers your footsteps, springing back slowly after you pass.",
+    "exits": { "north": "room_023", "south": "room_021", "east": "room_024" }
+  },
+  "room_023": {
+    "name": "The Aerial Glade",
+    "zone": "Floating Gardens",
+    "shortDescription": "An open meadow of soft blue grass stretches before you. Fireflies dance in lazy patterns, even in daylight.",
+    "longDescription": "An open meadow of soft blue grass stretches across this floating glade, swaying in waves like an ocean of azure. Fireflies dance in lazy patterns even in full daylight, their lights leaving trails that spell out words in forgotten languages before fading. Spectral gardeners tend to fruit trees that bear gems instead of fruit - rubies, sapphires, and emeralds growing on branches like berries. They pay no attention to visitors, lost in their eternal work of cultivation and care.",
+    "exits": { "north": "room_024", "south": "room_022" }
+  },
+  "room_024": {
+    "name": "The Aerial Dell",
+    "zone": "Floating Gardens",
+    "shortDescription": "A peaceful hollow where the wind whispers secrets. Mushrooms with caps like tiny umbrellas dot the landscape.",
+    "longDescription": "This peaceful dell sits in a natural hollow where the wind seems to gather and whisper secrets from across the realms. Mushrooms with caps like tiny umbrellas dot the landscape, and sitting beneath them reveals they amplify sounds - you can hear conversations happening on distant floating islands. Flowering bushes along the edges sing soft lullabies to weary travelers, their melodies shifting to match your mood. The dell rises and falls with the wind, like a boat on gentle waves.",
+    "exits": { "west": "room_022", "north": "room_025", "south": "room_023" }
+  },
+  "room_025": {
+    "name": "The Aerial Retreat",
+    "zone": "Floating Gardens",
+    "shortDescription": "The highest point of the Floating Gardens. From here, you can see islands stretching to the horizon. A misty path leads down.",
+    "longDescription": "You have reached the highest point of the Floating Gardens, standing on terraces carved from clouds made solid beneath your feet. From here, countless garden islands stretch to the horizon in every direction, a breathtaking archipelago suspended in endless sky. Moss grows on the underside of the floating stones above you, defying all natural law. A misty path spirals downward, leading toward the Shadow Marshes far below. Wind chimes made from crystallized laughter sing their farewells as you prepare to descend into darkness.",
+    "exits": { "south": "room_024", "down": "room_026" }
+  },
+  "room_026": {
+    "name": "The Whispering Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Thick mist clings to the murky waters. Gnarled trees with hanging moss create eerie silhouettes. Voices seem to whisper from the fog.",
+    "longDescription": "You descend into a treacherous marshland where thick mist clings to murky waters that reflect things that are not there. Gnarled trees draped in hanging moss create eerie silhouettes that seem to move when glimpsed from the corner of your eye. Voices whisper from the fog - fragments of conversations from the dead, warnings that come too late, and names you've never heard spoken with terrible familiarity. The air is thick with the scent of decay and rebirth, reminding you that in the Shadow Marshes, endings become beginnings.",
+    "exits": { "north": "room_027", "east": "room_028", "up": "room_025" }
+  },
+  "room_027": {
+    "name": "The Haunted Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Ghostly lights bob in the distance, leading unwary travelers astray. The ground squelches with each step.",
+    "longDescription": "Ghostly lights bob in the distance like lanterns carried by invisible hands, leading unwary travelers astray into bottomless pools. Twisted trees dominate the landscape, their bark weeping tears of midnight that stain everything they touch. The ground squelches with each step, threatening to pull you down into its cold embrace. Phantom sounds echo from all directions - footsteps that match your own, whispered pleas for help, and the distant tolling of bells that have no source.",
+    "exits": { "north": "room_028", "south": "room_026" }
+  },
+  "room_028": {
+    "name": "The Twilight Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Perpetual dusk hangs over this section of marsh. The sun never quite sets, leaving everything in purple shadow.",
+    "longDescription": "Perpetual dusk hangs over this section of the marsh, a sun frozen eternally on the horizon casting everything in deep purple shadow. Time moves strangely here - you might walk for what feels like hours only to discover minutes have passed, or vice versa. Strange lights flicker in the distance, neither fire nor magic nor will-o-wisp but something older and hungrier. Mists that whisper secrets of the dead curl around your ankles, telling you things you wish you hadn't heard about those you've lost.",
+    "exits": { "west": "room_026", "north": "room_029", "south": "room_027" }
+  },
+  "room_029": {
+    "name": "The Phantom Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Spectral figures drift between the dead trees, paying no attention to the living. The air is cold despite the humidity.",
+    "longDescription": "Spectral figures drift between the skeletal dead trees, replaying moments from their lives in endless loops. They pay no attention to the living, trapped in memories of what was and what might have been. The bog waters here show visions of possible futures - some hopeful, most dire, all uncertain. The air is cold despite the humidity, and your breath mists before you. Peering too long into the water is said to trap your reflection there forever, another phantom doomed to wander.",
+    "exits": { "north": "room_030", "south": "room_028", "east": "room_031" }
+  },
+  "room_030": {
+    "name": "The Spectral Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "The boundary between life and death feels thin here. Translucent fish swim through the air as easily as water.",
+    "longDescription": "The boundary between life and death feels paper-thin in this stretch of marsh, allowing things to slip through that normally couldn't. Translucent fish swim through the air as easily as water, their ghostly forms passing through you with a chill that reaches your bones. Will-o-wisps dance between gnarled branches in patterns that seem almost like writing. Shadows move independently of their sources, playing out scenes from forgotten tragedies - duels, betrayals, and last embraces frozen in eternal repetition.",
+    "exits": { "north": "room_031", "south": "room_029", "southeast": "room_040" }
+  },
+  "room_031": {
+    "name": "The Eerie Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Something watches from the shadows. You can feel eyes following your every movement, though nothing reveals itself.",
+    "longDescription": "Something watches from the shadows here. You can feel countless eyes following your every movement, tracking you with predatory patience, though nothing reveals itself no matter how quickly you turn. The patches of ground exist in perpetual twilight regardless of what time it is elsewhere. Dark energy pulses through the air, making your skin tingle and the hair on your arms stand on end. Ancient stone markers line a path forward, but they seem to shift position when you're not looking directly at them.",
+    "exits": { "west": "room_029", "north": "room_032", "south": "room_030" }
+  },
+  "room_032": {
+    "name": "The Ghostly Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Pale flowers bloom on the water's surface, their petals glowing with ghostly luminescence. They turn to follow movement.",
+    "longDescription": "Pale flowers bloom on the water's surface throughout this marsh, their petals glowing with ghostly luminescence that provides the only light. They turn to follow your movement like sunflowers tracking the sun, and pulling one from the water reveals roots that look disturbingly like grasping fingers. Streams of dark water flow impossibly uphill, defying gravity as they wind between the twisted trees. Whispers in ancient tongues drift on the wind, speaking of secrets best left buried and truths that drive men mad.",
+    "exits": { "north": "room_033", "south": "room_031", "east": "room_034" }
+  },
+  "room_033": {
+    "name": "The Shadowed Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Shadows move independently of their sources here. Your own shadow occasionally gestures in directions you didn't move.",
+    "longDescription": "Shadows move with disturbing independence throughout this marsh, disconnected from the objects that should cast them. Your own shadow occasionally gestures in directions you didn't move, pointing at things you cannot see, warning you of dangers - or perhaps beckoning them closer. Islands of solid shadow float on the ethereal mists, and stepping on them feels like walking on cold silk. The boundary between the living world and the realm of shadows is threadbare here, and you sense things watching from the other side.",
+    "exits": { "north": "room_034", "south": "room_032" }
+  },
+  "room_034": {
+    "name": "The Murky Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "The water here is almost black, hiding whatever lurks beneath. Bubbles rise occasionally, accompanied by strange sounds.",
+    "longDescription": "The water here is almost perfectly black, an inky darkness that hides whatever lurks beneath its surface. Bubbles rise occasionally, accompanied by sounds that might be voices speaking words just below the threshold of understanding. Trees grow backwards through time in groves along the edges - you can watch saplings age into ancient twisted things, then shrink back to seedlings in a matter of minutes. Spectral forms drift through the mists between them, paying no heed to the living, lost in their own eternal errands.",
+    "exits": { "west": "room_032", "north": "room_035", "south": "room_033" }
+  },
+  "room_035": {
+    "name": "The Mysterious Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Ancient standing stones rise from the swamp, covered in indecipherable runes. A stone stairway spirals upward from their center.",
+    "longDescription": "Ancient standing stones rise from the heart of the swamp in a perfect circle, their surfaces covered in runes that shift and change when observed. Every reflection in the dark water shows a different realm - some recognizable, others utterly alien. Time moves strangely here; moments stretch into hours and hours compress into heartbeats. At the center of the stone circle, a stairway spirals upward into mist, leading toward the Tower of Winds. This place is a nexus, a crossing point between worlds, and something ancient and powerful slumbers beneath the waters.",
+    "exits": { "south": "room_034", "up": "room_036" }
+  },
+  "room_036": {
+    "name": "The Windswept Chamber - Level 1",
+    "zone": "Tower Of Winds",
+    "shortDescription": "You enter the base of a magnificent tower. Wind howls through countless windows, yet candles burn steadily in alcoves.",
+    "longDescription": "You ascend from the marshes into the base of a magnificent tower that seems to stretch impossibly high into the clouds. Wind howls through countless windows cut into the smooth stone walls, yet candles burn steadily in alcoves, their flames unmoved by the gale. The architecture defies understanding - staircases spiral both up and sideways, and doorways lead to rooms that shouldn't fit within the tower's exterior dimensions. Through the windows, you can see the Shadow Marshes falling away below, already looking like a dark stain on a distant landscape.",
+    "exits": { "north": "room_037", "east": "room_038", "down": "room_035" }
+  },
+  "room_037": {
+    "name": "The Airy Chamber - Level 1",
+    "zone": "Tower Of Winds",
+    "shortDescription": "Gauzy curtains billow in the perpetual breeze. The room feels light and airy, with clouds visible through the windows.",
+    "longDescription": "Gauzy curtains of spun moonlight billow in the perpetual breeze that flows through this airy chamber. The room feels weightless, as if gravity has loosened its grip here, and you notice your footsteps are lighter than they should be. Streamers of colored air flow through the space in lazy spirals, painting temporary murals that dissolve as quickly as they form. Clouds drift past the windows at eye level, occasionally passing through the chamber itself, leaving your skin dewy with moisture.",
+    "exits": { "north": "room_038", "south": "room_036" }
+  },
+  "room_038": {
+    "name": "The Breezy Chamber - Level 2",
+    "zone": "Tower Of Winds",
+    "shortDescription": "Wind chimes of silver and crystal create an ever-changing melody. The air currents seem almost playful here.",
+    "longDescription": "Thousands of wind chimes fashioned from silver and crystal hang from the ceiling, creating an ever-changing melody as breezes flow through in complex patterns. The air currents here seem almost playful, tugging at your clothing and hair like a mischievous child. Platforms suspended by perpetual updrafts provide seating areas where you could float indefinitely. The wind carries scents from a thousand different places - salt spray, forest loam, desert spice, and mountain snow, all mingling in impossible combinations.",
+    "exits": { "west": "room_036", "north": "room_039", "south": "room_037" }
+  },
+  "room_039": {
+    "name": "The Gusty Chamber - Level 2",
+    "zone": "Tower Of Winds",
+    "shortDescription": "Powerful gusts sweep through this chamber periodically. Ropes and handholds line the walls for stability.",
+    "longDescription": "Powerful gusts sweep through this chamber every few moments, strong enough to knock an unprepared traveler from their feet. Ropes and handholds line the walls, worn smooth by countless hands seeking stability against the wind's fury. The walls themselves appear to be made of crystallized air - solid yet transparent, with currents visible swirling within them. Miniature tornadoes dance playfully in the corners, lifting small objects in graceful spirals before setting them down in different places than where they started.",
+    "exits": { "north": "room_040", "south": "room_038", "east": "room_041" }
+  },
+  "room_040": {
+    "name": "The Tempestuous Chamber - Level 3",
+    "zone": "Tower Of Winds",
+    "shortDescription": "Storm clouds swirl outside the windows. Lightning occasionally illuminates the chamber with brilliant flashes.",
+    "longDescription": "Storm clouds swirl menacingly outside the windows, close enough to touch, and lightning occasionally illuminates the chamber with brilliant flashes that leave afterimages dancing in your vision. Thunder rolls through the tower, felt as much as heard, vibrating through the floor and walls. Gravity shifts subtly with the direction of the wind - you might find yourself leaning into gusts that aren't there, or stumbling when the pressure changes. The Shattered Realms spread out far below, visible in fragments between the churning clouds.",
+    "exits": { "north": "room_041", "south": "room_039", "northwest": "room_030" }
+  },
+  "room_041": {
+    "name": "The Zephyr Chamber - Level 3",
+    "zone": "Tower Of Winds",
+    "shortDescription": "A calm eye in the storm. Gentle breezes carry the scent of distant flowers. A moment of peace amid chaos.",
+    "longDescription": "After the fury of the surrounding chambers, this room offers startling tranquility - a calm eye in the eternal storm. Gentle breezes carry the scent of distant flowers, and the walls seem to be carved from solid storm clouds frozen in place. Wind chimes made from crystallized breath create haunting melodies that speak of peace and rest. Travelers often pause here to gather their strength before continuing upward. The contrast with the chaos just beyond these walls makes the serenity feel almost sacred.",
+    "exits": { "west": "room_039", "north": "room_042", "south": "room_040" }
+  },
+  "room_042": {
+    "name": "The Gale Chamber - Level 4",
+    "zone": "Tower Of Winds",
+    "shortDescription": "The wind here is strong enough to lift a person. Enchanted boots hang by the door for those who need them.",
+    "longDescription": "The wind in this chamber is strong enough to lift a person off their feet and send them tumbling into the void beyond the windows. Enchanted boots hang by the door, their soles weighted with captured thunder to keep wearers grounded. Contained lightning crackles in glass spheres mounted on the walls, tamed and harnessed to provide light. Gusts of warm and cool air alternate in complex patterns, creating invisible thermal currents that the tower's original inhabitants once used to fly from level to level.",
+    "exits": { "north": "room_043", "south": "room_041", "east": "room_044" }
+  },
+  "room_043": {
+    "name": "The Storm Chamber - Level 4",
+    "zone": "Tower Of Winds",
+    "shortDescription": "Thunder rumbles constantly. A massive weather vane in the center spins wildly, tracking storms across the realm.",
+    "longDescription": "Thunder rumbles constantly through this chamber, a deep bass note that vibrates in your chest. A massive weather vane dominates the center of the room, spinning wildly as it tracks storms across the entire realm - its movements predict weather patterns weeks in advance. Platforms float on currents of visible wind, silvery streams of air that support your weight like solid ground. The wind here whispers secrets in languages that predate the spoken word, offering knowledge to those who can understand its ancient tongue.",
+    "exits": { "north": "room_044", "south": "room_042" }
+  },
+  "room_044": {
+    "name": "The Hurricane Chamber - Level 5",
+    "zone": "Tower Of Winds",
+    "shortDescription": "The strongest winds in the tower rage here. Only the bravest or most foolish venture to this height.",
+    "longDescription": "The strongest winds in the entire tower rage through this chamber, howling with a voice that sounds almost alive. Only the bravest or most foolish venture to this height - the walls are scored with claw marks from those who lost their grip. Feathers and leaves from impossible places drift on the eternal breezes, carried here from realms that may not even exist anymore. The very air sings with harmonic frequencies, creating a symphony of power that speaks of the primal fury of nature unleashed.",
+    "exits": { "west": "room_042", "north": "room_045", "south": "room_043" }
+  },
+  "room_045": {
+    "name": "The Cyclone Chamber - Level 5",
+    "zone": "Tower Of Winds",
+    "shortDescription": "At the tower's peak, you stand in the eye of an eternal cyclone. The view is breathtaking, if terrifying.",
+    "longDescription": "You have reached the very peak of the Tower of Winds, standing in the calm eye of an eternal cyclone that rages around the chamber's exterior. The view through the spinning walls of wind is both breathtaking and terrifying - all the Shattered Realms spread out below like a patchwork quilt of impossible landscapes. The wind carries messages from distant realms, whispered words that tell of events happening across reality. A spiraling staircase descends into the heart of the Molten Forges far below, where a very different kind of power awaits.",
+    "exits": { "south": "room_044", "down": "room_046" }
+  },
+  "room_046": {
+    "name": "The Grand Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Heat washes over you as you enter this massive smithy. Rivers of molten metal flow through channels in the floor.",
+    "longDescription": "Heat washes over you as you descend from the Tower of Winds into this massive smithy carved from volcanic rock. Rivers of molten metal flow through channels in the floor, their orange glow providing most of the light. Anvils carved from single pieces of meteoric iron stand at regular intervals, their surfaces scarred by countless hammer blows. The air shimmers with intense heat that somehow feels invigorating rather than oppressive, as if the forge itself is welcoming you to create.",
+    "exits": { "north": "room_047", "east": "room_048", "up": "room_045" }
+  },
+  "room_047": {
+    "name": "The Master Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Master craftsmen once created legendary weapons here. Their anvils still stand, tools laid out as if awaiting their return.",
+    "longDescription": "This forge once belonged to master craftsmen whose legendary weapons still sing in the hands of heroes across the realms. Their anvils still stand exactly where they left them, tools laid out as if awaiting their return from a break that has lasted centuries. Furnaces burn with the captured fire of dying stars, their heat capable of softening even adamantine. The ghost-echoes of hammer strikes can still be heard if you listen carefully, phantom sounds of creation that never truly faded.",
+    "exits": { "north": "room_048", "south": "room_046" }
+  },
+  "room_048": {
+    "name": "The Ancient Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "This forge predates recorded history. The flames burn with colors not found in nature, fueled by magical ore.",
+    "longDescription": "This forge predates recorded history - the stones that form its walls remember a time before the Great Sundering. The flames burn with colors not found in nature: deep violets, shimmering silvers, and a black fire that somehow still gives light. Pools of liquid metal flow like mercury rivers through channels that seem to change course based on what the forge wishes to create. Magical protections woven into the very air keep visitors comfortable despite temperatures that could melt steel.",
+    "exits": { "west": "room_046", "north": "room_049", "south": "room_047" }
+  },
+  "room_049": {
+    "name": "The Eternal Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "A flame that has burned since the world's creation illuminates this chamber. It is said to never be extinguished.",
+    "longDescription": "At the heart of this chamber burns a flame that has never been extinguished since the world's creation - the Eternal Fire, source of all forge-craft. Its light is warm and golden, and looking into it too long reveals visions of weapons yet to be made, armor that will one day save kingdoms, and artifacts whose purposes remain hidden. Hammers arranged on the walls ring with sympathetic vibrations, humming with the music of creation. Sparks of molten metal dance through the air like fireflies made of liquid gold, landing harmlessly on your skin.",
+    "exits": { "north": "room_050", "south": "room_048", "east": "room_051" }
+  },
+  "room_050": {
+    "name": "The Sacred Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Holy symbols adorn the walls. Weapons blessed here are said to strike true against evil. A reverent silence fills the air.",
+    "longDescription": "Holy symbols of a hundred different faiths adorn the walls of this sacred forge, coexisting in harmony despite their differences. Weapons blessed here are said to strike true against evil, and the forge has never been used to create instruments of cruelty. A reverent silence fills the air, broken only by the rhythmic breathing of bellows that seem to pulse with the heartbeat of the earth itself. The heat here is not just physical but spiritual, warming your very soul and burning away doubt and despair.",
+    "exits": { "north": "room_051", "south": "room_049", "southwest": "room_060" }
+  },
+  "room_051": {
+    "name": "The Mystical Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Arcane formulae are etched into every surface. The flames here burn cold, yet still work metal with impossible precision.",
+    "longDescription": "Arcane formulae are etched into every surface of this mystical forge - the walls, the floor, even the tools themselves bear inscriptions of power. The flames here burn cold, blue-white and freezing to the touch, yet they work metal with impossible precision that no normal fire could achieve. Crucibles contain substances that can melt the very essence of magic, distilling enchantments into liquid form. Steam rises from quenching pools, creating temporary clouds that rain liquid starlight onto the floor below.",
+    "exits": { "west": "room_049", "north": "room_052", "south": "room_050" }
+  },
+  "room_052": {
+    "name": "The Legendary Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Portraits of legendary smiths line the walls. Each created weapons that changed the course of history.",
+    "longDescription": "Portraits of legendary smiths line the walls, their eyes seeming to follow you with approval or judgment depending on your intentions. Each created weapons that changed the course of history - you recognize depictions of the Sundering Blade, the Shield of Dawn, and the Hammer of Kingdoms. The forges here can reshape reality itself, bending the laws of physics to create impossible alloys. The air crackles with the energy of creation, making your skin tingle with possibility and filling you with the urge to make something that will outlast empires.",
+    "exits": { "north": "room_053", "south": "room_051", "east": "room_054" }
+  },
+  "room_053": {
+    "name": "The Divine Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Light streams down from an opening far above. It is said the gods themselves once worked at these anvils.",
+    "longDescription": "Pure light streams down from an opening far above, illuminating anvils of impossible size that could only have been used by beings of divine stature. It is said the gods themselves once worked at these stations, forging the weapons that shaped the cosmos. The tools here work themselves when no one is watching - hammers rise and fall, tongs grip and turn, as if guided by invisible hands continuing work begun eons ago. The radiant heat feels like the warmth of a loving embrace, filling you with a sense of purpose and belonging.",
+    "exits": { "north": "room_054", "south": "room_052" }
+  },
+  "room_054": {
+    "name": "The Primordial Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "The very first forge, where the elements were first bound to mortal will. Raw creation energy crackles in the air.",
+    "longDescription": "You stand in the very first forge, where fire, metal, and will were first united to create something greater than their parts. Raw creation energy crackles visibly in the air, manifesting as arcs of golden lightning that leap between surfaces. The foundries here can give physical form to abstract concepts - courage can be hammered into a blade, hope can be folded into armor. The forge fires burn in colors that have no names, casting shadows that move independently of the light, showing glimpses of what might be forged from the raw stuff of possibility.",
+    "exits": { "west": "room_052", "north": "room_055", "south": "room_053" }
+  },
+  "room_055": {
+    "name": "The Celestial Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Stars seem to burn within the forge's flames. Weapons crafted here are said to hold the power of the cosmos.",
+    "longDescription": "Stars seem to burn within the forge's flames - not representations, but actual captured stellar fire, compressed into the heart of the furnaces. Weapons crafted here hold the power of the cosmos itself, and smiths made of pure flame work tirelessly at the anvils, their forms flickering between humanoid shapes and pillars of living fire. Heat mirages dance in the air, showing glimpses of legendary items being forged across time and space. A passage leads east to the Ethereal Library, where knowledge replaces fire as the source of power.",
+    "exits": { "south": "room_054", "east": "room_056" }
+  },
+  "room_056": {
+    "name": "The Infinite Archive",
+    "zone": "Ethereal Library",
+    "shortDescription": "Bookshelves stretch endlessly in every direction. The library seems to extend beyond physical space itself.",
+    "longDescription": "You step from the heat of the forges into the cool, hushed expanse of the Ethereal Library, where bookshelves stretch endlessly in every direction, defying the boundaries of physical space. Walking in any direction reveals more shelves, more books, more knowledge than could be absorbed in a thousand lifetimes. The air itself seems thick with accumulated wisdom, and simply breathing here makes your thoughts feel sharper, clearer. Ladders on brass rails slide silently between towering stacks, though no librarians are visible to use them.",
+    "exits": { "north": "room_057", "east": "room_058", "west": "room_055" }
+  },
+  "room_057": {
+    "name": "The Eternal Archive",
+    "zone": "Ethereal Library",
+    "shortDescription": "Books here never age or decay. Some tomes predate language itself, their contents understood through pure thought.",
+    "longDescription": "The books in this archive never age or decay - volumes bound in dragon leather still gleam as if freshly made, their pages crisp despite being older than civilizations. Some tomes predate language itself, their contents understood through pure thought rather than reading. Books write themselves as you watch, quills dipping into inkwells and scratching across pages without any hand to guide them, recording events as they happen across the realms. Whispers of ancient knowledge drift from the open volumes, sharing secrets with those patient enough to listen.",
+    "exits": { "north": "room_058", "south": "room_056" }
+  },
+  "room_058": {
+    "name": "The Boundless Archive",
+    "zone": "Ethereal Library",
+    "shortDescription": "New shelves appear as you walk, filling with books that match your curiosity. The library anticipates your needs.",
+    "longDescription": "New shelves materialize as you walk, filling instantly with books that match your curiosity before you even fully form the question. The library anticipates your needs, guiding you toward knowledge you didn't know you were seeking. Scrolls containing the dreams of sleeping gods rest in crystal cases, their contents too dangerous for casual reading. The walls pulse with the rhythm of accumulated learning from countless civilizations, each beat adding new volumes to the ever-expanding collection.",
+    "exits": { "west": "room_056", "north": "room_059", "south": "room_057" }
+  },
+  "room_059": {
+    "name": "The Timeless Archive",
+    "zone": "Ethereal Library",
+    "shortDescription": "Clocks line the walls, each showing a different time. Some run backward. Time has no meaning in this section.",
+    "longDescription": "Clocks line every wall of this archive, each showing a different time - some run backward, some skip hours at random, and a few display times that haven't happened yet. Time has no meaning in this section; you might read for what feels like days only to discover minutes have passed, or vice versa. Tomes exist in multiple dimensions simultaneously, their pages showing different text depending on when you look at them. Floating words and symbols drift through the air like intellectual snow, remnants of thoughts too powerful to stay bound to the page.",
+    "exits": { "north": "room_060", "south": "room_058", "east": "room_061" }
+  },
+  "room_060": {
+    "name": "The Cosmic Archive",
+    "zone": "Ethereal Library",
+    "shortDescription": "Star charts and astronomical texts fill this wing. A massive orrery rotates overhead, tracking celestial bodies.",
+    "longDescription": "Star charts and astronomical texts fill this wing of the library, their pages depicting constellations from a thousand different worlds. A massive orrery rotates overhead, tracking celestial bodies in real-time - not just those visible from here, but from every point in the cosmos. Reading desks carved from crystallized knowledge provide comfortable study spaces, and the scent of old parchment mingles with the cold clarity of starlight. Books here contain the secrets of navigation between realms, though many are written in languages that died with their civilizations.",
+    "exits": { "north": "room_061", "south": "room_059", "northeast": "room_050" }
+  },
+  "room_061": {
+    "name": "The Universal Archive",
+    "zone": "Ethereal Library",
+    "shortDescription": "Every language ever spoken has a section here. Translating spirits drift between shelves, offering assistance.",
+    "longDescription": "Every language ever spoken - and many that will only be spoken in futures yet to come - has a dedicated section in this universal archive. Translating spirits drift between the shelves, wispy forms that offer assistance in finding texts and understanding their contents. Books whose pages are made of compressed starlight glow softly on special shelves. Occasionally, volumes flutter their pages like wings, as if the knowledge within seeks to fly free and share itself with the world.",
+    "exits": { "west": "room_059", "north": "room_062", "south": "room_060" }
+  },
+  "room_062": {
+    "name": "The Omniscient Archive",
+    "zone": "Ethereal Library",
+    "shortDescription": "Books here contain knowledge of past, present, and future. Reading them requires caution - some truths are dangerous.",
+    "longDescription": "Books in this archive contain knowledge of past, present, and future - and reading them requires extreme caution, for some truths are dangerous to know. Warning signs in a hundred languages advise readers to consider carefully before opening certain volumes. The books here read you as much as you read them, judging whether you are ready for the knowledge they contain. The silence is profound, broken only by the soft rustle of pages turning themselves, as if the books are having conversations you cannot hear.",
+    "exits": { "north": "room_063", "south": "room_061", "east": "room_064" }
+  },
+  "room_063": {
+    "name": "The Transcendent Archive",
+    "zone": "Ethereal Library",
+    "shortDescription": "These texts describe realities beyond mortal comprehension. Reading too long causes a pleasant dizziness.",
+    "longDescription": "These texts describe realities beyond mortal comprehension - dimensions where thought is solid, where time flows sideways, where meaning exists without form. Reading too long causes a pleasant dizziness as your mind stretches to accommodate concepts it was never designed to hold. Archives contain memories stored like physical objects, crystallized experiences you can hold in your hands. Ghostly scholars from ages past continue their research at ancient desks, oblivious to the living, lost in studies that transcended their deaths.",
+    "exits": { "north": "room_064", "south": "room_062" }
+  },
+  "room_064": {
+    "name": "The Limitless Archive",
+    "zone": "Ethereal Library",
+    "shortDescription": "No matter how far you walk, more shelves appear. Some adventurers have wandered for years seeking specific tomes.",
+    "longDescription": "This collection defies all geometry - each shelf you pass reveals ten more, and the far wall retreats as you approach it. Magical compasses spin uselessly, and even the most experienced explorers have been known to wander for days seeking a single volume. The books here contain entire universes, each spine a doorway to infinite knowledge. Enchanted breadcrumbs trail behind you, the only reliable way to retrace your steps through this maze of infinite wisdom.",
+    "exits": { "west": "room_062", "north": "room_065", "south": "room_063" }
+  },
+  "room_065": {
+    "name": "The Absolute Archive",
+    "zone": "Ethereal Library",
+    "shortDescription": "The deepest part of the library, where the most powerful knowledge is kept. A spiral staircase leads upward.",
+    "longDescription": "You have reached the library's innermost sanctum, where knowledge itself takes physical form - pure information crystallized into glowing orbs that float silently between towering obsidian shelves. Reading lights burn with cold silver fire, illuminating texts that have no shadows to cast. A spiral staircase of frozen light winds upward through the ceiling, promising passage to realms beyond this repository of ultimate wisdom. The master librarian, a being of pure thought, observes all who enter here, judging their worthiness to ascend.",
+    "exits": { "south": "room_064", "up": "room_066" }
+  },
+  "room_066": {
+    "name": "The Thunderous Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "You stand on a mountain peak where lightning strikes constantly. The air crackles with electrical energy.",
+    "longDescription": "You emerge from the library into a world of elemental fury, where lightning strikes the granite peak every few seconds with deafening peals of thunder. The air itself seems alive with electricity, making your hair stand on end and your skin tingle with raw power. Charred rock and melted sand create bizarre glass formations where bolts have struck repeatedly over countless ages. Despite the constant bombardment, the ancient stone walkways remain unscathed, protected by runes that drink the lightning's fury.",
+    "exits": { "north": "room_067", "east": "room_068", "down": "room_065" }
+  },
+  "room_067": {
+    "name": "The Lightning Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Lightning rods cover this peak, channeling the constant strikes into glowing crystals. The light is blinding.",
+    "longDescription": "A forest of copper lightning rods bristles from this peak, each one channeling electrical fury into crystalline capacitors that glow with captured power. The light is so intense you must shield your eyes, the accumulated energy turning night to noon. Storm mages once used this place to fuel great works of weather magic, and their abandoned equipment still hums with barely contained potential. The crystals pulse in rhythmic patterns, as if the storm itself has developed a heartbeat.",
+    "exits": { "north": "room_068", "south": "room_066" }
+  },
+  "room_068": {
+    "name": "The Tempest Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Rain falls horizontally here, driven by winds that threaten to sweep you off the mountain.",
+    "longDescription": "Rain hammers sideways across this exposed peak, driven by winds that howl like wounded beasts. Each step requires bracing against gusts that could throw you into the abyss, and the rain stings like needles against exposed skin. Stone anchoring posts with iron rings offer something to grip when the wind reaches its peak ferocity. Waterfalls flow upward in places where the gale reverses the natural order, and rainbows shimmer in the mist despite the absence of sun.",
+    "exits": { "west": "room_066", "north": "room_069", "south": "room_067" }
+  },
+  "room_069": {
+    "name": "The Storm-wreathed Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Clouds wrap around this peak like a cloak. Thunder is a constant companion, felt as much as heard.",
+    "longDescription": "Dense storm clouds coil around this peak like a living shroud, their darkness occasionally pierced by internal lightning that reveals shapes moving within the vapor. Thunder vibrates through the stone beneath your feet, a constant rumble felt in your bones and chest. The clouds part occasionally to reveal glimpses of impossible distances, then close again like curtains on a mystery. Crystallized thunder formations jut from the rock face, solid sound trapped in mineral form by ancient storm magic.",
+    "exits": { "north": "room_070", "south": "room_068", "east": "room_071" }
+  },
+  "room_070": {
+    "name": "The Electric Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Static electricity makes your hair stand on end. Sparks jump between metal objects without warning.",
+    "longDescription": "Static charge saturates every surface of this peak, causing your hair to lift and your skin to prickle with potential energy. Sparks arc between metal objects with sharp cracks, and touching the wrong surface sends tingling jolts through your body. The air has a sharp, ozonic taste that bites at your tongue. Ball lightning drifts lazily through the area, curious spheres of contained electricity that seem almost alive in their wandering patterns.",
+    "exits": { "north": "room_071", "south": "room_069", "northeast": "room_080" }
+  },
+  "room_071": {
+    "name": "The Windswept Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Nothing grows on this barren peak - the wind is too strong. Only the hardiest adventurers venture here.",
+    "longDescription": "Centuries of relentless wind have scoured this peak to bare bone, leaving nothing but polished stone and the occasional bleached skeleton of something that underestimated the gale's fury. The wind here never stops - it simply varies between uncomfortable and catastrophic. Erosion has carved the rock into flowing organic shapes, as if the stone itself is being slowly blown away. Veteran storm-walkers have carved handholds into the rock, the only way to traverse this desolate summit safely.",
+    "exits": { "west": "room_069", "north": "room_072", "south": "room_070" }
+  },
+  "room_072": {
+    "name": "The Hurricane Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "A permanent hurricane rages around this peak. The eye provides brief respite for those who find it.",
+    "longDescription": "A perpetual hurricane spirals around this peak, its roaring winds forming an impenetrable wall of destruction. The eye of the storm drifts unpredictably across the summit, offering moments of perfect calm amid the chaos. When the eye passes overhead, you can see straight up through the hollow column of the storm to stars that shouldn't be visible in daylight. Weather shamans built a small shelter here, using the eye's path to predict future storms across all the realms.",
+    "exits": { "north": "room_073", "south": "room_071", "east": "room_074" }
+  },
+  "room_073": {
+    "name": "The Cyclonic Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Debris orbits this peak in a perpetual cyclone. Treasures lost to storms sometimes appear, briefly.",
+    "longDescription": "A permanent cyclone of debris orbits this peak at terrifying speed, carrying the flotsam of a thousand storms - shattered ships, uprooted trees, lost treasures, and stranger things besides. Occasionally something breaks free from the whirling mass and crashes to the ground, offering brief opportunities for scavengers brave enough to dash out and retrieve it. Ancient runes carved into the summit keep the cyclone from closing in completely, creating a narrow safe zone at the peak's center.",
+    "exits": { "north": "room_074", "south": "room_072" }
+  },
+  "room_074": {
+    "name": "The Torrential Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Rain falls in sheets so thick you can barely see your hand. Rivers form and disappear in minutes.",
+    "longDescription": "Rain cascades down in such density that you can barely see an arm's length ahead, the drops merging into solid curtains of falling water. Flash rivers carve new channels across the stone with each passing minute, only to dry up and be replaced by others moments later. The sound is deafening, a constant roar that drowns out thought itself. Drainage channels carved by previous visitors offer the only reliable footing, guiding the flood away from the most-traveled paths.",
+    "exits": { "west": "room_072", "north": "room_075", "south": "room_073" }
+  },
+  "room_075": {
+    "name": "The Atmospheric Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "The highest of the Storm Peaks. Above the clouds, you can see the curvature of the world itself.",
+    "longDescription": "You stand at the apex of the Storm Peaks, so high that the clouds form a solid floor far below and the curvature of the world itself becomes visible on the horizon. The air is thin here but strangely warm, and aurora-like curtains of light dance at the edge of vision in colors that seem to respond to your emotions. Ancient wind-carved runes cover the stone, messages left by storm giants in the world's youth. A shimmering path leads northeast into something stranger still - a place where reality begins to fray.",
+    "exits": { "south": "room_074", "northeast": "room_076" }
+  },
+  "room_076": {
+    "name": "The Null Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "You enter a space where existence itself seems uncertain. The walls shimmer between being and not-being.",
+    "longDescription": "You step from the storm-wracked peaks into something far stranger - a chamber where the walls flicker between existing and not existing, where your own hands seem translucent when you hold them before your face. The air here has no temperature, no weight, no presence at all. Your footsteps make no sound, yet you can feel the vibration of your movement through your bones. Portals dot the walls, each one leading to locations that may or may not be real.",
+    "exits": { "north": "room_077", "east": "room_078", "southwest": "room_075" }
+  },
+  "room_077": {
+    "name": "The Empty Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "Complete emptiness surrounds you. No sound, no light, no sensation - yet you remain, somehow.",
+    "longDescription": "Complete and utter emptiness envelops you - no light, no sound, no sensation of floor beneath your feet or air against your skin. Your own heartbeat seems impossibly loud in the absolute silence, the only proof you still exist. Yet despite the nothingness, you can somehow perceive walls, doorways, dimensions that your senses insist aren't there. Philosophers have gone mad here, trying to reconcile the experience of perceiving nothing with the obvious fact that you're perceiving something.",
+    "exits": { "north": "room_078", "south": "room_076" }
+  },
+  "room_078": {
+    "name": "The Vacant Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "This room feels abandoned by reality itself. Echoes of things that never existed whisper past.",
+    "longDescription": "This chamber carries the unmistakable feeling of abandonment - not by people, but by reality itself, as if existence packed up and left this corner of the universe behind. Ghostly echoes of things that never were whisper past your ears: conversations never spoken, footsteps never taken, lives never lived. Cracks in the fabric of space reveal glimpses of the infinite void beyond, an endless darkness that somehow feels more solid than the chamber around you.",
+    "exits": { "west": "room_076", "north": "room_079", "south": "room_077" }
+  },
+  "room_079": {
+    "name": "The Hollow Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "A shell of a room, empty of meaning. Your footsteps make no sound on the non-floor.",
+    "longDescription": "You stand in what feels like the shell of a room - the outline is there, the shape exists, but everything that would give it meaning has been scooped away. Your footsteps on the non-floor produce no sound, and your voice dies the instant it leaves your lips. Walls of crystallized nothingness shimmer with an anti-light that illuminates by showing you what isn't there. The air tastes of raw potential, of every possibility and none of them, all at once.",
+    "exits": { "north": "room_080", "south": "room_078", "east": "room_081" }
+  },
+  "room_080": {
+    "name": "The Blank Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "Pure white nothingness extends in all directions. The absence of everything is somehow overwhelming.",
+    "longDescription": "Pure white nothingness stretches in every direction, so featureless that your eyes ache trying to find something to focus on. The overwhelming blankness presses against your mind with an almost physical weight, the absence of everything somehow more oppressive than any darkness. Your reflection shimmers in surfaces that don't exist, showing not what you are but strange visions of what you might become in other realities. Cause and effect seem reversed here - you see results before their causes, effects that precede action.",
+    "exits": { "north": "room_081", "south": "room_079", "southwest": "room_070" }
+  },
+  "room_081": {
+    "name": "The Void Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "You float in absolute void. Direction has no meaning here - yet paths lead onward somehow.",
+    "longDescription": "You float suspended in absolute void, gravity having abandoned this place along with light, sound, and meaning. Direction has no significance here - 'up' and 'down' are merely suggestions, and the paths forward exist only because you believe they do. Time flows in all directions at once, and you catch glimpses of yourself arriving before you began to move. The silence is so complete it becomes its own kind of sound, a roaring emptiness that fills your ears with nothing.",
+    "exits": { "west": "room_079", "north": "room_082", "south": "room_080" }
+  },
+  "room_082": {
+    "name": "The Absent Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "Things that should be here are conspicuously missing. Even shadows seem to have abandoned this place.",
+    "longDescription": "This chamber is defined by what isn't here - the conspicuous absence of things that should exist. Even shadows have fled this place, leaving objects without their dark companions. Your mind keeps trying to fill in the gaps, expecting furniture, decorations, life, and finding only void. Colors that have no names swirl in the emptiness, hues that exist in the gaps between the spectrum, painting abstract patterns that your eyes can see but your brain refuses to process.",
+    "exits": { "north": "room_083", "south": "room_081", "east": "room_084" }
+  },
+  "room_083": {
+    "name": "The Nihil Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "The concept of existence feels foreign here. You question whether you truly are, or merely remember being.",
+    "longDescription": "The very concept of existence feels foreign in this chamber, an alien idea that doesn't quite apply here. You begin to question whether you truly are, or whether you merely remember being, a ghost of consciousness persisting through habit rather than reality. The void whispers to you in languages older than thought, sharing secrets about the nature of existence and non-existence that you can almost understand. Here, nothingness has been given form and substance, absence made tangible.",
+    "exits": { "north": "room_084", "south": "room_082" }
+  },
+  "room_084": {
+    "name": "The Zero Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "Mathematics breaks down in this room. One plus one equals nothing. Zero contains infinity.",
+    "longDescription": "Mathematics itself breaks down in this impossible chamber. One plus one equals nothing here, and zero contains infinity within its emptiness. You feel simultaneously infinitely large and infinitesimally small, your sense of scale oscillating wildly between cosmic and microscopic. Equations carved into the non-walls prove impossible theorems, and geometric shapes exist that shouldn't be possible in any number of dimensions. Scholars who stayed too long emerged speaking only in paradoxes.",
+    "exits": { "west": "room_082", "north": "room_085", "south": "room_083" }
+  },
+  "room_085": {
+    "name": "The Null Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "You've reached the heart of nothingness. Paradoxically, it feels like the fullest place you've ever been.",
+    "longDescription": "You have reached the heart of nothingness itself, the center of the Void Nexus where absence becomes absolute. Paradoxically, this place of ultimate emptiness feels like the fullest place you've ever been, pregnant with infinite potential. The boundary between yourself and the void becomes increasingly difficult to maintain - you can feel your edges blurring, your sense of self threatening to dissolve into the everything-nothing around you. A stairway of solidified starlight spirals upward, offering escape to the celestial realms above.",
+    "exits": { "south": "room_084", "up": "room_086" }
+  },
+  "room_086": {
+    "name": "The Stellar Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Massive telescopes point toward the heavens. Star charts cover every surface, tracking celestial movements.",
+    "longDescription": "You ascend from the void into a chamber of breathtaking cosmic majesty, where massive brass telescopes point toward the heavens through a ceiling of perfectly clear crystal. Star charts cover every available surface, updating themselves in real-time as celestial bodies wheel through their eternal dance. The telescopes here can peer into the hearts of distant stars, revealing the fusion fires that birth light itself. Astronomers' notes scattered across desks speak of discoveries that would revolutionize mortal understanding of the universe.",
+    "exits": { "north": "room_087", "east": "room_088", "down": "room_085" }
+  },
+  "room_087": {
+    "name": "The Cosmic Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "The ceiling is open to the cosmos. Galaxies spiral overhead, close enough to touch yet impossibly distant.",
+    "longDescription": "The ceiling here opens directly to the cosmos itself, with no glass or barrier between you and the infinite void of space. Yet you breathe easily, protected by ancient enchantments that hold the vacuum at bay. Galaxies spiral overhead close enough that you feel you could reach up and touch them, their billion-year rotations compressed into visible motion. Starlight streams through crystal lenses arrayed around the chamber, splitting into spectra that reveal the secret compositions of distant suns.",
+    "exits": { "north": "room_088", "south": "room_086" }
+  },
+  "room_088": {
+    "name": "The Galactic Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Holographic projections of distant galaxies fill the room. You walk among stars millions of light-years away.",
+    "longDescription": "Holographic projections of distant galaxies fill this vast chamber, allowing you to walk among stars that burn millions of light-years away. You can reach out and pass your hand through the ghostly image of a supernova, feel the phantom warmth of stellar nurseries where new suns are being born. Massive orreries model not just solar systems but entire galactic clusters, their mechanisms so precise they can predict cosmic events millennia in advance. Cosmic dust drifts through the air, sparkling like diamond powder in the projected starlight.",
+    "exits": { "west": "room_086", "north": "room_089", "south": "room_087" }
+  },
+  "room_089": {
+    "name": "The Universal Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Every known universe is mapped here. Scholars spend lifetimes studying just one wall of this vast chamber.",
+    "longDescription": "Every known universe is mapped upon the walls of this impossible chamber, each one a bubble of reality floating in the infinite sea of possibility. Scholars have spent entire lifetimes studying just one small section of one wall, and still not exhausted its secrets. Viewing platforms extend outward into the space between worlds, allowing observers to study the membranes that separate realities. The faint music of celestial bodies reaches your ears - the cosmic hum of gravity waves and stellar winds, translated into sound by ancient instruments.",
+    "exits": { "north": "room_090", "south": "room_088", "east": "room_091" }
+  },
+  "room_090": {
+    "name": "The Astral Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "The barrier between physical and astral planes is thin here. Spirits of astronomers past continue their observations.",
+    "longDescription": "The barrier between physical and astral planes wears thin in this sacred space, allowing the spirits of astronomers past to continue their eternal observations alongside the living. Ghostly figures peer through spectral telescopes, recording data in journals that fade from existence when you try to read them. Meteor showers streak across the visible sky in trails of silver fire, and the instruments here measure the music of the spheres - the harmonic resonances that bind the cosmos together. A shimmering portal leads down to the mortal realm below.",
+    "exits": { "north": "room_091", "south": "room_089", "down": "room_001" }
+  },
+  "room_091": {
+    "name": "The Celestial Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Divine bodies move across the domed ceiling in real-time. The music of the spheres can almost be heard.",
+    "longDescription": "Divine celestial bodies track across the great domed ceiling in real-time, suns and moons and stranger things wheeling in their ordained paths. The music of the spheres rises just to the edge of hearing here, a haunting melody that seems always about to resolve into something comprehensible. Basins of concentrated liquid starlight illuminate the chamber with a glow that has no source and casts no shadow. The walls pulse gently with the rhythm of distant pulsars, heartbeats of dying stars light-years away.",
+    "exits": { "west": "room_089", "north": "room_092", "south": "room_090" }
+  },
+  "room_092": {
+    "name": "The Planetary Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Detailed models of every known planet float in precise orbits. Touch one and see its surface up close.",
+    "longDescription": "Detailed models of every known planet float in precise orbits throughout this chamber, from tiny frozen rocks to massive gas giants that dwarf your entire form. Touch any one and your vision zooms to its surface - you can see storms raging on gas giants, volcanoes erupting on molten worlds, and civilizations rising and falling on those that bear life. Nebulae drift past the observation windows like cosmic clouds painted in colors that have no earthly names, nurseries of stars in their slow million-year births.",
+    "exits": { "north": "room_093", "south": "room_091", "east": "room_094" }
+  },
+  "room_093": {
+    "name": "The Solar Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "A miniature sun burns at the room's center, providing warmth and light. Solar flares dance harmlessly.",
+    "longDescription": "A miniature sun burns at the center of this circular chamber, contained within crystalline barriers that keep its fury in check while allowing its warmth and light to fill the space. Solar flares dance across its surface in slow motion, each one a cataclysm that would devastate worlds, rendered harmless and beautiful by the containment magic. The gravity feels lighter here, as if you're already partway to the stars, and you can reach out to touch the cosmic web of forces that connects all things in the universe.",
+    "exits": { "north": "room_094", "south": "room_092" }
+  },
+  "room_094": {
+    "name": "The Lunar Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Moons from a hundred worlds hang overhead. Each cycles through phases at its own pace.",
+    "longDescription": "Moons from a hundred different worlds hang overhead in this vaulted chamber, each cycling through its phases at its own pace - some waxing, some waning, some showing faces never seen from their parent worlds. Silver light fills the room in constantly shifting patterns as the various moons align and separate in their complex dance. Comets streak past the observation windows close enough to see their icy surfaces and trailing tails of vaporized gas. Constellations seem to visit here, their stellar patterns occasionally descending close enough to study.",
+    "exits": { "west": "room_092", "north": "room_095", "south": "room_093" }
+  },
+  "room_095": {
+    "name": "The Starlight Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Pure starlight fills this chamber, filtered from a thousand different suns. The effect is magical.",
+    "longDescription": "Pure starlight fills this chamber, gathered and filtered from a thousand different suns across the cosmos. The effect is transcendent - you feel illuminated not just externally but internally, as if the light is revealing truths about yourself you never knew. Aurora from distant worlds paint the domed ceiling in ever-shifting patterns of impossible color. Here at the apex of the Celestial Observatory, you sense the universe observing itself through your eyes, and the passage north leads to the ultimate destination - the sanctum of the archmages themselves.",
+    "exits": { "south": "room_094", "north": "room_096" }
+  },
+  "room_096": {
+    "name": "The Supreme Sanctum",
+    "zone": "Archmage Sanctum",
+    "shortDescription": "You enter the domain of the archmages. Raw magical energy flows through the air like visible currents.",
+    "longDescription": "You cross the threshold into the domain of the archmages, and the air itself changes - raw magical energy flows in visible currents of gold and silver, so concentrated it feels almost solid against your skin. Thrones carved from single pieces of crystallized time line the walls, each one bearing the impression of the legendary mage who once sat there. The weight of accumulated power presses against your consciousness, testing your worthiness to stand in this sacred space. Few mortals have ever set foot here and returned unchanged.",
+    "exits": { "north": "room_097", "east": "room_098", "south": "room_095" }
+  },
+  "room_097": {
+    "name": "The Ultimate Sanctum",
+    "zone": "Archmage Sanctum",
+    "shortDescription": "Spellbooks of unimaginable power line the walls. Protective wards prevent all but the worthy from reading them.",
+    "longDescription": "Spellbooks of unimaginable power line every wall, their covers bound in materials that shouldn't exist - dragon leather, void-metal, woven starlight. Protective wards shimmer before each tome, ready to reduce the unworthy to ash should they dare reach for forbidden knowledge. Altars of black marble stand at precise points throughout the chamber, each one a focal point where the essence of magic itself is distilled into pure form. Reality feels thin and malleable here, as if a sufficiently powerful thought could reshape the world.",
+    "exits": { "north": "room_098", "south": "room_096" }
+  },
+  "room_098": {
+    "name": "The Final Sanctum",
+    "zone": "Archmage Sanctum",
+    "shortDescription": "This is where the greatest mages came to work their most powerful spells. The walls still hum with residual magic.",
+    "longDescription": "This is where the greatest mages in history came to work their most powerful spells, and the walls still hum with residual magic from workings that shook the foundations of reality. Scorch marks on the floor tell tales of experiments gone wrong, while pristine circles of power speak of triumphs that reshaped worlds. The Archmages conduct their eternal debates in this chamber, their arguments about the nature of magic sometimes continuing for centuries. The very stones pulse with accumulated power, each one a battery charged by millennia of spellwork.",
+    "exits": { "west": "room_096", "north": "room_099", "south": "room_097" }
+  },
+  "room_099": {
+    "name": "The Absolute Sanctum",
+    "zone": "Archmage Sanctum",
+    "shortDescription": "Reality bends to the will of those who stand here. A single thought could reshape the world.",
+    "longDescription": "Reality bends visibly to the will of those who stand in this penultimate chamber - you can see the air ripple with potential, responding to your very thoughts. Portraits of wizards who transcended mortality line the walls, their painted eyes following you with knowing intelligence. You can feel the presence of beings whose power transcends mortal understanding, watching from dimensions adjacent to this one. A single careless thought here could reshape the world, and you must guard your mind carefully as you approach the final chamber ahead.",
+    "exits": { "north": "room_100", "south": "room_098" }
+  },
+  "room_100": {
+    "name": "The Perfect Sanctum",
+    "zone": "Archmage Sanctum",
+    "shortDescription": "You have reached the pinnacle of the Shattered Realms. From here, all paths lead back - but the journey has changed you forever.",
+    "longDescription": "You have reached the Perfect Sanctum, the absolute pinnacle of the Shattered Realms - a circular chamber of flawless white marble where spells are born and given their first breath of life. The Archmage Supreme awaits here, guardian of ultimate knowledge and final challenger to those who would claim mastery of this realm. The atmosphere crackles with potential for both miracles and catastrophes, and you understand at last that this entire journey has been a test. From here, all paths lead back to the beginning, but you will never be the same person who first awakened in that distant chamber below.",
+    "exits": { "south": "room_099" }
+  }
+}

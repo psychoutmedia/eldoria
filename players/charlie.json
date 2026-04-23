@@ -1,0 +1,74 @@
+{
+  "name": "Charlie",
+  "level": 1,
+  "experience": 0,
+  "title": "Novice Seeker",
+  "currentHP": 50,
+  "maxHP": 50,
+  "currentRoom": "room_001",
+  "displayMode": "verbose",
+  "inventory": [
+    {
+      "id": "rusty_dagger",
+      "name": "Rusty Dagger",
+      "type": "weapon",
+      "levelReq": 1,
+      "damageBonus": 2,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 10,
+      "description": "A worn dagger with spots of rust. Still sharp enough to be useful."
+    },
+    {
+      "id": "leather_vest",
+      "name": "Leather Vest",
+      "type": "armor",
+      "levelReq": 1,
+      "damageBonus": 0,
+      "armorBonus": 2,
+      "healAmount": 0,
+      "value": 10,
+      "description": "Simple leather armor offering basic protection."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    }
+  ],
+  "equipped": {
+    "weapon": null,
+    "armor": null,
+    "shield": null
+  },
+  "gold": 50,
+  "stats": {
+    "monstersKilled": 0,
+    "deaths": 0,
+    "bossesDefeated": [],
+    "totalDamageDealt": 0,
+    "totalDamageTaken": 0,
+    "roomsExplored": [
+      "room_001"
+    ],
+    "itemsCollected": 0
+  },
+  "lastPlayed": "2026-01-17T12:49:35.142Z"
+}

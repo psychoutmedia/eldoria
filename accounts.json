@@ -1,0 +1,157 @@
+{
+  "testuser": {
+    "passwordHash": "$2b$10$JGDLfdszQGRXUO44hmoq.OKcU8r0jzFGqlxxbrTiPyNJhNW83DJ0e",
+    "created": "2026-01-21T12:46:20.838Z",
+    "lastLogin": "2026-01-21T13:25:45.002Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  },
+  "testusertwo": {
+    "passwordHash": "$2b$10$wYCGXPhIuxgIPgxB2oCQ/euMXy1nFQ5xUi97LlLw2Jd9gz8N/GF8S",
+    "created": "2026-01-21T13:09:04.760Z",
+    "lastLogin": "2026-01-21T13:09:57.578Z",
+    "loginAttempts": 3,
+    "locked": true,
+    "lockTime": "2026-01-21T13:11:08.595Z",
+    "needsPasswordMigration": false
+  },
+  "dsddddd": {
+    "passwordHash": "$2b$10$z9Dd62IflVbgO1Rr2U49Pux71oiM3ODUNDrhBLIfzD2pTGt8tEoti",
+    "created": "2026-01-21T13:10:50.535Z",
+    "lastLogin": "2026-01-21T13:10:50.535Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  },
+  "mark": {
+    "passwordHash": "$2b$10$2Knco9IegrsJljSNr9rhxeve7fXTMCzHTdZuKLtIa5sIcW/i77t6C",
+    "created": "2026-01-21T13:19:24.784Z",
+    "lastLogin": "2026-04-20T13:44:10.965Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false,
+    "migratedAt": "2026-01-21T13:19:24.784Z"
+  },
+  "archwizard": {
+    "passwordHash": "$2b$10$Q2fiBfsrFTuMZ/m00OW7Vepm05hSCG0lcIWCdLR75.wv2Oi4ywrR.",
+    "created": "2026-01-21T13:27:52.473Z",
+    "lastLogin": "2026-01-21T14:26:12.759Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  },
+  "alice": {
+    "passwordHash": "$2b$10$ED25qV7IJiJ887I9YPAEX.1Bt5aWqR/Yv.zVfL70yu8fF1d.sBYQy",
+    "created": "2026-01-21T13:45:05.050Z",
+    "lastLogin": "2026-01-22T13:17:42.393Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false,
+    "migratedAt": "2026-01-21T13:45:05.050Z"
+  },
+  "nomagio": {
+    "passwordHash": "$2b$10$2Knco9IegrsJljSNr9rhxeve7fXTMCzHTdZuKLtIa5sIcW/i77t6C",
+    "created": "2026-01-21T14:22:52.148Z",
+    "lastLogin": "2026-01-21T14:54:11.767Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  },
+  "theman": {
+    "passwordHash": "$2b$10$OsltwE1kWXphegee1mSBkOURcEwlB1ZJJBBXp3xmdiR6VF7ZNMjau",
+    "created": "2026-01-21T14:44:49.321Z",
+    "lastLogin": "2026-01-21T14:44:49.321Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  },
+  "henry": {
+    "passwordHash": "$2b$10$K4TwWU4MXJ5GpkYffB9o4.BFVwoCA5Ndsigqd7giOo0hB.vs5MHOq",
+    "created": "2026-04-20T09:29:59.553Z",
+    "lastLogin": "2026-04-20T14:38:20.732Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  },
+  "testmagea": {
+    "passwordHash": "$2b$10$d4ZKu3Gj7.YapV.Jb.abeuvizU.EZe1BFi.L1VGOQ0ttt294oyyIS",
+    "created": "2026-04-21T12:52:25.058Z",
+    "lastLogin": "2026-04-21T13:01:30.068Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  },
+  "testmageb": {
+    "passwordHash": "$2b$10$WrQGArzwsdq4StXL9jBdreUGUhOcxx7A42w4k/xdHtG4UAIO5PJl2",
+    "created": "2026-04-21T12:52:26.138Z",
+    "lastLogin": "2026-04-21T13:01:30.298Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  },
+  "tstwiczfq": {
+    "passwordHash": "$2b$10$ZaUS230cQOQkI1Z9/yz30e.GS8I.8mCPjg30J..QOkfmBAbTqO2Te",
+    "created": "2026-04-22T09:07:02.137Z",
+    "lastLogin": "2026-04-22T09:07:02.137Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  },
+  "dbgrsxxl": {
+    "passwordHash": "$2b$10$XBREsL1Ld/s0MpLiqcn3FuZWfIrzsz6d30cjzgxKU.3JGMLPeaAB2",
+    "created": "2026-04-22T09:11:35.669Z",
+    "lastLogin": "2026-04-22T09:11:35.669Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  },
+  "dbgvthkg": {
+    "passwordHash": "$2b$10$rC.PmFSxOTKBGa92bwijv.iz.YQmFwGQX8tK/vOxRRrK0WDXApGY2",
+    "created": "2026-04-22T09:12:00.485Z",
+    "lastLogin": "2026-04-22T09:12:00.485Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  },
+  "dbguxoop": {
+    "passwordHash": "$2b$10$HYhLoT1kDSNs6A5X0pQuceV6aDLMjE3B9jMHlknj6gw5wZV4pe5gW",
+    "created": "2026-04-22T09:12:23.526Z",
+    "lastLogin": "2026-04-22T09:12:23.526Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  },
+  "tstuqipug": {
+    "passwordHash": "$2b$10$/iYd9nu6S1UbPOtOKs9qYu/qwGXGBjMUgmx7TmtS4gAaE0Y6SATMK",
+    "created": "2026-04-22T09:14:39.333Z",
+    "lastLogin": "2026-04-22T09:14:39.333Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  },
+  "testadmin": {
+    "passwordHash": "$2b$10$K4q.Ha.JZ6ft79SXuD5fRuvKhCFXw.KcLM1JCEmJSsKVfmF1TAqmu",
+    "created": "2026-04-22T14:25:13.679Z",
+    "lastLogin": "2026-04-23T08:53:32.913Z",
+    "loginAttempts": 0,
+    "locked": false,
+    "lockTime": null,
+    "needsPasswordMigration": false
+  }
+}

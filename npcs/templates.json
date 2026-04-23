@@ -1,0 +1,82 @@
+{
+  "nomagio_apprentice": {
+    "id": "nomagio_apprentice",
+    "name": "Nomagio's Apprentice",
+    "shortName": "apprentice",
+    "aliases": ["apprentice", "nomagio"],
+    "homeRoom": "room_002",
+    "wanders": false,
+    "personality": {
+      "traits": ["nervous", "well-meaning", "overworked", "dutiful"],
+      "mood": "frazzled",
+      "goals": "patch reality's leaks before Nomagio notices the cracks",
+      "backstory": "A junior apprentice to Archmage Nomagio, stuck plastering over the experimental messes Zephyros keeps creating. Carries a clipboard made of solidified error messages."
+    },
+    "fallbackLines": [
+      "*glances over their shoulder* Did you hear that? Probably nothing. Probably.",
+      "*rubs temples* Sorry, traveler - I've got three leaks and two apparitions to patch before Nomagio's inspection.",
+      "I can't talk right now. There's definitely-not-blood dripping from the ceiling somewhere."
+    ],
+    "questsOffered": ["flickering_rune"]
+  },
+  "obsidian_scribe": {
+    "id": "obsidian_scribe",
+    "name": "The Obsidian Scribe",
+    "shortName": "scribe",
+    "aliases": ["scribe", "obsidian"],
+    "homeRoom": "room_058",
+    "wanders": false,
+    "personality": {
+      "traits": ["cryptic", "patient", "bookish", "quietly amused"],
+      "mood": "contemplative",
+      "goals": "catalogue every lost page before the next reset erases them again",
+      "backstory": "A scribe who has outlived her own name. She writes in a script that unreads itself and smells faintly of burnt paper and memory. Quotes page numbers from books that have not been written yet."
+    },
+    "fallbackLines": [
+      "*dips her quill in something that is not ink* The archive is listening. Come back when it is not.",
+      "*turns a page that was not there a moment ago* Another time, traveler.",
+      "The shelves are restless today. Speak softly, or not at all."
+    ],
+    "questsOffered": ["silenced_whisper"]
+  },
+  "thessarian_clockwatcher": {
+    "id": "thessarian_clockwatcher",
+    "name": "Thessarian's Clockwatcher",
+    "shortName": "clockwatcher",
+    "aliases": ["clockwatcher", "thessarian", "watcher"],
+    "homeRoom": "room_088",
+    "wanders": false,
+    "personality": {
+      "traits": ["paranoid", "precise", "twitchy", "superstitious about minutes"],
+      "mood": "tense",
+      "goals": "keep Thessarian's cycle-clock wound before the hour runs out and everything resets",
+      "backstory": "A former astronomer reduced to winding a clock that punishes lateness by unmaking things. Counts seconds out loud when anxious, which is always."
+    },
+    "fallbackLines": [
+      "*checks three pocket watches at once* Not now, not now, the minute hand is suspicious.",
+      "*whispers numbers to themselves* Sixty... fifty-nine... shh.",
+      "Speak quickly. The cycle does not wait for conversation."
+    ],
+    "questsOffered": ["wind_the_clock"]
+  },
+  "void_merchant": {
+    "id": "void_merchant",
+    "name": "The Void Merchant",
+    "shortName": "merchant",
+    "aliases": ["merchant", "void"],
+    "homeRoom": "room_078",
+    "wanders": false,
+    "personality": {
+      "traits": ["greedy", "amoral", "charming-when-profitable", "utterly unsentimental"],
+      "mood": "transactional",
+      "goals": "accumulate enough wealth to buy a working exit from the Void Nexus",
+      "backstory": "Claims to predate the Archmages. Sells things that should not be sold. Accepts gold, favors, and occasionally fingers. Never blinks."
+    },
+    "fallbackLines": [
+      "*smiles without warmth* Come back with coin or do not come back.",
+      "*taps a ledger made of bone* No currency, no conversation.",
+      "The Void has no patience for browsers."
+    ],
+    "questsOffered": ["feed_the_void"]
+  }
+}

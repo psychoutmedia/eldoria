@@ -1,0 +1,305 @@
+{
+  "topics": {
+    "movement": {
+      "title": "Movement",
+      "category": "Basics",
+      "summary": "How to move between rooms.",
+      "body": "Move between rooms with directional commands:\r\n  n/s/e/w           - cardinal directions\r\n  ne/nw/se/sw       - diagonals\r\n  u/d               - up and down\r\n  go <dir>          - explicit form, e.g. 'go north'\r\n\r\nUse 'look' (or 'l') to redescribe the room.\r\nUse 'brief' or 'verbose' to control how much description you see.",
+      "seeAlso": ["look", "exits"]
+    },
+    "look": {
+      "title": "look",
+      "category": "Basics",
+      "summary": "Show the current room.",
+      "body": "Usage: look\r\n       l\r\n\r\nDisplays the current room's name, description (if verbose), exits, items on the floor, monsters, and other players.",
+      "seeAlso": ["brief", "verbose"]
+    },
+    "brief": {
+      "title": "brief / verbose",
+      "category": "Basics",
+      "summary": "Toggle room description detail.",
+      "body": "Usage: brief        - show room name + exits only\r\n       verbose      - show full room description\r\n\r\nPreference is per-player and is saved.",
+      "seeAlso": ["look"]
+    },
+    "score": {
+      "title": "score / stats",
+      "category": "Information",
+      "summary": "Show your character sheet, or examine a target.",
+      "body": "Usage: score                 - your full character sheet\r\n       score <player>        - inspect another player\r\n       score <monster>       - inspect a monster in the room\r\n       qs                    - quick one-line status (works in combat)\r\n       st                    - short alias for score",
+      "seeAlso": ["consider", "qs"]
+    },
+    "qs": {
+      "title": "qs (quick score)",
+      "category": "Information",
+      "summary": "Compact status display, usable in combat.",
+      "body": "Usage: qs\r\n\r\nShows your name, level, XP, HP, mana, gold, equipment damage, PVP status, and cycle timer in a compact form. Safe to use mid-combat.",
+      "seeAlso": ["score"]
+    },
+    "consider": {
+      "title": "consider",
+      "category": "Information",
+      "summary": "Estimate the outcome of fighting a monster.",
+      "body": "Usage: consider <monster>\r\n       con <monster>\r\n\r\nCompares your damage and HP to the monster's and gives a verdict ranging from 'easy' to 'will crush you in moments'. Considers your equipped weapon and armor.",
+      "seeAlso": ["score", "bestiary"]
+    },
+    "attack": {
+      "title": "attack",
+      "category": "Combat",
+      "summary": "Begin combat with a monster.",
+      "body": "Usage: attack <monster>\r\n       kill <monster>\r\n       k <monster>\r\n\r\nStarts a real-time combat round (one full exchange every ~3 seconds). Partial monster names work - 'attack drag' will hit the dragon in the room.\r\n\r\nDuring combat you can: flee, cast <spell>, use <potion>, qs, look.",
+      "seeAlso": ["flee", "cast", "consider"]
+    },
+    "flee": {
+      "title": "flee",
+      "category": "Combat",
+      "summary": "Try to escape combat.",
+      "body": "Usage: flee\r\n       run\r\n       escape\r\n\r\n60% chance to escape through a random exit. Failed flees still cost you a round of monster attack. You also lose a small amount of XP and gold on success.",
+      "seeAlso": ["attack"]
+    },
+    "cast": {
+      "title": "cast",
+      "category": "Combat",
+      "summary": "Cast a spell.",
+      "body": "Usage: cast <spell> [target]\r\n\r\nUse 'spells' to see what you know. Spells cost mana and have cooldowns. Most spells work in combat; recall, sanctuary, summon_player, and gate are blocked while fighting.",
+      "seeAlso": ["spells", "mana"]
+    },
+    "spells": {
+      "title": "spells",
+      "category": "Combat",
+      "summary": "List your known spells.",
+      "body": "Usage: spells\r\n       spells <school>\r\n\r\nLists spells across the six schools: Malefic, Theft, Divination, Combat, Protection, Utility. Spells unlock by character level.",
+      "seeAlso": ["cast", "mana"]
+    },
+    "mana": {
+      "title": "mana",
+      "category": "Combat",
+      "summary": "How magical energy works.",
+      "body": "Mana is consumed by spells and regenerates passively over time. Mana potions and certain consumables can restore it. Maximum mana scales with level.",
+      "seeAlso": ["cast", "spells"]
+    },
+    "inventory": {
+      "title": "inventory",
+      "category": "Items",
+      "summary": "List items you are carrying.",
+      "body": "Usage: inventory\r\n       inv\r\n       i\r\n\r\nShows everything in your bag (max 20 items by default), plus your gold.",
+      "seeAlso": ["equipment", "get", "drop"]
+    },
+    "equipment": {
+      "title": "equipment",
+      "category": "Items",
+      "summary": "List equipped gear across all 8 slots.",
+      "body": "Usage: equipment\r\n       eq\r\n       gear\r\n\r\nSlots: weapon, body armor, shield, head, neck, hands, feet, finger.\r\nWeapons add to damage. Everything else adds to your armor rating.",
+      "seeAlso": ["equip", "unequip"]
+    },
+    "equip": {
+      "title": "equip",
+      "category": "Items",
+      "summary": "Wear or wield an item.",
+      "body": "Usage: equip <item>\r\n       wear <item>\r\n       wield <item>\r\n\r\nThe slot is determined by the item. Old item in that slot is moved back to your bag. You cannot change equipment while in combat.",
+      "seeAlso": ["unequip", "equipment"]
+    },
+    "unequip": {
+      "title": "unequip",
+      "category": "Items",
+      "summary": "Remove gear from a slot.",
+      "body": "Usage: unequip <slot>\r\n       remove <slot>\r\n\r\nValid slots: weapon, armor, shield, head, neck, hands, feet, finger.",
+      "seeAlso": ["equip"]
+    },
+    "get": {
+      "title": "get / take",
+      "category": "Items",
+      "summary": "Pick something up off the floor.",
+      "body": "Usage: get <item>\r\n       take <item>\r\n\r\nPartial names work. 'get all' is not currently supported.",
+      "seeAlso": ["drop", "inventory"]
+    },
+    "drop": {
+      "title": "drop",
+      "category": "Items",
+      "summary": "Drop an item from your bag.",
+      "body": "Usage: drop <item>\r\n\r\nThe item is left on the floor of the current room and can be picked up again - or by someone else.",
+      "seeAlso": ["get"]
+    },
+    "use": {
+      "title": "use / drink / eat",
+      "category": "Items",
+      "summary": "Consume a potion, food, or scroll.",
+      "body": "Usage: use <item>\r\n       drink <potion>\r\n       eat <food>\r\n\r\nWorks in combat. Potions restore HP and/or mana.",
+      "seeAlso": ["inventory"]
+    },
+    "examine": {
+      "title": "examine",
+      "category": "Items",
+      "summary": "Inspect an item closely.",
+      "body": "Usage: examine <item>\r\n       inspect <item>\r\n\r\nShows item type, level requirement, bonuses, and description.",
+      "seeAlso": ["score"]
+    },
+    "say": {
+      "title": "say",
+      "category": "Communication",
+      "summary": "Speak to others in the same room.",
+      "body": "Usage: say <message>\r\n       ' <message>\r\n\r\nOnly people in your current room hear you.",
+      "seeAlso": ["shout", "tell", "channels"]
+    },
+    "shout": {
+      "title": "shout",
+      "category": "Communication",
+      "summary": "Server-wide announcement.",
+      "body": "Usage: shout <message>\r\n       ! <message>\r\n\r\nAll online players hear it. Use sparingly.",
+      "seeAlso": ["say", "channels"]
+    },
+    "tell": {
+      "title": "tell / whisper",
+      "category": "Communication",
+      "summary": "Send a private message.",
+      "body": "Usage: tell <player> <message>\r\n       whisper <player> <message>\r\n\r\nIf the target is AFK you'll get an auto-reply.",
+      "seeAlso": ["who", "ignore"]
+    },
+    "emote": {
+      "title": "emote",
+      "category": "Communication",
+      "summary": "Roleplay action visible to your room.",
+      "body": "Usage: emote <action>\r\n       : <action>\r\n\r\nExample: ': bows deeply' will be shown as 'YourName bows deeply'.",
+      "seeAlso": ["say"]
+    },
+    "channels": {
+      "title": "channels",
+      "category": "Communication",
+      "summary": "Server-wide chat channels.",
+      "body": "Channels: newbie, ooc, gossip, trade.\r\n\r\nUsage: <channel> <message>     - send a message\r\n       <channel>               - toggle the channel on/off\r\n       channels                - list channels and your subscriptions\r\n\r\nMessages are server-wide, and only people subscribed to that channel see them.",
+      "seeAlso": ["shout", "say"]
+    },
+    "who": {
+      "title": "who",
+      "category": "Information",
+      "summary": "List online players.",
+      "body": "Usage: who\r\n       players\r\n       online\r\n\r\nShows everyone currently connected, their level, and AFK status.",
+      "seeAlso": ["whois"]
+    },
+    "whois": {
+      "title": "whois / finger",
+      "category": "Information",
+      "summary": "Detailed info on a player.",
+      "body": "Usage: whois <player>\r\n       finger <player>\r\n\r\nShows level, title, location, and PVP status.",
+      "seeAlso": ["who"]
+    },
+    "afk": {
+      "title": "afk",
+      "category": "Communication",
+      "summary": "Mark yourself as away from keyboard.",
+      "body": "Usage: afk [optional message]\r\n       back\r\n\r\nWhile AFK your name shows [AFK] in who lists. People who 'tell' you get an auto-reply. Moving clears AFK automatically.",
+      "seeAlso": ["who", "tell"]
+    },
+    "ignore": {
+      "title": "ignore",
+      "category": "Communication",
+      "summary": "Block messages from a player.",
+      "body": "Usage: ignore <player>\r\n       unignore <player>\r\n       ignore                - show your ignore list\r\n\r\nIgnored players' tells, channel messages, and shouts are silenced for you.",
+      "seeAlso": ["tell"]
+    },
+    "alias": {
+      "title": "alias",
+      "category": "Customization",
+      "summary": "Create a personal command shortcut.",
+      "body": "Usage: alias <name> <command>     - create or replace an alias\r\n       alias <name>               - show one alias\r\n       alias                      - list all your aliases\r\n       unalias <name>             - remove an alias\r\n\r\nExample: alias k attack\r\n         k goblin    -> runs 'attack goblin'\r\n\r\nOnly the first word is replaced. Aliases are saved with your character.",
+      "seeAlso": ["aliases"]
+    },
+    "aliases": {
+      "title": "aliases",
+      "category": "Customization",
+      "summary": "List your personal command shortcuts.",
+      "body": "Usage: aliases\r\n\r\nSame as 'alias' with no arguments. See 'help alias' for details.",
+      "seeAlso": ["alias"]
+    },
+    "map": {
+      "title": "map",
+      "category": "Information",
+      "summary": "Show a small ASCII map of your zone.",
+      "body": "Usage: map\r\n\r\nShows a 7x7 window centered on your room. Symbols:\r\n  @  your current room\r\n  *  visited room\r\n  #  unvisited room\r\n  (blank) no room or another zone",
+      "seeAlso": ["look"]
+    },
+    "bestiary": {
+      "title": "bestiary",
+      "category": "Information",
+      "summary": "Browse known monsters.",
+      "body": "Usage: bestiary               - list all monsters by level\r\n       bestiary <name>        - show details for one monster\r\n\r\nDetails include level, HP, strength, type, lore, and any guaranteed loot.",
+      "seeAlso": ["consider", "monsters"]
+    },
+    "monsters": {
+      "title": "monsters / spawns",
+      "category": "Information",
+      "summary": "List currently active monsters and spawn stats.",
+      "body": "Usage: monsters       - list every monster currently in the world\r\n       spawns         - show spawn statistics by zone",
+      "seeAlso": ["bestiary"]
+    },
+    "quests": {
+      "title": "quests",
+      "category": "Quests",
+      "summary": "View your active quest log.",
+      "body": "Usage: quests\r\n       quest\r\n       journal\r\n       j\r\n\r\nShows your active quests, objectives, and progress. Talk to NPCs to receive new quests.",
+      "seeAlso": ["accept", "abandon"]
+    },
+    "accept": {
+      "title": "accept",
+      "category": "Quests",
+      "summary": "Accept a quest from the giver.",
+      "body": "Usage: accept <quest_id>\r\n\r\nUse this when an NPC has just offered you a quest. Quest IDs are shown in the offer message.",
+      "seeAlso": ["quests", "abandon"]
+    },
+    "abandon": {
+      "title": "abandon",
+      "category": "Quests",
+      "summary": "Drop an active quest.",
+      "body": "Usage: abandon <quest_id>\r\n\r\nGives up the quest and may damage your relationship with the giver. Quests reset every world cycle anyway.",
+      "seeAlso": ["quests"]
+    },
+    "save": {
+      "title": "save",
+      "category": "Basics",
+      "summary": "Force-save your character.",
+      "body": "Usage: save\r\n\r\nThe game also auto-saves every 2 minutes, on level-up, on boss defeat, on death, and when you quit. Manual saves are useful before logging out abruptly.",
+      "seeAlso": ["quit"]
+    },
+    "quit": {
+      "title": "quit",
+      "category": "Basics",
+      "summary": "Leave the game.",
+      "body": "Usage: quit\r\n\r\nSaves your character, shows a session summary, and disconnects. Always quit cleanly.",
+      "seeAlso": ["save"]
+    },
+    "pray": {
+      "title": "pray",
+      "category": "Combat",
+      "summary": "Heal at a chapel.",
+      "body": "Usage: pray\r\n\r\nIn a chapel room, restores you to full HP. Five-minute personal cooldown. Cannot pray during combat. Chapels are at rooms 001, 020, 050, 062, 090.",
+      "seeAlso": []
+    },
+    "pvp": {
+      "title": "pvp",
+      "category": "Combat",
+      "summary": "Toggle player-vs-player combat.",
+      "body": "Usage: pvp on        - become attackable (and able to attack others)\r\n       pvp off       - peace mode (5-minute cooldown to disable after enabling)\r\n       pvp status    - show current state\r\n       surrender     - forfeit a PVP fight\r\n\r\nLevel difference is capped: you cannot attack anyone 5 or more levels below you.",
+      "seeAlso": ["surrender"]
+    },
+    "time": {
+      "title": "time",
+      "category": "Information",
+      "summary": "Time until the next world reset.",
+      "body": "Usage: time\r\n       reset_timer\r\n\r\nThe world cycles every hour. On reset, monsters respawn, players teleport to room 001, full HP is restored, and cycle leaderboards roll over.",
+      "seeAlso": ["leaderboard", "cycle_stats"]
+    },
+    "leaderboard": {
+      "title": "leaderboard",
+      "category": "Information",
+      "summary": "View this cycle's champions.",
+      "body": "Usage: leaderboard\r\n\r\nTracks XP, monsters slain, gold earned, and bosses defeated this cycle. Resets when the world cycles.",
+      "seeAlso": ["time", "cycle_stats"]
+    },
+    "channels-on-off": {
+      "title": "channel toggling",
+      "category": "Customization",
+      "summary": "Turn individual channels on or off.",
+      "body": "Type a channel name with no message to toggle:\r\n  newbie\r\n  ooc\r\n  gossip\r\n  trade\r\n\r\nThis is also visible via the 'channels' command.",
+      "seeAlso": ["channels"]
+    }
+  }
+}

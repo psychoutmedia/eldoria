@@ -1,0 +1,233 @@
+{
+  "name": "Testadmin",
+  "level": 15,
+  "experience": 12500,
+  "title": "Immortal Wizard",
+  "suffix": "",
+  "currentHP": 450,
+  "maxHP": 450,
+  "currentMana": 225,
+  "maxMana": 225,
+  "currentRoom": "room_001",
+  "displayMode": "verbose",
+  "inventory": [
+    {
+      "id": "rusty_dagger",
+      "name": "Rusty Dagger",
+      "type": "weapon",
+      "slot": null,
+      "levelReq": 1,
+      "damageBonus": 2,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 10,
+      "description": "A worn dagger with spots of rust. Still sharp enough to be useful."
+    },
+    {
+      "id": "leather_vest",
+      "name": "Leather Vest",
+      "type": "armor",
+      "slot": null,
+      "levelReq": 1,
+      "damageBonus": 0,
+      "armorBonus": 2,
+      "healAmount": 0,
+      "value": 10,
+      "description": "Simple leather armor offering basic protection."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "slot": null,
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "slot": null,
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "tuning_fork",
+      "name": "Initiate's Tuning Fork",
+      "type": "weapon",
+      "slot": null,
+      "levelReq": 15,
+      "damageBonus": 8,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 0,
+      "description": "A small silver fork that hums a single pure note when struck. Weak as a weapon, but it cuts through illusion where steel cannot."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "slot": null,
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "tuning_fork",
+      "name": "Initiate's Tuning Fork",
+      "type": "weapon",
+      "slot": null,
+      "levelReq": 15,
+      "damageBonus": 8,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 0,
+      "description": "A small silver fork that hums a single pure note when struck. Weak as a weapon, but it cuts through illusion where steel cannot."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "slot": null,
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "tuning_fork",
+      "name": "Initiate's Tuning Fork",
+      "type": "weapon",
+      "slot": null,
+      "levelReq": 15,
+      "damageBonus": 8,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 0,
+      "description": "A small silver fork that hums a single pure note when struck. Weak as a weapon, but it cuts through illusion where steel cannot."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "slot": null,
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "tuning_fork",
+      "name": "Initiate's Tuning Fork",
+      "type": "weapon",
+      "slot": null,
+      "levelReq": 15,
+      "damageBonus": 8,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 0,
+      "description": "A small silver fork that hums a single pure note when struck. Weak as a weapon, but it cuts through illusion where steel cannot."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "slot": null,
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    }
+  ],
+  "equipped": {
+    "weapon": null,
+    "armor": null,
+    "shield": null,
+    "head": null,
+    "neck": null,
+    "hands": null,
+    "feet": null,
+    "finger": null
+  },
+  "gold": 19640,
+  "stats": {
+    "monstersKilled": 0,
+    "deaths": 0,
+    "bossesDefeated": [],
+    "totalDamageDealt": 0,
+    "totalDamageTaken": 0,
+    "roomsExplored": [
+      "room_001"
+    ],
+    "itemsCollected": 4,
+    "pvpKills": 0,
+    "pvpDeaths": 0,
+    "storyFlags": {
+      "gatekeeperTriggered": false,
+      "tuningForkGranted": false,
+      "drumStaveForged": false,
+      "instrumentsPlayed": {
+        "drum": false,
+        "harp": false,
+        "trumpet": false,
+        "lute": false,
+        "flute": false
+      },
+      "finaleCompleted": false
+    }
+  },
+  "aliases": {},
+  "channelSubs": {
+    "newbie": true,
+    "ooc": true,
+    "gossip": true,
+    "trade": true
+  },
+  "abilities": {
+    "str": 12,
+    "dex": 10,
+    "con": 10,
+    "int": 10,
+    "wis": 10
+  },
+  "charClass": "warder",
+  "affects": [],
+  "practicePoints": 138,
+  "practiceRecord": {},
+  "spellProficiencies": {},
+  "achievementsUnlocked": [],
+  "activeTitle": null,
+  "shopsVisited": [
+    "room_003"
+  ],
+  "schoolsCast": [],
+  "bank": 200,
+  "bankUses": 2,
+  "mail": [
+    {
+      "from": "Testadmin",
+      "subject": "tiertest",
+      "body": "self-delivery check",
+      "read": false,
+      "sent": 1776934434836
+    }
+  ],
+  "lastPlayed": "2026-04-23T08:53:56.243Z"
+}

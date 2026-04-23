@@ -1,0 +1,696 @@
+{
+  "weapons": {
+    "rusty_dagger": {
+      "name": "Rusty Dagger",
+      "type": "weapon",
+      "levelReq": 1,
+      "damageBonus": 2,
+      "value": 10,
+      "description": "A worn dagger with spots of rust. Still sharp enough to be useful."
+    },
+    "crystal_blade": {
+      "name": "Crystal Blade",
+      "type": "weapon",
+      "levelReq": 4,
+      "damageBonus": 6,
+      "value": 50,
+      "description": "A blade forged from pure crystal, shimmering with arcane energy."
+    },
+    "shadow_dagger": {
+      "name": "Shadow Dagger",
+      "type": "weapon",
+      "levelReq": 6,
+      "damageBonus": 8,
+      "value": 75,
+      "description": "A dagger that seems to absorb light, leaving trails of darkness when swung."
+    },
+    "forge_hammer": {
+      "name": "Forge Hammer",
+      "type": "weapon",
+      "levelReq": 7,
+      "damageBonus": 10,
+      "value": 100,
+      "description": "A massive hammer still warm from the cosmic forges, crackling with residual heat."
+    },
+    "storm_feather_blade": {
+      "name": "Storm Feather Blade",
+      "type": "weapon",
+      "levelReq": 10,
+      "damageBonus": 15,
+      "value": 200,
+      "description": "A sword adorned with storm hawk feathers, crackling with lightning."
+    },
+    "cosmic_blade": {
+      "name": "Cosmic Blade",
+      "type": "weapon",
+      "levelReq": 13,
+      "damageBonus": 18,
+      "value": 300,
+      "description": "A blade forged from condensed starlight, leaving trails of cosmic dust."
+    },
+    "void_shard_sword": {
+      "name": "Void Shard Sword",
+      "type": "weapon",
+      "levelReq": 13,
+      "damageBonus": 20,
+      "value": 500,
+      "description": "A terrifying blade made from crystallized void energy, cutting through reality itself."
+    },
+    "dragon_quill": {
+      "name": "Dragon Quill",
+      "type": "weapon",
+      "levelReq": 6,
+      "damageBonus": 7,
+      "value": 80,
+      "description": "A razor-sharp quill from a paper dragon, inscribed with powerful words."
+    },
+    "tuning_fork": {
+      "name": "Initiate's Tuning Fork",
+      "type": "weapon",
+      "levelReq": 15,
+      "damageBonus": 8,
+      "damageType": "harmonic",
+      "value": 0,
+      "description": "A small silver fork that hums a single pure note when struck. Weak as a weapon, but it cuts through illusion where steel cannot."
+    },
+    "drum_stave": {
+      "name": "Obsidian Drum-Stave",
+      "type": "weapon",
+      "levelReq": 16,
+      "damageBonus": 18,
+      "damageType": "harmonic",
+      "value": 0,
+      "description": "The Obsidian Drum-Stave, reforged by Morwyn Ironheart from your Tuning Fork. Each strike lands with the weight of Matter itself."
+    }
+  },
+  "instruments": {
+    "obsidian_drum_stave_instrument": {
+      "name": "Drum-Stave Resonator",
+      "type": "instrument",
+      "levelReq": 0,
+      "value": 0,
+      "description": "A resonant echo of the Obsidian Drum-Stave, keyed to the Note of Matter. One of the five Primordial Instruments."
+    },
+    "silver_harp_of_creation": {
+      "name": "Silver Harp of Creation",
+      "type": "instrument",
+      "levelReq": 0,
+      "value": 0,
+      "description": "Valdris's Silver Harp of Creation. Its strings are spun from light; when played, reality briefly writes itself."
+    },
+    "golden_trumpet_of_change": {
+      "name": "Golden Trumpet of Change",
+      "type": "instrument",
+      "levelReq": 0,
+      "value": 0,
+      "description": "Zephyros's trumpet. Its note is the note of transformation - nothing that hears it stays the same."
+    },
+    "lute_of_whispering_shadows": {
+      "name": "Lute of Whispering Shadows",
+      "type": "instrument",
+      "levelReq": 0,
+      "value": 0,
+      "description": "Nyxara's lute. Its strings are woven of void; it plays only what has been forgotten."
+    },
+    "crystal_flute_of_wisdom": {
+      "name": "Crystal Flute of Wisdom",
+      "type": "instrument",
+      "levelReq": 0,
+      "value": 0,
+      "description": "Thessarian's flute. Each note is a paradox resolved; each silence is a question answered."
+    }
+  },
+  "armor": {
+    "leather_vest": {
+      "name": "Leather Vest",
+      "type": "armor",
+      "levelReq": 1,
+      "armorBonus": 2,
+      "value": 10,
+      "description": "Simple leather armor offering basic protection."
+    },
+    "crystal_shard_armor": {
+      "name": "Crystal Shard Armor",
+      "type": "armor",
+      "levelReq": 4,
+      "armorBonus": 5,
+      "value": 50,
+      "description": "Armor embedded with protective crystal shards that deflect attacks."
+    },
+    "thorn_armor": {
+      "name": "Thorn Armor",
+      "type": "armor",
+      "levelReq": 4,
+      "armorBonus": 5,
+      "value": 50,
+      "description": "Living armor made of enchanted thorns, painful to attackers."
+    },
+    "shadow_cloak": {
+      "name": "Shadow Cloak",
+      "type": "armor",
+      "levelReq": 6,
+      "armorBonus": 7,
+      "value": 75,
+      "resists": { "shadow": 20, "cold": 10 },
+      "description": "A cloak woven from pure shadow, making the wearer harder to hit."
+    },
+    "shade_robe": {
+      "name": "Shade Robe",
+      "type": "armor",
+      "levelReq": 10,
+      "armorBonus": 12,
+      "value": 200,
+      "description": "Robes worn by mage shades, imbued with protective necromantic energy."
+    },
+    "arcane_crystal_armor": {
+      "name": "Arcane Crystal Armor",
+      "type": "armor",
+      "levelReq": 13,
+      "armorBonus": 18,
+      "value": 500,
+      "resists": { "fire": 15, "cold": 15, "shadow": 15, "harmonic": 10 },
+      "description": "Legendary armor forged from pure arcane crystals, radiating protective magic."
+    },
+    "cloud_wool_cloak": {
+      "name": "Cloud Wool Cloak",
+      "type": "armor",
+      "levelReq": 3,
+      "armorBonus": 3,
+      "value": 30,
+      "description": "A fluffy cloak made from cloud sheep wool, surprisingly protective."
+    }
+  },
+  "shields": {
+    "wooden_shield": {
+      "name": "Wooden Shield",
+      "type": "shield",
+      "levelReq": 1,
+      "armorBonus": 1,
+      "value": 5,
+      "description": "A simple wooden shield, better than nothing."
+    },
+    "crystal_shield": {
+      "name": "Crystal Shield",
+      "type": "shield",
+      "levelReq": 5,
+      "armorBonus": 4,
+      "value": 60,
+      "description": "A shield of solid crystal that refracts incoming attacks."
+    },
+    "void_barrier": {
+      "name": "Void Barrier",
+      "type": "shield",
+      "levelReq": 12,
+      "armorBonus": 10,
+      "value": 400,
+      "resists": { "shadow": 30, "harmonic": 20 },
+      "description": "A shield made of condensed void energy, absorbing attacks into nothingness."
+    }
+  },
+  "accessories": {
+    "leather_cap": {
+      "name": "Leather Cap",
+      "type": "armor",
+      "slot": "head",
+      "levelReq": 1,
+      "armorBonus": 1,
+      "value": 8,
+      "description": "A plain leather cap. Won't stop a blade, but it stops the rain."
+    },
+    "iron_helm": {
+      "name": "Iron Helm",
+      "type": "armor",
+      "slot": "head",
+      "levelReq": 5,
+      "armorBonus": 3,
+      "value": 60,
+      "description": "A dented iron helm. The previous owner stopped needing it."
+    },
+    "bone_circlet": {
+      "name": "Bone Circlet",
+      "type": "armor",
+      "slot": "head",
+      "levelReq": 10,
+      "armorBonus": 6,
+      "value": 180,
+      "description": "A circlet of polished bone that hums when worn. Unsettling and effective."
+    },
+    "traveler_amulet": {
+      "name": "Traveler's Amulet",
+      "type": "armor",
+      "slot": "neck",
+      "levelReq": 1,
+      "armorBonus": 1,
+      "value": 12,
+      "description": "A small amulet carved from oak. It brings a faint sense of calm."
+    },
+    "warding_pendant": {
+      "name": "Warding Pendant",
+      "type": "armor",
+      "slot": "neck",
+      "levelReq": 6,
+      "armorBonus": 3,
+      "value": 90,
+      "description": "A pendant inscribed with a single, steady rune of warding."
+    },
+    "star_pendant": {
+      "name": "Pendant of the Pale Star",
+      "type": "armor",
+      "slot": "neck",
+      "levelReq": 12,
+      "armorBonus": 6,
+      "value": 280,
+      "description": "A pendant that holds a fragment of a dead star. Cold to the touch."
+    },
+    "leather_gloves": {
+      "name": "Leather Gloves",
+      "type": "armor",
+      "slot": "hands",
+      "levelReq": 1,
+      "armorBonus": 1,
+      "value": 8,
+      "description": "Worn gloves of supple leather. Good grip, little else."
+    },
+    "iron_gauntlets": {
+      "name": "Iron Gauntlets",
+      "type": "armor",
+      "slot": "hands",
+      "levelReq": 6,
+      "armorBonus": 3,
+      "value": 80,
+      "description": "Heavy iron gauntlets that double as knuckle-dusters."
+    },
+    "runed_gauntlets": {
+      "name": "Runed Gauntlets",
+      "type": "armor",
+      "slot": "hands",
+      "levelReq": 11,
+      "armorBonus": 5,
+      "value": 220,
+      "description": "Gauntlets etched with protective runes that glow faintly in combat."
+    },
+    "worn_boots": {
+      "name": "Worn Boots",
+      "type": "armor",
+      "slot": "feet",
+      "levelReq": 1,
+      "armorBonus": 1,
+      "value": 8,
+      "description": "Boots that have walked a long road. Still have a few miles in them."
+    },
+    "ironshod_boots": {
+      "name": "Ironshod Boots",
+      "type": "armor",
+      "slot": "feet",
+      "levelReq": 5,
+      "armorBonus": 3,
+      "value": 70,
+      "description": "Boots reinforced with iron plates. Loud, but durable."
+    },
+    "stormwalker_boots": {
+      "name": "Stormwalker Boots",
+      "type": "armor",
+      "slot": "feet",
+      "levelReq": 10,
+      "armorBonus": 5,
+      "value": 200,
+      "description": "Boots that seem to barely touch the ground when you walk."
+    },
+    "silver_band": {
+      "name": "Silver Band",
+      "type": "armor",
+      "slot": "finger",
+      "levelReq": 1,
+      "armorBonus": 1,
+      "value": 15,
+      "description": "A plain silver band. Warm to the touch for reasons you can't quite place."
+    },
+    "signet_of_patience": {
+      "name": "Signet of Patience",
+      "type": "armor",
+      "slot": "finger",
+      "levelReq": 7,
+      "armorBonus": 3,
+      "value": 120,
+      "description": "A carved signet ring. Wearing it feels like holding your breath."
+    },
+    "ring_of_the_archmage": {
+      "name": "Ring of the Archmage",
+      "type": "armor",
+      "slot": "finger",
+      "levelReq": 13,
+      "armorBonus": 6,
+      "value": 320,
+      "description": "A black ring with a single chip of condensed magic at its center."
+    }
+  },
+  "consumables": {
+    "minor_healing_potion": {
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    "greater_healing_potion": {
+      "name": "Greater Healing Potion",
+      "type": "consumable",
+      "healAmount": 75,
+      "value": 40,
+      "description": "A larger healing potion that restores 75 HP when consumed."
+    },
+    "superior_healing_potion": {
+      "name": "Superior Healing Potion",
+      "type": "consumable",
+      "healAmount": 150,
+      "value": 100,
+      "description": "A powerful healing elixir that restores 150 HP when consumed."
+    },
+    "guardian_essence": {
+      "name": "Guardian Essence",
+      "type": "consumable",
+      "healAmount": 20,
+      "value": 10,
+      "description": "The essence of an echo guardian, providing minor healing."
+    },
+    "ember_heart": {
+      "name": "Ember Heart",
+      "type": "consumable",
+      "healAmount": 60,
+      "value": 35,
+      "description": "A glowing ember sprite heart that burns away wounds."
+    },
+    "sprite_dust": {
+      "name": "Sprite Dust",
+      "type": "consumable",
+      "healAmount": 25,
+      "value": 12,
+      "description": "Magical dust from a garden sprite that provides light healing."
+    },
+    "jellyfish_oil": {
+      "name": "Jellyfish Oil",
+      "type": "consumable",
+      "healAmount": 35,
+      "value": 20,
+      "description": "Luminous oil from a floating jellyfish with restorative properties."
+    },
+    "wind_essence": {
+      "name": "Wind Essence",
+      "type": "consumable",
+      "healAmount": 45,
+      "value": 25,
+      "description": "Captured essence of a wind elemental, invigorating when consumed."
+    },
+    "digested_wisdom": {
+      "name": "Digested Wisdom",
+      "type": "consumable",
+      "healAmount": 40,
+      "value": 30,
+      "description": "Knowledge distilled into consumable form by a bookworm."
+    },
+    "eternal_raindrop": {
+      "name": "Eternal Raindrop",
+      "type": "consumable",
+      "healAmount": 50,
+      "value": 30,
+      "description": "A raindrop that never evaporates, providing refreshing healing."
+    },
+    "null_essence": {
+      "name": "Null Essence",
+      "type": "consumable",
+      "healAmount": 55,
+      "value": 45,
+      "description": "The paradoxical essence of nothingness, strangely restorative."
+    },
+    "nebula_dust": {
+      "name": "Nebula Dust",
+      "type": "consumable",
+      "healAmount": 80,
+      "value": 60,
+      "description": "Cosmic dust from a nebula wisp, powerful healing properties."
+    },
+    "spell_essence": {
+      "name": "Spell Essence",
+      "type": "consumable",
+      "healAmount": 100,
+      "value": 80,
+      "description": "Pure magical energy in consumable form, potent healing."
+    },
+    "minor_mana_potion": {
+      "name": "Minor Mana Potion",
+      "type": "consumable",
+      "manaAmount": 20,
+      "value": 20,
+      "description": "A small blue potion that restores 20 mana when consumed."
+    },
+    "greater_mana_potion": {
+      "name": "Greater Mana Potion",
+      "type": "consumable",
+      "manaAmount": 50,
+      "value": 50,
+      "description": "A larger mana potion that restores 50 mana when consumed."
+    },
+    "superior_mana_potion": {
+      "name": "Superior Mana Potion",
+      "type": "consumable",
+      "manaAmount": 100,
+      "value": 120,
+      "description": "A powerful mana elixir that restores 100 mana when consumed."
+    },
+    "rejuvenation_potion": {
+      "name": "Rejuvenation Potion",
+      "type": "consumable",
+      "healAmount": 50,
+      "manaAmount": 50,
+      "value": 75,
+      "description": "A swirling purple potion that restores both 50 HP and 50 mana."
+    },
+    "arcane_infusion": {
+      "name": "Arcane Infusion",
+      "type": "consumable",
+      "manaAmount": 150,
+      "value": 200,
+      "description": "A vial of pure arcane essence that fully restores even the greatest mages."
+    }
+  },
+  "treasure": {
+    "memory_fragment": {
+      "name": "Memory Fragment",
+      "type": "treasure",
+      "value": 10,
+      "description": "A crystallized fragment of forgotten memory, slightly glowing."
+    },
+    "crystal_silk": {
+      "name": "Crystal Silk",
+      "type": "treasure",
+      "value": 50,
+      "description": "Shimmering silk spun by crystal spiders, valuable to merchants."
+    },
+    "golem_core": {
+      "name": "Golem Core",
+      "type": "treasure",
+      "value": 100,
+      "description": "The magical core of a gem golem, pulsing with residual energy."
+    },
+    "rainbow_wing": {
+      "name": "Rainbow Wing",
+      "type": "treasure",
+      "value": 40,
+      "description": "A prismatic bat wing that splits light into beautiful colors."
+    },
+    "wraith_essence": {
+      "name": "Wraith Essence",
+      "type": "treasure",
+      "value": 75,
+      "description": "Bottled essence of a marsh wraith, cold to the touch."
+    },
+    "shadow_tongue": {
+      "name": "Shadow Tongue",
+      "type": "treasure",
+      "value": 60,
+      "description": "The tongue of a shadow frog, useful for dark rituals."
+    },
+    "wisp_light": {
+      "name": "Wisp Light",
+      "type": "treasure",
+      "value": 30,
+      "description": "A captured will-o-wisp light, eternally flickering."
+    },
+    "storm_feather": {
+      "name": "Storm Feather",
+      "type": "treasure",
+      "value": 90,
+      "description": "A feather from a storm hawk, crackling with static electricity."
+    },
+    "salamander_scale": {
+      "name": "Salamander Scale",
+      "type": "treasure",
+      "value": 85,
+      "description": "A heat-resistant scale from a fire salamander."
+    },
+    "forbidden_tome": {
+      "name": "Forbidden Tome",
+      "type": "treasure",
+      "value": 120,
+      "description": "A book of forbidden knowledge, whispers when opened."
+    },
+    "lightning_core": {
+      "name": "Lightning Core",
+      "type": "treasure",
+      "value": 150,
+      "description": "The crackling core of a lightning elemental."
+    },
+    "thunder_egg": {
+      "name": "Thunder Egg",
+      "type": "treasure",
+      "value": 180,
+      "description": "An egg from a thunder bird, rumbles with contained power."
+    },
+    "void_shard": {
+      "name": "Void Shard",
+      "type": "treasure",
+      "value": 250,
+      "description": "A fragment of pure void, seemingly consuming light around it."
+    },
+    "reality_fragment": {
+      "name": "Reality Fragment",
+      "type": "treasure",
+      "value": 300,
+      "description": "A piece of reality itself, showing different worlds when viewed."
+    },
+    "star_fragment": {
+      "name": "Star Fragment",
+      "type": "treasure",
+      "value": 350,
+      "description": "A piece of a fallen star, warm and glowing eternally."
+    },
+    "cosmic_eye": {
+      "name": "Cosmic Eye",
+      "type": "treasure",
+      "value": 400,
+      "description": "An eye from a cosmic horror, seeing things beyond mortal comprehension."
+    },
+    "arcane_crystal": {
+      "name": "Arcane Crystal",
+      "type": "treasure",
+      "value": 450,
+      "description": "A crystal pulsing with pure arcane energy."
+    }
+  },
+  "boss_drops": {
+    "crystal_dragon_scale": {
+      "name": "Crystal Dragon Scale",
+      "type": "treasure",
+      "value": 500,
+      "description": "A magnificent scale from the Crystal Dragon, refracting light into rainbows."
+    },
+    "shadow_crown": {
+      "name": "Shadow Crown",
+      "type": "treasure",
+      "value": 1000,
+      "description": "The crown of the Shadow Lord, radiating pure darkness."
+    },
+    "crown_of_the_realms": {
+      "name": "Crown of the Realms",
+      "type": "treasure",
+      "value": 5000,
+      "description": "The ultimate treasure, worn by the Archmage Supreme. Proof of conquering the Shattered Realms."
+    },
+    "void_crown": {
+      "name": "Crown of the Void",
+      "type": "treasure",
+      "value": 1500,
+      "description": "A crown that seems to absorb light itself, worn by the guardian of the void threshold."
+    },
+    "void_heart_crystal": {
+      "name": "Void Heart Crystal",
+      "type": "treasure",
+      "value": 800,
+      "description": "A pulsing crystal containing the essence of void energy."
+    }
+  },
+  "monsterLootTables": {
+    "wisp_of_memory": ["memory_fragment", "minor_mana_potion"],
+    "echo_guardian": ["guardian_essence"],
+    "crystal_spider": ["crystal_silk"],
+    "gem_golem": ["golem_core", "crystal_blade"],
+    "prismatic_bat": ["rainbow_wing"],
+    "garden_sprite": ["sprite_dust"],
+    "thorn_guardian": ["thorn_armor"],
+    "floating_jellyfish": ["jellyfish_oil"],
+    "marsh_wraith": ["wraith_essence", "shadow_dagger"],
+    "shadow_frog": ["shadow_tongue"],
+    "will_o_wisp": ["wisp_light"],
+    "wind_elemental": ["wind_essence"],
+    "storm_hawk": ["storm_feather", "storm_feather_blade"],
+    "cloud_sheep": ["cloud_wool_cloak"],
+    "fire_salamander": ["salamander_scale"],
+    "forge_golem": ["forge_hammer"],
+    "ember_sprite": ["ember_heart"],
+    "knowledge_seeker": ["forbidden_tome", "minor_mana_potion"],
+    "paper_dragon": ["dragon_quill", "greater_mana_potion"],
+    "bookworm": ["digested_wisdom", "minor_mana_potion"],
+    "lightning_elemental": ["lightning_core"],
+    "thunder_bird": ["thunder_egg"],
+    "storm_cloud": ["eternal_raindrop"],
+    "void_walker": ["void_shard"],
+    "reality_worm": ["reality_fragment"],
+    "null_entity": ["null_essence"],
+    "star_guardian": ["star_fragment"],
+    "cosmic_horror": ["cosmic_eye", "cosmic_blade"],
+    "nebula_wisp": ["nebula_dust", "rejuvenation_potion"],
+    "arcane_sentinel": ["arcane_crystal", "arcane_crystal_armor", "greater_mana_potion"],
+    "mage_shade": ["shade_robe", "superior_mana_potion"],
+    "living_spell": ["spell_essence", "arcane_infusion"],
+    "shattered_sentinel": ["memory_fragment", "minor_healing_potion"],
+    "discordant_note": ["memory_fragment"],
+    "ash_revenant": ["memory_fragment", "rejuvenation_potion"],
+    "null_signal": ["null_essence"],
+    "stray_code_wisp": ["memory_fragment", "minor_mana_potion"],
+    "binary_drifter": ["memory_fragment", "greater_mana_potion"],
+    "regret_echo": ["memory_fragment", "rejuvenation_potion"],
+    "scholar_shade": ["forbidden_tome", "greater_mana_potion"],
+    "paper_gryphon": ["forbidden_tome", "rejuvenation_potion"],
+    "footnote_phantom": ["forbidden_tome", "superior_mana_potion"],
+    "recursive_copy": ["reality_fragment", "arcane_infusion"],
+    "paradox_loop": ["reality_fragment", "superior_mana_potion"],
+    "glitch_hound": ["null_essence", "rejuvenation_potion"],
+    "echo_self": ["shade_robe", "arcane_infusion"],
+    "shadow_archivist": ["forbidden_tome", "superior_mana_potion"],
+    "weeping_mask": ["wraith_essence", "rejuvenation_potion"],
+    "corruption_beast": ["null_essence", "arcane_infusion"],
+    "memory_leak": ["memory_fragment", "superior_mana_potion"],
+    "clockwork_inquisitor": ["reality_fragment", "arcane_infusion"],
+    "tempus_wraith": ["reality_fragment", "superior_mana_potion"],
+    "logic_sphinx": ["forbidden_tome", "arcane_infusion"]
+  },
+  "bossDrops": {
+    "crystal_dragon": {
+      "guaranteed": ["crystal_dragon_scale", "crystal_blade"]
+    },
+    "shadow_lord": {
+      "guaranteed": ["shadow_crown", "shade_robe"]
+    },
+    "void_guardian": {
+      "guaranteed": ["void_shard_sword", "void_crown", "void_heart_crystal"]
+    },
+    "archmage_supreme": {
+      "guaranteed": ["crown_of_the_realms", "void_shard_sword"]
+    },
+    "morwyn_ironheart": {
+      "guaranteed": ["obsidian_drum_stave_instrument", "greater_mana_potion"]
+    },
+    "zephyros_recursive": {
+      "guaranteed": ["golden_trumpet_of_change", "superior_mana_potion"]
+    },
+    "valdris_radiant": {
+      "guaranteed": ["silver_harp_of_creation", "arcane_infusion", "superior_mana_potion"]
+    },
+    "nyxara_echo": {
+      "guaranteed": ["lute_of_whispering_shadows", "arcane_infusion"]
+    },
+    "thessarian_patient": {
+      "guaranteed": ["crystal_flute_of_wisdom", "arcane_infusion", "superior_mana_potion"]
+    }
+  }
+}

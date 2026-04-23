@@ -1,0 +1,80 @@
+{
+  "name": "Testmagea",
+  "level": 14,
+  "experience": 9620,
+  "title": "Archmage Supreme",
+  "suffix": "",
+  "currentHP": 100,
+  "maxHP": 370,
+  "currentMana": 186,
+  "maxMana": 225,
+  "currentRoom": "room_011",
+  "displayMode": "verbose",
+  "inventory": [
+    {
+      "id": "rusty_dagger",
+      "name": "Rusty Dagger",
+      "type": "weapon",
+      "levelReq": 1,
+      "damageBonus": 2,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 10,
+      "description": "A worn dagger with spots of rust. Still sharp enough to be useful."
+    },
+    {
+      "id": "leather_vest",
+      "name": "Leather Vest",
+      "type": "armor",
+      "levelReq": 1,
+      "damageBonus": 0,
+      "armorBonus": 2,
+      "healAmount": 0,
+      "value": 10,
+      "description": "Simple leather armor offering basic protection."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    }
+  ],
+  "equipped": {
+    "weapon": null,
+    "armor": null,
+    "shield": null
+  },
+  "gold": 39,
+  "stats": {
+    "monstersKilled": 0,
+    "deaths": 0,
+    "bossesDefeated": [],
+    "totalDamageDealt": 132,
+    "totalDamageTaken": 174,
+    "roomsExplored": [
+      "room_001",
+      "room_002"
+    ],
+    "itemsCollected": 0,
+    "pvpKills": 0,
+    "pvpDeaths": 3
+  },
+  "lastPlayed": "2026-04-21T13:01:57.427Z"
+}

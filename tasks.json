@@ -1,0 +1,19 @@
+[
+  {
+    "description": "Build a MUD game",
+    "completed": false
+  },
+  {
+    "description": "Practice coding daily",
+    "completed": false
+  },
+  {
+    "description": "Walk the Dog",
+    "completed": false
+  },
+  {
+    "description": "Urgent bug fix",
+    "completed": false,
+    "priority": "high"
+  }
+]

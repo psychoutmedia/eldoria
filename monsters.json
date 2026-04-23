@@ -1,0 +1,830 @@
+{
+  "zones": {
+    "Starting Chamber": {
+      "roomRange": ["room_001", "room_002", "room_003", "room_004", "room_005"],
+      "spawnChance": 0.30,
+      "monsters": ["wisp_of_memory", "echo_guardian"]
+    },
+    "Crystal Caverns": {
+      "roomRange": ["room_006", "room_007", "room_008", "room_009", "room_010", "room_011", "room_012", "room_013", "room_014", "room_015"],
+      "spawnChance": 0.60,
+      "monsters": ["crystal_spider", "gem_golem", "prismatic_bat"]
+    },
+    "Floating Gardens": {
+      "roomRange": ["room_016", "room_017", "room_018", "room_019", "room_020", "room_021", "room_022", "room_023", "room_024", "room_025"],
+      "spawnChance": 0.40,
+      "monsters": ["garden_sprite", "thorn_guardian", "floating_jellyfish"]
+    },
+    "Shadow Marshes": {
+      "roomRange": ["room_026", "room_027", "room_028", "room_029", "room_030", "room_031", "room_032", "room_033", "room_034", "room_035"],
+      "spawnChance": 0.70,
+      "monsters": ["marsh_wraith", "shadow_frog", "will_o_wisp"]
+    },
+    "Tower Of Winds": {
+      "roomRange": ["room_036", "room_037", "room_038", "room_039", "room_040", "room_041", "room_042", "room_043", "room_044", "room_045"],
+      "spawnChance": 0.50,
+      "monsters": ["wind_elemental", "storm_hawk", "cloud_sheep"]
+    },
+    "Molten Forges": {
+      "roomRange": ["room_046", "room_047", "room_048", "room_049", "room_050", "room_051", "room_052", "room_053", "room_054", "room_055"],
+      "spawnChance": 0.60,
+      "monsters": ["fire_salamander", "forge_golem", "ember_sprite"]
+    },
+    "Ethereal Library": {
+      "roomRange": ["room_056", "room_057", "room_058", "room_059", "room_060", "room_061", "room_062", "room_063", "room_064", "room_065"],
+      "spawnChance": 0.30,
+      "monsters": ["knowledge_seeker", "paper_dragon", "bookworm"]
+    },
+    "Storm Peaks": {
+      "roomRange": ["room_066", "room_067", "room_068", "room_069", "room_070", "room_071", "room_072", "room_073", "room_074", "room_075"],
+      "spawnChance": 0.70,
+      "monsters": ["lightning_elemental", "thunder_bird", "storm_cloud"]
+    },
+    "Void Nexus": {
+      "roomRange": ["room_076", "room_077", "room_078", "room_079", "room_080", "room_081", "room_082", "room_083", "room_084", "room_085"],
+      "spawnChance": 0.80,
+      "monsters": ["void_walker", "reality_worm", "null_entity"]
+    },
+    "Celestial Observatory": {
+      "roomRange": ["room_086", "room_087", "room_088", "room_089", "room_090", "room_091", "room_092", "room_093", "room_094", "room_095"],
+      "spawnChance": 0.50,
+      "monsters": ["star_guardian", "cosmic_horror", "nebula_wisp"]
+    },
+    "Archmage Sanctum": {
+      "roomRange": ["room_096", "room_097", "room_098", "room_099", "room_100"],
+      "spawnChance": 0.90,
+      "monsters": ["arcane_sentinel", "mage_shade", "living_spell"]
+    },
+    "Ashlands of Revision": {
+      "roomRange": ["room_101", "room_102", "room_103", "room_104", "room_105", "room_106", "room_107", "room_108", "room_109", "room_110"],
+      "spawnChance": 0.75,
+      "monsters": ["shattered_sentinel", "discordant_note", "ash_revenant"]
+    },
+    "Data-Drifts": {
+      "roomRange": ["room_111", "room_112", "room_113", "room_114", "room_115", "room_116", "room_117", "room_118", "room_119", "room_120"],
+      "spawnChance": 0.65,
+      "monsters": ["null_signal", "stray_code_wisp", "binary_drifter"]
+    },
+    "Outpost of Regret": {
+      "roomRange": ["room_121", "room_122", "room_123", "room_124", "room_125"],
+      "spawnChance": 0.70,
+      "monsters": ["regret_echo", "binary_drifter", "stray_code_wisp"]
+    },
+    "High Plateaus": {
+      "roomRange": ["room_126", "room_127", "room_128", "room_129", "room_130"],
+      "spawnChance": 0.60,
+      "monsters": ["scholar_shade", "footnote_phantom", "paper_gryphon"]
+    },
+    "Cloud-Spires of Valdris": {
+      "roomRange": ["room_131", "room_132", "room_133", "room_134", "room_135", "room_136", "room_137", "room_138", "room_139", "room_140"],
+      "spawnChance": 0.50,
+      "monsters": ["scholar_shade", "paper_gryphon", "footnote_phantom"]
+    },
+    "Paradox Gallery": {
+      "roomRange": ["room_141", "room_142", "room_143", "room_144", "room_145", "room_146", "room_147", "room_148", "room_149", "room_150"],
+      "spawnChance": 0.70,
+      "monsters": ["recursive_copy", "paradox_loop", "glitch_hound"]
+    },
+    "Tower of Shadows": {
+      "roomRange": ["room_151", "room_152", "room_153", "room_154", "room_155", "room_156", "room_157", "room_158", "room_159", "room_160"],
+      "spawnChance": 0.80,
+      "monsters": ["echo_self", "shadow_archivist", "weeping_mask"]
+    },
+    "Mourning Cloisters": {
+      "roomRange": ["room_161", "room_162", "room_163", "room_164", "room_165", "room_166", "room_167", "room_168", "room_169", "room_170"],
+      "spawnChance": 0.75,
+      "monsters": ["weeping_mask", "shadow_archivist", "memory_leak"]
+    },
+    "Glitch-Halls of Nomagio": {
+      "roomRange": ["room_171", "room_172", "room_173", "room_174", "room_175", "room_176", "room_177", "room_178", "room_179", "room_180"],
+      "spawnChance": 0.90,
+      "monsters": ["corruption_beast", "null_signal", "memory_leak"]
+    },
+    "Asset Graveyard": {
+      "roomRange": ["room_181", "room_182", "room_183", "room_184", "room_185", "room_186", "room_187", "room_188", "room_189", "room_190"],
+      "spawnChance": 0.80,
+      "monsters": ["corruption_beast", "memory_leak", "tempus_wraith"]
+    },
+    "Final Approach": {
+      "roomRange": ["room_191", "room_192", "room_193", "room_194", "room_195", "room_196", "room_197", "room_198", "room_199", "room_200"],
+      "spawnChance": 0.75,
+      "monsters": ["clockwork_inquisitor", "tempus_wraith", "logic_sphinx"]
+    }
+  },
+  "templates": {
+    "wisp_of_memory": {
+      "name": "Wisp of Memory",
+      "type": "Passive",
+      "level": 1,
+      "hp": 15,
+      "str": 3,
+      "description": "A translucent spirit that flickers between existence and memory, carrying fragments of forgotten knowledge.",
+      "movementVerbs": { "depart": "fades", "arrive": "materializes" },
+      "presenceVerb": "flickers nearby",
+      "loot": { "item": "Memory Fragment", "type": "Treasure" }
+    },
+    "echo_guardian": {
+      "name": "Echo Guardian",
+      "type": "Neutral",
+      "level": 2,
+      "hp": 25,
+      "str": 5,
+      "description": "A shadowy figure that protects the sacred chambers, formed from the echoes of ancient protectors.",
+      "movementVerbs": { "depart": "fades", "arrive": "emerges" },
+      "presenceVerb": "stands watch",
+      "loot": { "item": "Guardian Essence", "type": "Consumable" }
+    },
+    "crystal_spider": {
+      "name": "Crystal Spider",
+      "type": "Aggressive",
+      "level": 3,
+      "hp": 30,
+      "str": 7,
+      "description": "A magnificent arachnid whose body is formed entirely of living crystal, refracting light in beautiful patterns.",
+      "movementVerbs": { "depart": "scuttles", "arrive": "skitters in" },
+      "presenceVerb": "clings to the wall",
+      "loot": { "item": "Crystal Silk", "type": "Treasure" }
+    },
+    "gem_golem": {
+      "name": "Gem Golem",
+      "type": "Neutral",
+      "level": 5,
+      "hp": 60,
+      "str": 12,
+      "description": "A hulking construct made of various precious stones, its eyes glowing with inner fire.",
+      "movementVerbs": { "depart": "lumbers", "arrive": "stomps in" },
+      "presenceVerb": "stands motionless",
+      "loot": { "item": "Golem Core", "type": "Treasure" }
+    },
+    "prismatic_bat": {
+      "name": "Prismatic Bat",
+      "type": "Passive",
+      "level": 2,
+      "hp": 20,
+      "str": 4,
+      "description": "A bat whose wings split light into rainbow patterns, creating dazzling displays as it flies.",
+      "movementVerbs": { "depart": "flutters", "arrive": "swoops in" },
+      "presenceVerb": "hangs from the ceiling",
+      "loot": { "item": "Rainbow Wing", "type": "Treasure" }
+    },
+    "garden_sprite": {
+      "name": "Garden Sprite",
+      "type": "Passive",
+      "level": 2,
+      "hp": 18,
+      "str": 3,
+      "description": "A tiny humanoid creature with butterfly wings, tending to the magical plants with loving care.",
+      "movementVerbs": { "depart": "flits", "arrive": "flutters in" },
+      "presenceVerb": "tends the flowers",
+      "loot": { "item": "Sprite Dust", "type": "Consumable" }
+    },
+    "thorn_guardian": {
+      "name": "Thorn Guardian",
+      "type": "Aggressive",
+      "level": 4,
+      "hp": 40,
+      "str": 8,
+      "description": "A plant-like creature covered in razor-sharp thorns, fiercely protective of its garden domain.",
+      "movementVerbs": { "depart": "shambles", "arrive": "pushes through" },
+      "presenceVerb": "blocks the path",
+      "loot": { "item": "Thorn Armor", "type": "Armor" }
+    },
+    "floating_jellyfish": {
+      "name": "Floating Jellyfish",
+      "type": "Neutral",
+      "level": 3,
+      "hp": 25,
+      "str": 6,
+      "description": "A translucent creature that drifts through the air like it was water, trailing luminous tentacles.",
+      "movementVerbs": { "depart": "drifts", "arrive": "floats in" },
+      "presenceVerb": "drifts lazily",
+      "loot": { "item": "Jellyfish Oil", "type": "Consumable" }
+    },
+    "marsh_wraith": {
+      "name": "Marsh Wraith",
+      "type": "Aggressive",
+      "level": 4,
+      "hp": 35,
+      "str": 9,
+      "description": "A ghostly figure that rises from the dark waters, its form shifting between solid and ethereal.",
+      "movementVerbs": { "depart": "glides", "arrive": "rises from the shadows" },
+      "presenceVerb": "hovers menacingly",
+      "loot": { "item": "Wraith Essence", "type": "Treasure" }
+    },
+    "shadow_frog": {
+      "name": "Shadow Frog",
+      "type": "Neutral",
+      "level": 3,
+      "hp": 28,
+      "str": 6,
+      "description": "A large amphibian that seems to be made of living shadow, croaking with otherworldly sounds.",
+      "movementVerbs": { "depart": "hops", "arrive": "leaps in" },
+      "presenceVerb": "crouches in the shadows",
+      "loot": { "item": "Shadow Tongue", "type": "Treasure" }
+    },
+    "will_o_wisp": {
+      "name": "Will-o-Wisp",
+      "type": "Passive",
+      "level": 2,
+      "hp": 15,
+      "str": 4,
+      "description": "A dancing light that leads travelers astray, flickering between dimensions.",
+      "movementVerbs": { "depart": "floats", "arrive": "appears" },
+      "presenceVerb": "bobs gently",
+      "loot": { "item": "Wisp Light", "type": "Treasure" }
+    },
+    "wind_elemental": {
+      "name": "Wind Elemental",
+      "type": "Neutral",
+      "level": 5,
+      "hp": 45,
+      "str": 10,
+      "description": "A swirling vortex of air given consciousness, constantly shifting and reforming.",
+      "movementVerbs": { "depart": "gusts", "arrive": "swirls in" },
+      "presenceVerb": "whirls about",
+      "loot": { "item": "Wind Essence", "type": "Consumable" }
+    },
+    "storm_hawk": {
+      "name": "Storm Hawk",
+      "type": "Aggressive",
+      "level": 4,
+      "hp": 38,
+      "str": 11,
+      "description": "A magnificent bird whose feathers crackle with electricity, riding the eternal winds.",
+      "movementVerbs": { "depart": "soars", "arrive": "descends" },
+      "presenceVerb": "perches watchfully",
+      "loot": { "item": "Storm Feather", "type": "Treasure" }
+    },
+    "cloud_sheep": {
+      "name": "Cloud Sheep",
+      "type": "Passive",
+      "level": 2,
+      "hp": 22,
+      "str": 3,
+      "description": "A fluffy creature that appears to be made of solid cloud, grazing on crystallized air.",
+      "movementVerbs": { "depart": "floats", "arrive": "drifts in" },
+      "presenceVerb": "grazes peacefully",
+      "loot": { "item": "Cloud Wool", "type": "Treasure" }
+    },
+    "fire_salamander": {
+      "name": "Fire Salamander",
+      "type": "Aggressive",
+      "level": 6,
+      "hp": 50,
+      "str": 13,
+      "description": "A lizard-like creature that swims through lava as easily as water, its scales glowing like embers.",
+      "movementVerbs": { "depart": "slithers", "arrive": "emerges from the flames" },
+      "presenceVerb": "basks in the heat",
+      "loot": { "item": "Salamander Scale", "type": "Treasure" }
+    },
+    "forge_golem": {
+      "name": "Forge Golem",
+      "type": "Neutral",
+      "level": 7,
+      "hp": 80,
+      "str": 15,
+      "description": "A massive construct of metal and fire, eternally working at the cosmic forges.",
+      "movementVerbs": { "depart": "clanks", "arrive": "stomps in" },
+      "presenceVerb": "works the forge",
+      "loot": { "item": "Forge Hammer", "type": "Weapon" }
+    },
+    "ember_sprite": {
+      "name": "Ember Sprite",
+      "type": "Passive",
+      "level": 2,
+      "hp": 16,
+      "str": 4,
+      "description": "A tiny being of pure flame that dances through the forges, bringing life to the fires.",
+      "movementVerbs": { "depart": "flickers", "arrive": "sparks into existence" },
+      "presenceVerb": "dances in the flames",
+      "loot": { "item": "Ember Heart", "type": "Consumable" }
+    },
+    "knowledge_seeker": {
+      "name": "Knowledge Seeker",
+      "type": "Neutral",
+      "level": 5,
+      "hp": 42,
+      "str": 8,
+      "description": "A robed figure whose face is hidden in shadow, eternally searching for forbidden knowledge.",
+      "movementVerbs": { "depart": "wanders", "arrive": "appears" },
+      "presenceVerb": "studies ancient texts",
+      "loot": { "item": "Forbidden Tome", "type": "Treasure" }
+    },
+    "paper_dragon": {
+      "name": "Paper Dragon",
+      "type": "Aggressive",
+      "level": 6,
+      "hp": 55,
+      "str": 12,
+      "description": "A dragon made entirely of animated parchment and ink, breathing words instead of fire.",
+      "movementVerbs": { "depart": "rustles", "arrive": "unfolds" },
+      "presenceVerb": "coils among the shelves",
+      "loot": { "item": "Dragon Quill", "type": "Treasure" }
+    },
+    "bookworm": {
+      "name": "Bookworm",
+      "type": "Passive",
+      "level": 3,
+      "hp": 30,
+      "str": 5,
+      "description": "A massive worm that feeds on knowledge itself, leaving trails of glowing text in its wake.",
+      "movementVerbs": { "depart": "burrows", "arrive": "emerges" },
+      "presenceVerb": "munches on a tome",
+      "loot": { "item": "Digested Wisdom", "type": "Consumable" }
+    },
+    "lightning_elemental": {
+      "name": "Lightning Elemental",
+      "type": "Aggressive",
+      "level": 6,
+      "hp": 48,
+      "str": 14,
+      "description": "A being of pure electrical energy, crackling and sparking with barely contained power.",
+      "movementVerbs": { "depart": "crackles", "arrive": "arcs in" },
+      "presenceVerb": "crackles with energy",
+      "loot": { "item": "Lightning Core", "type": "Treasure" }
+    },
+    "thunder_bird": {
+      "name": "Thunder Bird",
+      "type": "Neutral",
+      "level": 7,
+      "hp": 65,
+      "str": 16,
+      "description": "A massive bird whose wingbeats create thunder, soaring through the storm-wreathed peaks.",
+      "movementVerbs": { "depart": "takes flight", "arrive": "lands with a thunderclap" },
+      "presenceVerb": "surveys from above",
+      "loot": { "item": "Thunder Egg", "type": "Treasure" }
+    },
+    "storm_cloud": {
+      "name": "Storm Cloud",
+      "type": "Passive",
+      "level": 4,
+      "hp": 35,
+      "str": 7,
+      "description": "A sentient cloud that rains constantly, its mood affecting the weather around it.",
+      "movementVerbs": { "depart": "drifts", "arrive": "rolls in" },
+      "presenceVerb": "drizzles softly",
+      "loot": { "item": "Eternal Raindrop", "type": "Consumable" }
+    },
+    "void_walker": {
+      "name": "Void Walker",
+      "type": "Aggressive",
+      "level": 8,
+      "hp": 60,
+      "str": 16,
+      "description": "A being that exists between realities, its form constantly shifting between dimensions.",
+      "movementVerbs": { "depart": "phases", "arrive": "materializes" },
+      "presenceVerb": "flickers in and out of reality",
+      "loot": { "item": "Void Shard", "type": "Treasure" }
+    },
+    "reality_worm": {
+      "name": "Reality Worm",
+      "type": "Neutral",
+      "level": 8,
+      "hp": 75,
+      "str": 18,
+      "description": "A massive creature that burrows through the fabric of existence itself.",
+      "movementVerbs": { "depart": "tunnels", "arrive": "tears through reality" },
+      "presenceVerb": "coils through dimensions",
+      "loot": { "item": "Reality Fragment", "type": "Treasure" }
+    },
+    "null_entity": {
+      "name": "Null Entity",
+      "type": "Passive",
+      "level": 5,
+      "hp": 40,
+      "str": 8,
+      "description": "A creature that exists by not existing, visible only by the absence it creates.",
+      "movementVerbs": { "depart": "ceases to exist", "arrive": "un-exists into view" },
+      "presenceVerb": "creates a void",
+      "loot": { "item": "Null Essence", "type": "Consumable" }
+    },
+    "star_guardian": {
+      "name": "Star Guardian",
+      "type": "Neutral",
+      "level": 8,
+      "hp": 70,
+      "str": 17,
+      "description": "A celestial being that watches over the cosmic observatory, its body made of condensed starlight.",
+      "movementVerbs": { "depart": "ascends", "arrive": "descends from above" },
+      "presenceVerb": "radiates starlight",
+      "loot": { "item": "Star Fragment", "type": "Treasure" }
+    },
+    "cosmic_horror": {
+      "name": "Cosmic Horror",
+      "type": "Aggressive",
+      "level": 9,
+      "hp": 85,
+      "str": 20,
+      "description": "An incomprehensible entity from the spaces between stars, its true form hidden from mortal perception.",
+      "movementVerbs": { "depart": "warps", "arrive": "manifests" },
+      "presenceVerb": "defies comprehension",
+      "loot": { "item": "Cosmic Eye", "type": "Treasure" }
+    },
+    "nebula_wisp": {
+      "name": "Nebula Wisp",
+      "type": "Passive",
+      "level": 6,
+      "hp": 45,
+      "str": 9,
+      "description": "A gentle creature made of cosmic dust and gas, drifting peacefully through the observatory.",
+      "movementVerbs": { "depart": "disperses", "arrive": "coalesces" },
+      "presenceVerb": "shimmers with cosmic light",
+      "loot": { "item": "Nebula Dust", "type": "Consumable" }
+    },
+    "arcane_sentinel": {
+      "name": "Arcane Sentinel",
+      "type": "Aggressive",
+      "level": 10,
+      "hp": 100,
+      "str": 25,
+      "description": "A powerful guardian created by the Archmages themselves, radiating immense magical power.",
+      "movementVerbs": { "depart": "teleports", "arrive": "materializes" },
+      "presenceVerb": "pulses with arcane energy",
+      "loot": { "item": "Arcane Crystal", "type": "Treasure" }
+    },
+    "mage_shade": {
+      "name": "Mage Shade",
+      "type": "Neutral",
+      "level": 9,
+      "hp": 80,
+      "str": 15,
+      "description": "The ghostly remnant of a powerful wizard, still practicing magic in death.",
+      "movementVerbs": { "depart": "vanishes", "arrive": "phases in" },
+      "presenceVerb": "mutters incantations",
+      "loot": { "item": "Shade Robe", "type": "Armor" }
+    },
+    "living_spell": {
+      "name": "Living Spell",
+      "type": "Passive",
+      "level": 7,
+      "hp": 50,
+      "str": 12,
+      "description": "A spell that has gained consciousness and independence, existing as pure magical energy.",
+      "movementVerbs": { "depart": "dissipates", "arrive": "manifests" },
+      "presenceVerb": "hums with magical energy",
+      "loot": { "item": "Spell Essence", "type": "Consumable" }
+    },
+    "shattered_sentinel": {
+      "name": "Shattered Sentinel",
+      "type": "Aggressive",
+      "level": 15,
+      "hp": 120,
+      "str": 30,
+      "description": "A soldier-husk half-assembled from cracked armor and administrative ash. It keeps trying to salute a commander who was deleted in the Sundering.",
+      "movementVerbs": { "depart": "drags itself", "arrive": "reassembles" },
+      "presenceVerb": "grinds broken metal in a ruined salute",
+      "loot": { "item": "Memory Fragment", "type": "Treasure" }
+    },
+    "discordant_note": {
+      "name": "Discordant Note",
+      "type": "Aggressive",
+      "level": 14,
+      "hp": 70,
+      "str": 25,
+      "description": "A shard of sound that slipped out of tune with reality. It hurts to look at and worse to hear.",
+      "movementVerbs": { "depart": "dissonates away", "arrive": "shrieks into being" },
+      "presenceVerb": "wavers on a note that doesn't exist",
+      "loot": { "item": "Memory Fragment", "type": "Treasure" }
+    },
+    "valdris_shadow_self": {
+      "name": "Valdris's Shadow-Self",
+      "type": "Aggressive",
+      "level": 22,
+      "hp": 600,
+      "str": 75,
+      "description": "A black mirror of Valdris, trailing ink where light should be. It fights with the same patience, but none of the restraint.",
+      "movementVerbs": { "depart": "pours away", "arrive": "tears into being" },
+      "presenceVerb": "holds its blade at an impossible angle",
+      "loot": { "item": "Memory Fragment", "type": "Treasure" }
+    },
+    "ash_revenant": {
+      "name": "Ash Revenant",
+      "type": "Aggressive",
+      "level": 16,
+      "hp": 140,
+      "str": 34,
+      "description": "A figure of compacted ash wearing the memory of armor. Its eyes are the last glowing coals of something once brave.",
+      "movementVerbs": { "depart": "crumbles", "arrive": "reforms" },
+      "presenceVerb": "smolders with cold fire",
+      "loot": { "item": "Memory Fragment", "type": "Treasure" }
+    },
+    "null_signal": {
+      "name": "Null-Signal",
+      "type": "Aggressive",
+      "level": 17,
+      "hp": 100,
+      "str": 40,
+      "description": "A silhouette shaped like a person but containing no data. Looking at it feels like trying to read an empty variable.",
+      "movementVerbs": { "depart": "blanks out", "arrive": "resolves into nothing" },
+      "presenceVerb": "occupies space it shouldn't",
+      "loot": { "item": "Null Essence", "type": "Treasure" }
+    },
+    "stray_code_wisp": {
+      "name": "Stray Code Wisp",
+      "type": "Passive",
+      "level": 16,
+      "hp": 90,
+      "str": 32,
+      "description": "A glowing fragment of orphaned logic, drifting in search of a function to belong to.",
+      "movementVerbs": { "depart": "compiles away", "arrive": "instantiates" },
+      "presenceVerb": "blinks between line numbers",
+      "loot": { "item": "Memory Fragment", "type": "Treasure" }
+    },
+    "binary_drifter": {
+      "name": "Binary Drifter",
+      "type": "Neutral",
+      "level": 18,
+      "hp": 160,
+      "str": 38,
+      "description": "A humanoid outline flickering between 0 and 1, unable to commit to existing.",
+      "movementVerbs": { "depart": "flickers out", "arrive": "toggles in" },
+      "presenceVerb": "shimmers between states",
+      "loot": { "item": "Memory Fragment", "type": "Treasure" }
+    },
+    "regret_echo": {
+      "name": "Regret Echo",
+      "type": "Aggressive",
+      "level": 17,
+      "hp": 130,
+      "str": 36,
+      "description": "A silhouette of someone who almost made the right choice. It lunges with the weight of every apology it never delivered.",
+      "movementVerbs": { "depart": "sighs away", "arrive": "condenses" },
+      "presenceVerb": "watches with the eyes of every decision you have made",
+      "loot": { "item": "Memory Fragment", "type": "Treasure" }
+    },
+    "scholar_shade": {
+      "name": "Scholar Shade",
+      "type": "Passive",
+      "level": 18,
+      "hp": 130,
+      "str": 36,
+      "description": "A translucent figure bent over an invisible book. Still annotating a text that was never written.",
+      "movementVerbs": { "depart": "fades between pages", "arrive": "bookmarks into existence" },
+      "presenceVerb": "mutters footnotes at the air",
+      "loot": { "item": "Forbidden Tome", "type": "Treasure" }
+    },
+    "paper_gryphon": {
+      "name": "Paper Gryphon",
+      "type": "Aggressive",
+      "level": 20,
+      "hp": 200,
+      "str": 45,
+      "description": "A gryphon folded entirely from library pages - razor-edged and extremely offended by the existence of errata.",
+      "movementVerbs": { "depart": "rustles away", "arrive": "unfolds" },
+      "presenceVerb": "preens its paper feathers",
+      "loot": { "item": "Forbidden Tome", "type": "Treasure" }
+    },
+    "footnote_phantom": {
+      "name": "Footnote Phantom",
+      "type": "Neutral",
+      "level": 19,
+      "hp": 150,
+      "str": 40,
+      "description": "A small, nervous ghost that exists only in the margin of things. It attacks by quoting you out of context.",
+      "movementVerbs": { "depart": "citation needed", "arrive": "appears in the margin" },
+      "presenceVerb": "hovers beside the main text",
+      "loot": { "item": "Forbidden Tome", "type": "Treasure" }
+    },
+    "recursive_copy": {
+      "name": "Recursive Copy",
+      "type": "Aggressive",
+      "level": 20,
+      "hp": 180,
+      "str": 46,
+      "description": "An imperfect clone of something that no longer exists. Each time you look away it splits, badly.",
+      "movementVerbs": { "depart": "forks", "arrive": "merges" },
+      "presenceVerb": "exists more than once at once",
+      "loot": { "item": "Reality Fragment", "type": "Treasure" }
+    },
+    "paradox_loop": {
+      "name": "Paradox Loop",
+      "type": "Aggressive",
+      "level": 21,
+      "hp": 220,
+      "str": 48,
+      "description": "A ribbon of geometry that keeps meeting itself coming back. Touching it gives you a mild concussion and a moderate headache.",
+      "movementVerbs": { "depart": "unwinds", "arrive": "winds" },
+      "presenceVerb": "loops through its own shadow",
+      "loot": { "item": "Reality Fragment", "type": "Treasure" }
+    },
+    "glitch_hound": {
+      "name": "Glitch-Hound",
+      "type": "Aggressive",
+      "level": 19,
+      "hp": 170,
+      "str": 50,
+      "description": "A hound whose model is corrupted - front legs in last tick's position, rear legs in next tick's. The snarl arrives before the mouth does.",
+      "movementVerbs": { "depart": "stutter-steps away", "arrive": "phase-shifts in" },
+      "presenceVerb": "desyncs as it prowls",
+      "loot": { "item": "Null Essence", "type": "Treasure" }
+    },
+    "echo_self": {
+      "name": "Echo of the Self",
+      "type": "Aggressive",
+      "level": 24,
+      "hp": 260,
+      "str": 58,
+      "description": "An imperfect copy of you, wearing your face at a weight you have never felt. It fights with every move you've ever made.",
+      "movementVerbs": { "depart": "withdraws inward", "arrive": "surfaces" },
+      "presenceVerb": "wears the memory of your face",
+      "loot": { "item": "Shade Robe", "type": "Armor" }
+    },
+    "shadow_archivist": {
+      "name": "Shadow Archivist",
+      "type": "Aggressive",
+      "level": 23,
+      "hp": 230,
+      "str": 54,
+      "description": "A quiet figure cataloguing every mistake it has ever witnessed. Its favorite section is yours.",
+      "movementVerbs": { "depart": "shelves itself", "arrive": "retrieves itself" },
+      "presenceVerb": "silently indexes everything you do",
+      "loot": { "item": "Forbidden Tome", "type": "Treasure" }
+    },
+    "weeping_mask": {
+      "name": "Weeping Mask",
+      "type": "Neutral",
+      "level": 22,
+      "hp": 200,
+      "str": 50,
+      "description": "A porcelain mask hovering in still air, leaking slow silver tears that burn where they land.",
+      "movementVerbs": { "depart": "drifts", "arrive": "settles" },
+      "presenceVerb": "weeps into the quiet",
+      "loot": { "item": "Wraith Essence", "type": "Consumable" }
+    },
+    "corruption_beast": {
+      "name": "Corruption Beast",
+      "type": "Aggressive",
+      "level": 26,
+      "hp": 320,
+      "str": 66,
+      "description": "A mass of corrupted geometry with teeth in places teeth have no business being. It smells faintly of magnetic tape.",
+      "movementVerbs": { "depart": "delaminates", "arrive": "reinstantiates" },
+      "presenceVerb": "eats the air around it",
+      "loot": { "item": "Null Essence", "type": "Treasure" }
+    },
+    "memory_leak": {
+      "name": "Memory Leak",
+      "type": "Aggressive",
+      "level": 25,
+      "hp": 280,
+      "str": 62,
+      "description": "A slowly expanding cloud of unreleased memory, growing every second it is observed. It has forgotten how to be released.",
+      "movementVerbs": { "depart": "contracts", "arrive": "expands" },
+      "presenceVerb": "grows, slowly, forever",
+      "loot": { "item": "Memory Fragment", "type": "Treasure" }
+    },
+    "clockwork_inquisitor": {
+      "name": "Clockwork Inquisitor",
+      "type": "Aggressive",
+      "level": 27,
+      "hp": 360,
+      "str": 70,
+      "description": "A brass and bone figure with a ticking chest. It asks one question, over and over: 'Are you sure?'",
+      "movementVerbs": { "depart": "winds down", "arrive": "winds up" },
+      "presenceVerb": "ticks patiently",
+      "loot": { "item": "Reality Fragment", "type": "Treasure" }
+    },
+    "tempus_wraith": {
+      "name": "Tempus Wraith",
+      "type": "Aggressive",
+      "level": 27,
+      "hp": 340,
+      "str": 72,
+      "description": "A smear of time in the shape of a person. It strikes first, then decides to attack.",
+      "movementVerbs": { "depart": "un-happens", "arrive": "pre-arrives" },
+      "presenceVerb": "happens in the wrong order",
+      "loot": { "item": "Reality Fragment", "type": "Treasure" }
+    },
+    "logic_sphinx": {
+      "name": "Logic Sphinx",
+      "type": "Neutral",
+      "level": 28,
+      "hp": 400,
+      "str": 76,
+      "description": "A statue of cold stone that judges every syllogism you have ever formed. Its riddles are not fair.",
+      "movementVerbs": { "depart": "concludes", "arrive": "posits" },
+      "presenceVerb": "considers you at length",
+      "loot": { "item": "Forbidden Tome", "type": "Treasure" }
+    }
+  },
+  "bosses": {
+    "crystal_dragon": {
+      "name": "Crystal Dragon",
+      "type": "Boss",
+      "level": 5,
+      "hp": 200,
+      "str": 25,
+      "description": "An ancient dragon whose scales are made of pure crystal, refracting light into deadly beams.",
+      "fixedRoom": "room_015",
+      "isWandering": false,
+      "presenceVerb": "guards its crystalline lair",
+      "loot": { "item": "Crystal Dragon Scale", "type": "Legendary" }
+    },
+    "shadow_lord": {
+      "name": "Shadow Lord",
+      "type": "Boss",
+      "level": 8,
+      "hp": 350,
+      "str": 35,
+      "description": "The master of all shadows, a being of pure darkness that commands the very essence of fear.",
+      "fixedRoom": "room_035",
+      "isWandering": false,
+      "presenceVerb": "commands the shadows",
+      "loot": { "item": "Shadow Crown", "type": "Legendary" }
+    },
+    "void_guardian": {
+      "name": "Void Guardian",
+      "type": "Boss",
+      "level": 13,
+      "hp": 600,
+      "str": 45,
+      "description": "A massive sentinel of pure void energy, standing 15 feet tall with armor made from crystallized darkness. Its eyes are empty portals to nothingness, and reality warps around its presence.",
+      "fixedRoom": "room_085",
+      "isWandering": false,
+      "presenceVerb": "guards the passage with unwavering determination",
+      "loot": { "item": "Void Shard Sword", "type": "Legendary" }
+    },
+    "archmage_supreme": {
+      "name": "The Archmage Supreme",
+      "type": "Boss",
+      "level": 15,
+      "hp": 800,
+      "str": 60,
+      "description": "The most powerful wizard in existence, master of all magical arts and keeper of ultimate secrets.",
+      "fixedRoom": "room_100",
+      "isWandering": false,
+      "presenceVerb": "radiates supreme power",
+      "loot": { "item": "Staff of the Archmage", "type": "Legendary" }
+    },
+    "morwyn_ironheart": {
+      "name": "Morwyn Ironheart",
+      "type": "Boss",
+      "level": 16,
+      "hp": 900,
+      "str": 55,
+      "description": "Archmage of Matter and Fire. A soot-streaked giant at a phantom anvil, hammering the shape of the world into something that can be held. His eyes are embers; his patience, long ago forged into something harder.",
+      "fixedRoom": "room_108",
+      "isWandering": false,
+      "presenceVerb": "hammers at an anvil that isn't there",
+      "damageType": "fire",
+      "resists": { "physical": 40, "fire": 50, "harmonic": -25 },
+      "loot": { "item": "Drum-Stave Resonator", "type": "Instrument" }
+    },
+    "zephyros_recursive": {
+      "name": "The Recursive Zephyros",
+      "type": "Boss",
+      "level": 19,
+      "hp": 1200,
+      "str": 70,
+      "description": "Archmage of Change and Wind, splintered across three temporal echoes that loudly disagree with themselves. Each copy is sure it is the real one and the others are bugs.",
+      "fixedRoom": "room_144",
+      "isWandering": false,
+      "presenceVerb": "argues fiercely with its own echoes",
+      "damageType": "shadow",
+      "resists": { "physical": 50, "shadow": 30, "harmonic": -25 },
+      "loot": { "item": "Golden Trumpet of Change", "type": "Instrument" }
+    },
+    "valdris_radiant": {
+      "name": "Valdris the Radiant",
+      "type": "Boss",
+      "level": 22,
+      "hp": 2000,
+      "str": 90,
+      "description": "Archmage of Thought and Light, beautiful and insufferable. He does not fight you so much as audit you. Reality bends toward his correct opinion.",
+      "fixedRoom": "room_150",
+      "isWandering": false,
+      "presenceVerb": "regards you with the patient disappointment of a critic",
+      "damageType": "harmonic",
+      "resists": { "physical": 60, "harmonic": 40, "shadow": -20 },
+      "loot": { "item": "Silver Harp of Creation", "type": "Instrument" }
+    },
+    "nyxara_echo": {
+      "name": "Nyxara, Echo-Self",
+      "type": "Boss",
+      "level": 25,
+      "hp": 1700,
+      "str": 95,
+      "description": "Archmage of Memory and Void, walking beside her own shadow. She fights with the weight of every thing you have ever forgotten.",
+      "fixedRoom": "room_175",
+      "isWandering": false,
+      "presenceVerb": "stands with her own shadow",
+      "damageType": "shadow",
+      "resists": { "physical": 55, "shadow": 50, "harmonic": -20 },
+      "loot": { "item": "Lute of Whispering Shadows", "type": "Instrument" }
+    },
+    "thessarian_patient": {
+      "name": "Thessarian the Patient",
+      "type": "Boss",
+      "level": 28,
+      "hp": 2400,
+      "str": 110,
+      "description": "Archmage of Logic and Time. A tall, tired figure who has already fought this battle once and is trying very hard to avoid making the same mistakes.",
+      "fixedRoom": "room_198",
+      "isWandering": false,
+      "presenceVerb": "waits for you to finish moving",
+      "damageType": "harmonic",
+      "resists": { "physical": 65, "harmonic": 40, "fire": -20 },
+      "loot": { "item": "Crystal Flute of Wisdom", "type": "Instrument" }
+    }
+  }
+}

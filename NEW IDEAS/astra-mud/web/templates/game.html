@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astra-MUD 🏰</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: #1a1a2e;
+            color: #eaeaea;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #header {
+            background: #16213e;
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 2px solid #0f3460;
+        }
+        
+        #header h1 {
+            color: #e94560;
+            font-size: 1.5rem;
+        }
+        
+        #game-container {
+            flex: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #output {
+            flex: 1;
+            min-height: 400px;
+            background: #16213e;
+            border: 1px solid #0f3460;
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        #output p {
+            margin-bottom: 0.75rem;
+        }
+        
+        #output strong {
+            color: #e94560;
+        }
+        
+        #output em {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        
+        #input-container {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        #command-input {
+            flex: 1;
+            background: #16213e;
+            border: 1px solid #0f3460;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: #eaeaea;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        #command-input:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+        
+        #send-btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        #send-btn:hover {
+            background: #d63d56;
+        }
+        
+        #status {
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        
+        #status.connected {
+            color: #10b981;
+        }
+        
+        #status.disconnected {
+            color: #e94560;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>🏰 Astra-MUD</h1>
+    </div>
+    
+    <div id="game-container">
+        <div id="output"></div>
+        <div id="input-container">
+            <input type="text" id="command-input" placeholder="Enter command..." autocomplete="off">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+    
+    <div id="status">Connecting...</div>
+
+    <script>
+        const output = document.getElementById('output');
+        const input = document.getElementById('command-input');
+        const sendBtn = document.getElementById('send-btn');
+        const status = document.getElementById('status');
+        
+        let ws;
+        let playerName = '';
+        
+        function connect() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+            
+            ws.onopen = () => {
+                status.textContent = 'Connected';
+                status.className = 'connected';
+                input.focus();
+            };
+            
+            ws.onclose = () => {
+                status.textContent = 'Disconnected - Refresh to reconnect';
+                status.className = 'disconnected';
+            };
+            
+            ws.onerror = () => {
+                status.textContent = 'Connection error';
+            };
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                
+                if (data.type === 'welcome') {
+                    print(data.content);
+                } else if (data.type === 'message') {
+                    print(data.content);
+                }
+            };
+        }
+        
+        function print(text) {
+            const p = document.createElement('p');
+            // Basic markdown-ish rendering
+            text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            text = text.replace(/\n/g, '<br>');
+            p.innerHTML = text;
+            output.appendChild(p);
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function send() {
+            const cmd = input.value.trim();
+            if (!cmd || !ws || ws.readyState !== WebSocket.OPEN) return;
+            
+            print(`> ${cmd}`);
+            ws.send(cmd);
+            input.value = '';
+        }
+        
+        sendBtn.addEventListener('click', send);
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') send();
+        });
+        
+        connect();
+    </script>
+</body>
+</html>

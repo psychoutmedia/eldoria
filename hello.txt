@@ -1,0 +1,2 @@
+Hello from Claude Code! Day 1 of my learning journey.
+Day 2: Successfully learned bash mode and file creation!

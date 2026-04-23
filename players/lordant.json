@@ -1,0 +1,87 @@
+{
+  "name": "Lordant",
+  "level": 2,
+  "experience": 200,
+  "title": "Initiate of the Arcane",
+  "currentHP": 55,
+  "maxHP": 60,
+  "currentRoom": "room_002",
+  "displayMode": "verbose",
+  "inventory": [
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "minor_healing_potion",
+      "name": "Minor Healing Potion",
+      "type": "consumable",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 30,
+      "value": 15,
+      "description": "A small red potion that restores 30 HP when consumed."
+    },
+    {
+      "id": "memory_fragment",
+      "name": "Memory Fragment",
+      "type": "treasure",
+      "levelReq": 0,
+      "damageBonus": 0,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 10,
+      "description": "A crystallized fragment of forgotten memory, slightly glowing."
+    }
+  ],
+  "equipped": {
+    "weapon": {
+      "id": "rusty_dagger",
+      "name": "Rusty Dagger",
+      "type": "weapon",
+      "levelReq": 1,
+      "damageBonus": 2,
+      "armorBonus": 0,
+      "healAmount": 0,
+      "value": 10,
+      "description": "A worn dagger with spots of rust. Still sharp enough to be useful."
+    },
+    "armor": {
+      "id": "leather_vest",
+      "name": "Leather Vest",
+      "type": "armor",
+      "levelReq": 1,
+      "damageBonus": 0,
+      "armorBonus": 2,
+      "healAmount": 0,
+      "value": 10,
+      "description": "Simple leather armor offering basic protection."
+    },
+    "shield": null
+  },
+  "gold": 86,
+  "stats": {
+    "monstersKilled": 4,
+    "deaths": 1,
+    "bossesDefeated": [],
+    "totalDamageDealt": 112,
+    "totalDamageTaken": 73,
+    "roomsExplored": [
+      "room_001",
+      "room_002",
+      "room_003",
+      "room_004",
+      "room_005"
+    ],
+    "itemsCollected": 1
+  },
+  "lastPlayed": "2026-01-17T17:19:49.899Z"
+}

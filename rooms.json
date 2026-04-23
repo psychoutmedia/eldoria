@@ -1,0 +1,1639 @@
+{
+  "room_001": {
+    "name": "The Awakening Chamber",
+    "zone": "Starting Chamber",
+    "shortDescription": "A cold, rectangular womb of marble and neon.",
+    "longDescription": "The air here smells of ozone and the kind of stale coffee that suggests a creator who hasn't slept since the first epoch. The walls are polished obsidian, etched with silver runes that occasionally flicker like a dying lightbulb. High above, the ceiling is a perfect grid of white light, though one panel is missing, revealing a terrifying glimpse of raw green code. This is where you began, a 'newly initialized variable' in a world that didn't ask for you. A faint scratching sound behind the walls suggests Nomagio is currently patching a leak in reality just out of sight. A large Neon sign glows with the immortal words 'Go North and try not to die in the first 5 minutes. Its embarrassing for Everyone involved!",
+    "exits": { "north": "room_002", "up": "room_090" }
+  },
+  "room_002": {
+    "name": "The Obsidian Ledge",
+    "zone": "Starting Chamber",
+    "shortDescription": "A sharp-edged precipice overlooking the Great 404.",
+    "longDescription": "You stand on a tongue of black glass that thrusts out into an infinite grey mist. The wind here doesn't just blow; it sighs with the collective boredom of a thousand forgotten NPCs. Below, the void swirls with 'Unallocated Assets' half-formed trees and floating doorframes that Zephyros likely discarded during a particularly manic creative binge. The ledge is sharp enough to cut your shadow, and the only way forward is a bridge of light that looks about as stable as a politician's promise.",
+    "exits": { "north": "room_003", "south": "room_001" }
+  },
+  "room_003": {
+    "name": "The Nexus Antechamber",
+    "zone": "Starting Chamber",
+    "shortDescription": "A shattered reception hall where the floor is a suggestion.",
+    "longDescription": "The transition from the void to this hall is a slap of cold air and the smell of ancient dust. The architecture is a confused mess; its as if Morwyn tried to build a fortress but Valdris kept changing the blueprint every time she turned her back. Statues of nameless heroes line the walls, though their faces have been smoothed over by the 'Entropy of Deletion.' If you listen closely, you can hear the faint, rhythmic ticking of a clock that Thessarian forgot to wind.",
+    "exits": { "northeast": "room_004", "south": "room_002" }
+  },
+  "room_004": {
+    "name": "Garden of First Steps",
+    "zone": "Starting Chamber",
+    "shortDescription": "A jagged throat of rock leading into the glowing deep.",
+    "longDescription": "The transition from the Spire's marble to the raw earth is a slap of cold, damp air. The walls are encrusted with low-grade resonance crystals that glow with a faint, sickly green light-the color of a dying computer monitor. The floor is uneven, slick with a substance that might be water but smells suspiciously of alchemical runoff. You can hear the distant, melodic dripping of the caves, a 'natural' symphony that sounds a bit too much like a looped audio file.",
+    "exits": { "north": "room_005", "southwest": "room_003" }
+  },
+  "room_005": {
+    "name": "The Threshold of Departure",
+    "zone": "Starting Chamber",
+    "shortDescription": "A grand archway marks the boundary between safety and adventure. Beyond lies the unknown. Many have passed through; fewer have returned.",
+    "longDescription": "The path here is barely wide enough for a man, especially one clutching a rusted dagger and a growing sense of dread. Huge clusters of blue quartz grow from the ceiling like jagged teeth. They vibrate with a low-frequency hum that sets your teeth on edge Morwyns influence, perhaps, trying to hammer the stone back into a shape that makes sense. Below the ledge, the darkness is absolute, save for the occasional flicker of a 'Missing Texture' error. Pedestals around the room hold basic equipment and supplies, as if placed there by some benevolent force to aid travelers on their journey.",
+    "exits": { "south": "room_004", "north": "room_007", "east": "room_006" }
+  },
+  "room_006": {
+    "name": "The Crystal Grotto",
+    "zone": "Crystal Caverns",
+    "shortDescription": "You enter a breathtaking cavern where massive crystals jut from every surface. They emit a soft, ethereal glow that illuminates the space in rainbow hues.",
+    "longDescription": "The acoustics in this grotto are terrifying. Every footstep you take is echoed back three times, each version sounding slightly more judgmental than the last. The walls are covered in a moss that pulses in time with the world's broken heartbeat. In the center of the room, a massive stalagmite has been carved into a crude throne, though who or what sat there is a question your stomach would rather you didn't ask. The air is thick with the scent of wet earth and ancient, unwashed secrets. A faint humming resonates through the chamber, as if the crystals themselves are singing a welcome.",
+    "exits": {
+      "northwest": "room_007",
+      "east": "room_010",
+      "south": "room_008",
+      "west": "room_005"
+    }
+  },
+  "room_007": {
+    "name": "The Gemstone Cavern",
+    "zone": "Crystal Caverns",
+    "shortDescription": "Precious gems of every color are embedded in the cavern walls. They sparkle like stars brought underground, creating a dazzling display.",
+    "longDescription": "Giant crystals of pure white light intersect here, turning the room into a kaleidoscope of blinding brilliance. If you stand in the right spot, the light refracts your shadow into five different versions of yourself-one for each Archmage. Its a beautiful, dizzying display of the vanity of Valdris. A sign scratched into the wall near the exit warns: 'Wear sunglasses or lose your retinas.' The Management is not liable for temporary blindness or permanent epiphanies.",
+    "exits": { "southeast": "room_006", "south": "room_005" }
+  },
+  "room_008": {
+    "name": "The Prismatic Crystal Forest",
+    "zone": "Crystal Caverns",
+    "shortDescription": "Light fractures through a dense thicket of crystal prisms overhead, painting the chamber in ever-shifting bands of color. The effect is mesmerizing.",
+    "longDescription": "You are walking through a 'forest' where the trees are made of obsidian and the leaves are shards of translucent quartz. Its the kind of place where a trip doesn't just result in a bruised knee, but a significant loss of blood. The 'vines' are actually strands of solidified Aether that crackle with static when you pass. The air smells like a lightning strike in a florist shop sweet and dangerous.",
+    "exits": { "east": "room_009", "north": "room_006" }
+  },
+  "room_009": {
+    "name": "The Luminous Hollow",
+    "zone": "Crystal Caverns",
+    "shortDescription": "Bioluminescent crystals line this hollow, pulsing with a gentle rhythm like a heartbeat. The air hums with latent magical energy.",
+    "longDescription": "The ground gives way to a massive chasm, bridged only by a flickering span of 'Hard-Light' geometry. The mist below glows with the golden hue of Nomagio's original source code. It looks inviting, like a warm bath, but you suspect falling into it would result in your immediate annihilation. The bridge hums at a pitch that makes your ears itch, and it occasionally flickers out for a microsecond, just to keep you on your toes.",
+    "exits": { "north": "room_010", "west": "room_008" }
+  },
+  "room_010": {
+    "name": "The Crystalline Cathedral",
+    "zone": "Crystal Caverns",
+    "shortDescription": "Towering crystal spires reach toward an impossibly high ceiling. The acoustics here are perfect - even whispers carry across the vast space.",
+    "longDescription": "Towering sapphire spires reach toward a ceiling lost in darkness far above, their blue radiance casting the chamber in an ethereal twilight glow. The acoustics here are extraordinary - a whispered word carries across the vast space with perfect clarity, and your footsteps create echoing harmonics that seem to form fleeting melodies. Ancient inscriptions have been carved into the base of the largest spire, their meaning long forgotten. This place feels sacred, as though countless beings have come here to contemplate the mysteries of existence.",
+    "exits": {
+      "north": "room_011",
+      "south": "room_009",
+      "west": "room_006",
+      "northwest": "room_020"
+    }
+  },
+  "room_011": {
+    "name": "The Faceted Gallery",
+    "zone": "Crystal Caverns",
+    "shortDescription": "Countless crystal faces reflect your image infinitely in all directions. It's easy to lose yourself in this hall of natural mirrors.",
+    "longDescription": "The crystals here are flat and polished, acting like a series of acoustic mirrors. You can hear a conversation happening three rooms away, but you can also hear the sound of your own blood rushing through your veins. Nyxara's presence is felt here in the hollow silence between the echoes. A faint scratching on the wall says: 'I can hear you thinking. Stop it. It's distracting.'",
+    "exits": { "northwest": "room_012", "south": "room_010" }
+  },
+  "room_012": {
+    "name": "The Mineral Sanctuary",
+    "zone": "Crystal Caverns",
+    "shortDescription": "A peaceful alcove where rare minerals grow in delicate formations. Scholars would pay fortunes to study this untouched geological wonder.",
+    "longDescription": "This alcove is a masterpiece of geological vanity, likely where Thessarian spent his weekends trying to calculate the music of the spheres. Clusters of rose quartz sing with a harmonic frequency so delicate it feels like a physical itch behind your teeth. A natural spring bubbles through the floor, its water tasting of iron and ancient mineral salts-though Nomagio has tagged the pool with a floating warning: 'Healing properties unverified. Use at own risk of spontaneous crystallization.' The 'peace' here is a lie; the silence is so heavy it feels like the cave is holding its breath, waiting for a cue.",
+    "exits": { "in": "room_013", "southeast": "room_011" }
+  },
+  "room_013": {
+    "name": "The Glittering Vault",
+    "zone": "Crystal Caverns",
+    "shortDescription": "The walls shimmer with what appears to be gold dust trapped within the crystal. Ancient dwarven runes suggest this was once a treasury.",
+    "longDescription": "The walls here are translucent, packed with gold dust that glitters with the promise of early retirement. Ancient dwarven runes are carved into the floor, but they don't say 'Treasury' a quick translation suggests they say 'RUN, YOU GREEDY FOOLS.' Pockets of obsidian darkness cling to the corners like ink stains, moving with a fluid intelligence that suggests Nyxara is currently using the room's shadows to audit your fear levels. The pedestals are empty, not because they were looted, but because whatever lived here apparently preferred the taste of the thieves over the weight of their coins.",
+    "exits": { "northeast": "room_014", "out": "room_012" }
+  },
+  "room_014": {
+    "name": "The Radiant Alcove",
+    "zone": "Crystal Caverns",
+    "shortDescription": "A warm, golden light emanates from a cluster of amber crystals. The temperature here is noticeably warmer and more comfortable.",
+    "longDescription": "The temperature spikes here, but it isn't the cozy warmth of a hearth; it's the humid, oppressive heat of a massive biological engine. Massive clusters of amber radiate a golden light that reveals the 'Resting Benches' are actually scarred with deep, four inch gouges that could only be made by claws harder than diamond. Fossilized insects trapped in the amber walls seem to watch you with ancient, patient eyes that look frozen in a moment of absolute, primeval terror. A faint, low-frequency rumble from the east vibrates through the soles of your boots, a sound that Nomagio has helpfully labeled in the system log as: [AMB_SFX: SNORING_APEX_PREDATOR].",
+    "exits": { "southwest": "room_013", "east": "room_015" }
+  },
+  "room_015": {
+    "name": "The Sparkling Depths",
+    "zone": "Crystal Caverns",
+    "shortDescription": "You've reached the deepest part of the Crystal Caverns. A shaft of light from above illuminates a spiral staircase leading upward.",
+    "longDescription": "You have reached the terminal point of the caverns, a subterranean cathedral where moonstone clusters glow with the bruised purple light of a dying star. A single shaft of light from far above illuminates a spiral staircase-the only exit-but it is blocked by a mountain of translucent, razor-edged scales. This is the lair of the Crystal Dragon, a 'security patch' made of living geometry and hunger. The floor is a mosaic of pulverized bone and shattered armor, and the air is so thick with raw Resonance it smells like a lightning strike in a graveyard. The beast's breath comes in slow, crystalline hisses, turning the air into frost. To go Up, you must first survive the Unmaking.",
+    "exits": { "west": "room_014", "up": "room_016" }
+  },
+  "room_016": {
+    "name": "The Aerial Sanctuary",
+    "zone": "Floating Gardens",
+    "shortDescription": "You emerge onto a floating island suspended in an endless sky. Exotic flowers bloom in impossible colors, defying gravity itself.",
+    "longDescription": "You emerge from the crystal staircase onto a floating island suspended in an endless azure sky. Exotic flowers bloom in colors that shift based on your emotional state - calm blues when peaceful, vibrant reds when excited. The island drifts gently, connected to others by bridges of woven vines and solidified moonbeams. Below you is nothing but clouds and the distant glimmer of other realms. Butterflies with wings of pure light dance between blossoms, and the air carries the sweet perfume of a thousand impossible flowers.",
+    "exits": {
+      "north": "room_017",
+      "northeast": "room_018",
+      "down": "room_015"
+    }
+  },
+  "room_017": {
+    "name": "The Aerial Paradise",
+    "zone": "Floating Gardens",
+    "shortDescription": "Waterfalls flow upward here, feeding pools that hover in midair. Butterflies with crystalline wings flutter between floating blossoms.",
+    "longDescription": "Waterfalls defy all natural law here, flowing upward from pools that hover in midair to sources hidden in the clouds above. The water sparkles with captured starlight, and drinking from it is said to grant visions of distant places. Butterflies with crystalline wings flutter between floating blossoms, their wings chiming like tiny bells. Vines grow through dimensional rifts, connecting this island to others you can barely see through the mist. A gentle rainbow permanently arcs overhead, casting everything in soft prismatic light.",
+    "exits": { "east": "room_018", "south": "room_016" }
+  },
+  "room_018": {
+    "name": "The Aerial Haven",
+    "zone": "Floating Gardens",
+    "shortDescription": "A tranquil garden where time seems to slow. Ancient trees with silver bark provide shade over beds of starflowers.",
+    "longDescription": "Time moves differently in this tranquil haven - hours can pass like minutes when you rest beneath the ancient trees with their silver bark. Starflowers bloom in beds arranged in constellations that mirror the night sky, each petal holding a tiny point of light. The trees' leaves are made of crystallized music that tinkle in the breeze, creating ever-changing melodies. A hammock woven from cloud-silk sways gently between two trunks, inviting weary travelers to rest and dream of distant worlds.",
+    "exits": {
+      "southwest": "room_016",
+      "west": "room_017",
+      "north": "room_019"
+    }
+  },
+  "room_019": {
+    "name": "The Aerial Refuge",
+    "zone": "Floating Gardens",
+    "shortDescription": "Soft grass cushions your feet as you walk among floating stone pathways. The air smells of jasmine and morning dew.",
+    "longDescription": "Soft bioluminescent grass cushions your feet as you walk among floating stone pathways that drift slowly through the air. The scent of jasmine and eternal morning dew hangs heavy here, and trees grow downward into the sky below, their roots reaching toward the sun. Small woodland creatures with translucent fur peek out from behind glowing ferns, curious but unafraid. Stepping stones hover at different heights, allowing you to walk at whatever elevation feels most comfortable.",
+    "exits": {
+      "north": "room_020",
+      "northeast": "room_021",
+      "south": "room_018"
+    }
+  },
+  "room_020": {
+    "name": "The Aerial Oasis",
+    "zone": "Floating Gardens",
+    "shortDescription": "A crystal-clear pool floats at the center of this garden, fed by clouds that drift past. Palm trees sway in the eternal breeze.",
+    "longDescription": "A crystal-clear pool floats impossibly at the center of this garden oasis, fed by clouds that drift past and squeeze out their moisture like gentle rain. Palm trees with leaves of spun gold sway in the eternal breeze, and roses that exist in multiple dimensions simultaneously shimmer at the water's edge, their petals visible and invisible by turns. Fish made of liquid light swim in the floating pool, and you can see your reflection not as you are, but as you dream yourself to be.",
+    "exits": {
+      "south": "room_019",
+      "east": "room_021",
+      "southeast": "room_010"
+    }
+  },
+  "room_021": {
+    "name": "The Aerial Grove",
+    "zone": "Floating Gardens",
+    "shortDescription": "Fruit trees heavy with golden apples grow in perfect rows. The fruit glows faintly, promising magical properties.",
+    "longDescription": "Fruit trees heavy with golden apples grow in perfect rows across this floating grove, their branches bending under the weight of magical produce. Each apple glows with inner light, and biting into one is said to grant temporary abilities - flight, strength, or foresight. Mushrooms that float like jellyfish drift lazily through the air between the trees, their caps pulsing with soft phosphorescence. Signs in a dozen languages warn visitors to eat no more than one fruit per visit, lest the magic overwhelm them.",
+    "exits": {
+      "southwest": "room_019",
+      "west": "room_020",
+      "north": "room_022"
+    }
+  },
+  "room_022": {
+    "name": "The Aerial Bower",
+    "zone": "Floating Gardens",
+    "shortDescription": "Flowering vines create a natural canopy overhead, their blooms releasing a sweet perfume. Hummingbirds dart between the flowers.",
+    "longDescription": "Flowering vines weave together overhead to create a natural bower, their countless blooms releasing a perfume so sweet it borders on intoxicating. Hummingbirds with feathers of living flame dart between the flowers, their wings humming melodies that harmonize with the wind. Ferns along the edges unfurl periodically to reveal tiny portals - glimpses of other garden realms where different seasons hold eternal sway. The ground here is soft moss that remembers your footsteps, springing back slowly after you pass.",
+    "exits": {
+      "north": "room_023",
+      "northeast": "room_024",
+      "south": "room_021"
+    }
+  },
+  "room_023": {
+    "name": "The Aerial Glade",
+    "zone": "Floating Gardens",
+    "shortDescription": "An open meadow of soft blue grass stretches before you. Fireflies dance in lazy patterns, even in daylight.",
+    "longDescription": "An open meadow of soft blue grass stretches across this floating glade, swaying in waves like an ocean of azure. Fireflies dance in lazy patterns even in full daylight, their lights leaving trails that spell out words in forgotten languages before fading. Spectral gardeners tend to fruit trees that bear gems instead of fruit - rubies, sapphires, and emeralds growing on branches like berries. They pay no attention to visitors, lost in their eternal work of cultivation and care.",
+    "exits": { "south": "room_022", "east": "room_024" }
+  },
+  "room_024": {
+    "name": "The Aerial Dell",
+    "zone": "Floating Gardens",
+    "shortDescription": "A peaceful hollow where the wind whispers secrets. Mushrooms with caps like tiny umbrellas dot the landscape.",
+    "longDescription": "This peaceful dell sits in a natural hollow where the wind seems to gather and whisper secrets from across the realms. Mushrooms with caps like tiny umbrellas dot the landscape, and sitting beneath them reveals they amplify sounds - you can hear conversations happening on distant floating islands. Flowering bushes along the edges sing soft lullabies to weary travelers, their melodies shifting to match your mood. The dell rises and falls with the wind, like a boat on gentle waves.",
+    "exits": {
+      "southwest": "room_022",
+      "west": "room_023",
+      "north": "room_025"
+    }
+  },
+  "room_025": {
+    "name": "The Aerial Retreat",
+    "zone": "Floating Gardens",
+    "shortDescription": "The highest point of the Floating Gardens. From here, you can see islands stretching to the horizon. A misty path leads down.",
+    "longDescription": "You have reached the highest point of the Floating Gardens, standing on terraces carved from clouds made solid beneath your feet. From here, countless garden islands stretch to the horizon in every direction, a breathtaking archipelago suspended in endless sky. Moss grows on the underside of the floating stones above you, defying all natural law. A misty path spirals downward, leading toward the Shadow Marshes far below. Wind chimes made from crystallized laughter sing their farewells as you prepare to descend into darkness.",
+    "exits": { "south": "room_024", "down": "room_026" }
+  },
+  "room_026": {
+    "name": "The Whispering Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Thick mist clings to the murky waters. Gnarled trees with hanging moss create eerie silhouettes. Voices seem to whisper from the fog.",
+    "longDescription": "You descend into a treacherous marshland where thick mist clings to murky waters that reflect things that are not there. Gnarled trees draped in hanging moss create eerie silhouettes that seem to move when glimpsed from the corner of your eye. Voices whisper from the fog - fragments of conversations from the dead, warnings that come too late, and names you've never heard spoken with terrible familiarity. The air is thick with the scent of decay and rebirth, reminding you that in the Shadow Marshes, endings become beginnings.",
+    "exits": { "north": "room_027", "northeast": "room_028", "up": "room_025" }
+  },
+  "room_027": {
+    "name": "The Haunted Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Ghostly lights bob in the distance, leading unwary travelers astray. The ground squelches with each step.",
+    "longDescription": "Ghostly lights bob in the distance like lanterns carried by invisible hands, leading unwary travelers astray into bottomless pools. Twisted trees dominate the landscape, their bark weeping tears of midnight that stain everything they touch. The ground squelches with each step, threatening to pull you down into its cold embrace. Phantom sounds echo from all directions - footsteps that match your own, whispered pleas for help, and the distant tolling of bells that have no source.",
+    "exits": { "south": "room_026", "east": "room_028" }
+  },
+  "room_028": {
+    "name": "The Twilight Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Perpetual dusk hangs over this section of marsh. The sun never quite sets, leaving everything in purple shadow.",
+    "longDescription": "Perpetual dusk hangs over this section of the marsh, a sun frozen eternally on the horizon casting everything in deep purple shadow. Time moves strangely here - you might walk for what feels like hours only to discover minutes have passed, or vice versa. Strange lights flicker in the distance, neither fire nor magic nor will-o-wisp but something older and hungrier. Mists that whisper secrets of the dead curl around your ankles, telling you things you wish you hadn't heard about those you've lost.",
+    "exits": {
+      "southwest": "room_026",
+      "west": "room_027",
+      "north": "room_029"
+    }
+  },
+  "room_029": {
+    "name": "The Phantom Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Spectral figures drift between the dead trees, paying no attention to the living. The air is cold despite the humidity.",
+    "longDescription": "Spectral figures drift between the skeletal dead trees, replaying moments from their lives in endless loops. They pay no attention to the living, trapped in memories of what was and what might have been. The bog waters here show visions of possible futures - some hopeful, most dire, all uncertain. The air is cold despite the humidity, and your breath mists before you. Peering too long into the water is said to trap your reflection there forever, another phantom doomed to wander.",
+    "exits": {
+      "north": "room_030",
+      "northeast": "room_031",
+      "south": "room_028"
+    }
+  },
+  "room_030": {
+    "name": "The Spectral Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "The boundary between life and death feels thin here. Translucent fish swim through the air as easily as water.",
+    "longDescription": "The boundary between life and death feels paper-thin in this stretch of marsh, allowing things to slip through that normally couldn't. Translucent fish swim through the air as easily as water, their ghostly forms passing through you with a chill that reaches your bones. Will-o-wisps dance between gnarled branches in patterns that seem almost like writing. Shadows move independently of their sources, playing out scenes from forgotten tragedies - duels, betrayals, and last embraces frozen in eternal repetition.",
+    "exits": {
+      "south": "room_029",
+      "east": "room_031",
+      "southeast": "room_040"
+    }
+  },
+  "room_031": {
+    "name": "The Eerie Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Something watches from the shadows. You can feel eyes following your every movement, though nothing reveals itself.",
+    "longDescription": "Something watches from the shadows here. You can feel countless eyes following your every movement, tracking you with predatory patience, though nothing reveals itself no matter how quickly you turn. The patches of ground exist in perpetual twilight regardless of what time it is elsewhere. Dark energy pulses through the air, making your skin tingle and the hair on your arms stand on end. Ancient stone markers line a path forward, but they seem to shift position when you're not looking directly at them.",
+    "exits": {
+      "southwest": "room_029",
+      "west": "room_030",
+      "north": "room_032"
+    }
+  },
+  "room_032": {
+    "name": "The Ghostly Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Pale flowers bloom on the water's surface, their petals glowing with ghostly luminescence. They turn to follow movement.",
+    "longDescription": "Pale flowers bloom on the water's surface throughout this marsh, their petals glowing with ghostly luminescence that provides the only light. They turn to follow your movement like sunflowers tracking the sun, and pulling one from the water reveals roots that look disturbingly like grasping fingers. Streams of dark water flow impossibly uphill, defying gravity as they wind between the twisted trees. Whispers in ancient tongues drift on the wind, speaking of secrets best left buried and truths that drive men mad.",
+    "exits": {
+      "north": "room_033",
+      "northeast": "room_034",
+      "south": "room_031"
+    }
+  },
+  "room_033": {
+    "name": "The Shadowed Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Shadows move independently of their sources here. Your own shadow occasionally gestures in directions you didn't move.",
+    "longDescription": "Shadows move with disturbing independence throughout this marsh, disconnected from the objects that should cast them. Your own shadow occasionally gestures in directions you didn't move, pointing at things you cannot see, warning you of dangers - or perhaps beckoning them closer. Islands of solid shadow float on the ethereal mists, and stepping on them feels like walking on cold silk. The boundary between the living world and the realm of shadows is threadbare here, and you sense things watching from the other side.",
+    "exits": { "south": "room_032", "east": "room_034" }
+  },
+  "room_034": {
+    "name": "The Murky Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "The water here is almost black, hiding whatever lurks beneath. Bubbles rise occasionally, accompanied by strange sounds.",
+    "longDescription": "The water here is almost perfectly black, an inky darkness that hides whatever lurks beneath its surface. Bubbles rise occasionally, accompanied by sounds that might be voices speaking words just below the threshold of understanding. Trees grow backwards through time in groves along the edges - you can watch saplings age into ancient twisted things, then shrink back to seedlings in a matter of minutes. Spectral forms drift through the mists between them, paying no heed to the living, lost in their own eternal errands.",
+    "exits": {
+      "southwest": "room_032",
+      "west": "room_033",
+      "north": "room_035"
+    }
+  },
+  "room_035": {
+    "name": "The Mysterious Marsh",
+    "zone": "Shadow Marshes",
+    "shortDescription": "Ancient standing stones rise from the swamp, covered in indecipherable runes. A stone stairway spirals upward from their center.",
+    "longDescription": "Ancient standing stones rise from the heart of the swamp in a perfect circle, their surfaces covered in runes that shift and change when observed. Every reflection in the dark water shows a different realm - some recognizable, others utterly alien. Time moves strangely here; moments stretch into hours and hours compress into heartbeats. At the center of the stone circle, a stairway spirals upward into mist, leading toward the Tower of Winds. This place is a nexus, a crossing point between worlds, and something ancient and powerful slumbers beneath the waters.",
+    "exits": { "south": "room_034", "up": "room_036" }
+  },
+  "room_036": {
+    "name": "The Windswept Chamber - Level 1",
+    "zone": "Tower Of Winds",
+    "shortDescription": "You enter the base of a magnificent tower. Wind howls through countless windows, yet candles burn steadily in alcoves.",
+    "longDescription": "You ascend from the marshes into the base of a magnificent tower that seems to stretch impossibly high into the clouds. Wind howls through countless windows cut into the smooth stone walls, yet candles burn steadily in alcoves, their flames unmoved by the gale. The architecture defies understanding - staircases spiral both up and sideways, and doorways lead to rooms that shouldn't fit within the tower's exterior dimensions. Through the windows, you can see the Shadow Marshes falling away below, already looking like a dark stain on a distant landscape.",
+    "exits": {
+      "north": "room_037",
+      "northeast": "room_038",
+      "down": "room_035"
+    }
+  },
+  "room_037": {
+    "name": "The Airy Chamber - Level 1",
+    "zone": "Tower Of Winds",
+    "shortDescription": "Gauzy curtains billow in the perpetual breeze. The room feels light and airy, with clouds visible through the windows.",
+    "longDescription": "Gauzy curtains of spun moonlight billow in the perpetual breeze that flows through this airy chamber. The room feels weightless, as if gravity has loosened its grip here, and you notice your footsteps are lighter than they should be. Streamers of colored air flow through the space in lazy spirals, painting temporary murals that dissolve as quickly as they form. Clouds drift past the windows at eye level, occasionally passing through the chamber itself, leaving your skin dewy with moisture.",
+    "exits": { "south": "room_036", "east": "room_038" }
+  },
+  "room_038": {
+    "name": "The Breezy Chamber - Level 2",
+    "zone": "Tower Of Winds",
+    "shortDescription": "Wind chimes of silver and crystal create an ever-changing melody. The air currents seem almost playful here.",
+    "longDescription": "Thousands of wind chimes fashioned from silver and crystal hang from the ceiling, creating an ever-changing melody as breezes flow through in complex patterns. The air currents here seem almost playful, tugging at your clothing and hair like a mischievous child. Platforms suspended by perpetual updrafts provide seating areas where you could float indefinitely. The wind carries scents from a thousand different places - salt spray, forest loam, desert spice, and mountain snow, all mingling in impossible combinations.",
+    "exits": {
+      "southwest": "room_036",
+      "west": "room_037",
+      "north": "room_039"
+    }
+  },
+  "room_039": {
+    "name": "The Gusty Chamber - Level 2",
+    "zone": "Tower Of Winds",
+    "shortDescription": "Powerful gusts sweep through this chamber periodically. Ropes and handholds line the walls for stability.",
+    "longDescription": "Powerful gusts sweep through this chamber every few moments, strong enough to knock an unprepared traveler from their feet. Ropes and handholds line the walls, worn smooth by countless hands seeking stability against the wind's fury. The walls themselves appear to be made of crystallized air - solid yet transparent, with currents visible swirling within them. Miniature tornadoes dance playfully in the corners, lifting small objects in graceful spirals before setting them down in different places than where they started.",
+    "exits": {
+      "north": "room_040",
+      "northeast": "room_041",
+      "south": "room_038"
+    }
+  },
+  "room_040": {
+    "name": "The Tempestuous Chamber - Level 3",
+    "zone": "Tower Of Winds",
+    "shortDescription": "Storm clouds swirl outside the windows. Lightning occasionally illuminates the chamber with brilliant flashes.",
+    "longDescription": "Storm clouds swirl menacingly outside the windows, close enough to touch, and lightning occasionally illuminates the chamber with brilliant flashes that leave afterimages dancing in your vision. Thunder rolls through the tower, felt as much as heard, vibrating through the floor and walls. Gravity shifts subtly with the direction of the wind - you might find yourself leaning into gusts that aren't there, or stumbling when the pressure changes. The Shattered Realms spread out far below, visible in fragments between the churning clouds.",
+    "exits": {
+      "south": "room_039",
+      "east": "room_041",
+      "northwest": "room_030"
+    }
+  },
+  "room_041": {
+    "name": "The Zephyr Chamber - Level 3",
+    "zone": "Tower Of Winds",
+    "shortDescription": "A calm eye in the storm. Gentle breezes carry the scent of distant flowers. A moment of peace amid chaos.",
+    "longDescription": "After the fury of the surrounding chambers, this room offers startling tranquility - a calm eye in the eternal storm. Gentle breezes carry the scent of distant flowers, and the walls seem to be carved from solid storm clouds frozen in place. Wind chimes made from crystallized breath create haunting melodies that speak of peace and rest. Travelers often pause here to gather their strength before continuing upward. The contrast with the chaos just beyond these walls makes the serenity feel almost sacred.",
+    "exits": {
+      "southwest": "room_039",
+      "west": "room_040",
+      "north": "room_042"
+    }
+  },
+  "room_042": {
+    "name": "The Gale Chamber - Level 4",
+    "zone": "Tower Of Winds",
+    "shortDescription": "The wind here is strong enough to lift a person. Enchanted boots hang by the door for those who need them.",
+    "longDescription": "The wind in this chamber is strong enough to lift a person off their feet and send them tumbling into the void beyond the windows. Enchanted boots hang by the door, their soles weighted with captured thunder to keep wearers grounded. Contained lightning crackles in glass spheres mounted on the walls, tamed and harnessed to provide light. Gusts of warm and cool air alternate in complex patterns, creating invisible thermal currents that the tower's original inhabitants once used to fly from level to level.",
+    "exits": {
+      "north": "room_043",
+      "northeast": "room_044",
+      "south": "room_041"
+    }
+  },
+  "room_043": {
+    "name": "The Storm Chamber - Level 4",
+    "zone": "Tower Of Winds",
+    "shortDescription": "Thunder rumbles constantly. A massive weather vane in the center spins wildly, tracking storms across the realm.",
+    "longDescription": "Thunder rumbles constantly through this chamber, a deep bass note that vibrates in your chest. A massive weather vane dominates the center of the room, spinning wildly as it tracks storms across the entire realm - its movements predict weather patterns weeks in advance. Platforms float on currents of visible wind, silvery streams of air that support your weight like solid ground. The wind here whispers secrets in languages that predate the spoken word, offering knowledge to those who can understand its ancient tongue.",
+    "exits": { "south": "room_042", "east": "room_044" }
+  },
+  "room_044": {
+    "name": "The Hurricane Chamber - Level 5",
+    "zone": "Tower Of Winds",
+    "shortDescription": "The strongest winds in the tower rage here. Only the bravest or most foolish venture to this height.",
+    "longDescription": "The strongest winds in the entire tower rage through this chamber, howling with a voice that sounds almost alive. Only the bravest or most foolish venture to this height - the walls are scored with claw marks from those who lost their grip. Feathers and leaves from impossible places drift on the eternal breezes, carried here from realms that may not even exist anymore. The very air sings with harmonic frequencies, creating a symphony of power that speaks of the primal fury of nature unleashed.",
+    "exits": {
+      "southwest": "room_042",
+      "west": "room_043",
+      "north": "room_045"
+    }
+  },
+  "room_045": {
+    "name": "The Cyclone Chamber - Level 5",
+    "zone": "Tower Of Winds",
+    "shortDescription": "At the tower's peak, you stand in the eye of an eternal cyclone. The view is breathtaking, if terrifying.",
+    "longDescription": "You have reached the very peak of the Tower of Winds, standing in the calm eye of an eternal cyclone that rages around the chamber's exterior. The view through the spinning walls of wind is both breathtaking and terrifying - all the Shattered Realms spread out below like a patchwork quilt of impossible landscapes. The wind carries messages from distant realms, whispered words that tell of events happening across reality. A spiraling staircase descends into the heart of the Molten Forges far below, where a very different kind of power awaits.",
+    "exits": { "south": "room_044", "down": "room_046" }
+  },
+  "room_046": {
+    "name": "The Grand Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Heat washes over you as you enter this massive smithy. Rivers of molten metal flow through channels in the floor.",
+    "longDescription": "Heat washes over you as you descend from the Tower of Winds into this massive smithy carved from volcanic rock. Rivers of molten metal flow through channels in the floor, their orange glow providing most of the light. Anvils carved from single pieces of meteoric iron stand at regular intervals, their surfaces scarred by countless hammer blows. The air shimmers with intense heat that somehow feels invigorating rather than oppressive, as if the forge itself is welcoming you to create.",
+    "exits": { "north": "room_047", "northeast": "room_048", "up": "room_045" }
+  },
+  "room_047": {
+    "name": "The Master Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Master craftsmen once created legendary weapons here. Their anvils still stand, tools laid out as if awaiting their return.",
+    "longDescription": "This forge once belonged to master craftsmen whose legendary weapons still sing in the hands of heroes across the realms. Their anvils still stand exactly where they left them, tools laid out as if awaiting their return from a break that has lasted centuries. Furnaces burn with the captured fire of dying stars, their heat capable of softening even adamantine. The ghost-echoes of hammer strikes can still be heard if you listen carefully, phantom sounds of creation that never truly faded.",
+    "exits": { "south": "room_046", "east": "room_048" }
+  },
+  "room_048": {
+    "name": "The Ancient Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "This forge predates recorded history. The flames burn with colors not found in nature, fueled by magical ore.",
+    "longDescription": "This forge predates recorded history - the stones that form its walls remember a time before the Great Sundering. The flames burn with colors not found in nature: deep violets, shimmering silvers, and a black fire that somehow still gives light. Pools of liquid metal flow like mercury rivers through channels that seem to change course based on what the forge wishes to create. Magical protections woven into the very air keep visitors comfortable despite temperatures that could melt steel.",
+    "exits": {
+      "southwest": "room_046",
+      "west": "room_047",
+      "north": "room_049"
+    }
+  },
+  "room_049": {
+    "name": "The Eternal Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "A flame that has burned since the world's creation illuminates this chamber. It is said to never be extinguished.",
+    "longDescription": "At the heart of this chamber burns a flame that has never been extinguished since the world's creation - the Eternal Fire, source of all forge-craft. Its light is warm and golden, and looking into it too long reveals visions of weapons yet to be made, armor that will one day save kingdoms, and artifacts whose purposes remain hidden. Hammers arranged on the walls ring with sympathetic vibrations, humming with the music of creation. Sparks of molten metal dance through the air like fireflies made of liquid gold, landing harmlessly on your skin.",
+    "exits": {
+      "north": "room_050",
+      "northeast": "room_051",
+      "south": "room_048"
+    }
+  },
+  "room_050": {
+    "name": "The Sacred Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Holy symbols adorn the walls. Weapons blessed here are said to strike true against evil. A reverent silence fills the air.",
+    "longDescription": "Holy symbols of a hundred different faiths adorn the walls of this sacred forge, coexisting in harmony despite their differences. Weapons blessed here are said to strike true against evil, and the forge has never been used to create instruments of cruelty. A reverent silence fills the air, broken only by the rhythmic breathing of bellows that seem to pulse with the heartbeat of the earth itself. The heat here is not just physical but spiritual, warming your very soul and burning away doubt and despair.",
+    "exits": {
+      "south": "room_049",
+      "east": "room_051",
+      "southwest": "room_060"
+    }
+  },
+  "room_051": {
+    "name": "The Mystical Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Arcane formulae are etched into every surface. The flames here burn cold, yet still work metal with impossible precision.",
+    "longDescription": "Arcane formulae are etched into every surface of this mystical forge - the walls, the floor, even the tools themselves bear inscriptions of power. The flames here burn cold, blue-white and freezing to the touch, yet they work metal with impossible precision that no normal fire could achieve. Crucibles contain substances that can melt the very essence of magic, distilling enchantments into liquid form. Steam rises from quenching pools, creating temporary clouds that rain liquid starlight onto the floor below.",
+    "exits": {
+      "southwest": "room_049",
+      "west": "room_050",
+      "north": "room_052"
+    }
+  },
+  "room_052": {
+    "name": "The Legendary Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Portraits of legendary smiths line the walls. Each created weapons that changed the course of history.",
+    "longDescription": "Portraits of legendary smiths line the walls, their eyes seeming to follow you with approval or judgment depending on your intentions. Each created weapons that changed the course of history - you recognize depictions of the Sundering Blade, the Shield of Dawn, and the Hammer of Kingdoms. The forges here can reshape reality itself, bending the laws of physics to create impossible alloys. The air crackles with the energy of creation, making your skin tingle with possibility and filling you with the urge to make something that will outlast empires.",
+    "exits": {
+      "north": "room_053",
+      "northeast": "room_054",
+      "south": "room_051"
+    }
+  },
+  "room_053": {
+    "name": "The Divine Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Light streams down from an opening far above. It is said the gods themselves once worked at these anvils.",
+    "longDescription": "Pure light streams down from an opening far above, illuminating anvils of impossible size that could only have been used by beings of divine stature. It is said the gods themselves once worked at these stations, forging the weapons that shaped the cosmos. The tools here work themselves when no one is watching - hammers rise and fall, tongs grip and turn, as if guided by invisible hands continuing work begun eons ago. The radiant heat feels like the warmth of a loving embrace, filling you with a sense of purpose and belonging.",
+    "exits": { "south": "room_052", "east": "room_054" }
+  },
+  "room_054": {
+    "name": "The Primordial Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "The very first forge, where the elements were first bound to mortal will. Raw creation energy crackles in the air.",
+    "longDescription": "You stand in the very first forge, where fire, metal, and will were first united to create something greater than their parts. Raw creation energy crackles visibly in the air, manifesting as arcs of golden lightning that leap between surfaces. The foundries here can give physical form to abstract concepts - courage can be hammered into a blade, hope can be folded into armor. The forge fires burn in colors that have no names, casting shadows that move independently of the light, showing glimpses of what might be forged from the raw stuff of possibility.",
+    "exits": {
+      "southwest": "room_052",
+      "west": "room_053",
+      "north": "room_055"
+    }
+  },
+  "room_055": {
+    "name": "The Celestial Forge",
+    "zone": "Molten Forges",
+    "shortDescription": "Stars seem to burn within the forge's flames. Weapons crafted here are said to hold the power of the cosmos.",
+    "longDescription": "Stars seem to burn within the forge's flames - not representations, but actual captured stellar fire, compressed into the heart of the furnaces. Weapons crafted here hold the power of the cosmos itself, and smiths made of pure flame work tirelessly at the anvils, their forms flickering between humanoid shapes and pillars of living fire. Heat mirages dance in the air, showing glimpses of legendary items being forged across time and space. A passage leads east to the Ethereal Library, where knowledge replaces fire as the source of power.",
+    "exits": { "south": "room_054", "east": "room_056" }
+  },
+  "room_056": {
+    "name": "The Glass Corridors",
+    "zone": "Caverns of Reflection",
+    "shortDescription": "You step into a freezing corridor of polished black glass. The temperature drops sharply.",
+    "longDescription": "You step from the blistering heat of the Molten Forges into a freezing corridor of polished obsidian glass. The air here bites at your lungs. The walls are so perfectly reflective that the transition is disorienting; it looks as though the corridor extends endlessly sideways. This is the outer edge of the Caverns of Reflection, a psychological debugger designed to break down the egos of early-game adventurers. A faint scratching on the glass reads: 'Look away if you want to keep your sanity.'",
+    "exits": {
+      "north": "room_057",
+      "northeast": "room_058",
+      "west": "room_055"
+    }
+  },
+  "room_057": {
+    "name": "The Hall of Regrets",
+    "zone": "Caverns of Reflection",
+    "shortDescription": "The faceted walls here reflect moments of your past weakness rather than your physical form.",
+    "longDescription": "The walls here are faceted like a cut diamond, but they don't reflect the light—they reflect your mistakes. Instead of seeing yourself holding a sword, the glass shows you arriving late, dropping items, or making the wrong dialogue choices. It's a localized localized guilt-trip built directly into the game engine. The floor is slick with condensation that smells suspiciously like cold sweat. You must focus solely on the physical grind to keep the reflections from taking solid form.",
+    "exits": { "south": "room_056", "east": "room_058" }
+  },
+  "room_058": {
+    "name": "The Echoing Void",
+    "zone": "Caverns of Reflection",
+    "shortDescription": "Sound behaves strangely here, trapping the clank of your armor in endless loops.",
+    "longDescription": "Sound has mass in this chamber. The clank of your scavenged armor and the scuff of your boots don't dissipate; they bounce off the reflective surfaces and circle you like hungry wolves. Nomagio has left a floating patch-note here: 'Audio reverb is currently set to 400%. Please walk softly unless you enjoy the sound of your own heavy breathing.' The sensory overload is designed to exhaust you physically and mentally.",
+    "exits": {
+      "southwest": "room_056",
+      "west": "room_057",
+      "north": "room_059"
+    }
+  },
+  "room_059": {
+    "name": "The Maze of Vanity",
+    "zone": "Caverns of Reflection",
+    "shortDescription": "The reflections here are subtly enhanced, making you look stronger and more heroic.",
+    "longDescription": "Unlike the previous halls, the mirrors here lie in your favor. Your reflection looks taller, your chipped sword looks flawless, and your posture is heroic. It is a dangerous trap for the ego, designed by Valdris to see who would stop and admire themselves until the server reset. The air is warm and smells faintly of expensive cologne and misplaced confidence. Pushing through the thick, syrupy atmosphere requires an exhausting amount of physical stamina.",
+    "exits": {
+      "north": "room_060",
+      "northeast": "room_061",
+      "south": "room_058"
+    }
+  },
+  "room_060": {
+    "name": "The Phantom Gallery",
+    "zone": "Caverns of Reflection",
+    "shortDescription": "Trapped within the glass walls are the translucent, repeating forms of past adventurers.",
+    "longDescription": "Trapped within the thick glass walls are the translucent, looping \"ghost data\" of previous players and NPCs who failed the psychological grind. They swing endlessly at invisible enemies or weep silently against the glass. The physical weight of their accumulated despair makes the air heavy, forcing you to drag your boots across the floor. You can't interact with them; they are just deleted cache files that the engine never properly dumped.",
+    "exits": {
+      "south": "room_059",
+      "east": "room_061",
+      "northeast": "room_050"
+    }
+  },
+  "room_061": {
+    "name": "The Obsidian Lake",
+    "zone": "Caverns of Reflection",
+    "shortDescription": "A perfectly still, dark subterranean lake stretches before you. It casts no reflections.",
+    "longDescription": "The endless mirrors give way to a vast, perfectly still subterranean lake of liquid obsidian. Strangely, the liquid casts absolutely no reflection at all—a terrifying absence of self. Wading through the waist-deep 'water' feels like pushing through cold molasses, a brutal test of your physical endurance. Every step sends heavy, sluggish ripples across the void. The silence here is absolute, pressing against your eardrums like a physical weight.",
+    "exits": {
+      "southwest": "room_059",
+      "west": "room_060",
+      "north": "room_062"
+    }
+  },
+  "room_062": {
+    "name": "The Chamber of Scrutiny",
+    "zone": "Caverns of Reflection",
+    "shortDescription": "The light here is harsh and unsparing. There are no shadows to hide in.",
+    "longDescription": "The light in this chamber is surgical and entirely unsparing. It emanates from everywhere and nowhere, banishing all shadows. You can see every chip in your blade, every stain on your armor, and every physical toll the first 60 rooms have taken on you. This is the ante-chamber to the ultimate psychological test. A heavy iron door to the North radiates a chilling malice, warning you to prepare for a fight that cannot be won with pure muscle alone.",
+    "exits": {
+      "north": "room_063",
+      "northeast": "room_064",
+      "south": "room_061"
+    }
+  },
+  "room_063": {
+    "name": "The Mirror's Malice",
+    "zone": "Caverns of Reflection",
+    "shortDescription": "A cavern of polished black glass that reflects what you could have been.",
+    "longDescription": "The transition into this room is like stepping through a sheet of ice. The floor is polished, black glass that seems to drop away into infinity. The walls are jagged facets of Memory Glass, each one reflecting a different, distorted version of the same room. It is eerily quiet, save for the sound of your own heartbeat. This room acts as a debugger for the soul; the mirrors here don't show your reflection, they manifest your arrogance, forcing you to prove your empathy before moving North.",
+    "exits": { "south": "room_062", "east": "room_064" }
+  },
+  "room_064": {
+    "name": "The Shattered Path",
+    "zone": "Caverns of Reflection",
+    "shortDescription": "The floor here is composed of millions of broken mirror shards.",
+    "longDescription": "The floor of this massive cavern is composed entirely of millions of broken mirror shards—the physical remnants of shattered egos and defeated shadow-clones. Walking across it sounds like a thousand breaking windows. The sharp fragments tear at your boots, making this one of the most physically punishing stretches of the Act I grind. There is no reflection left here, only the chaotic debris of those who couldn't balance their ambition with reality.",
+    "exits": {
+      "southwest": "room_062",
+      "west": "room_063",
+      "north": "room_065"
+    }
+  },
+  "room_065": {
+    "name": "The Crystal Ascent",
+    "zone": "Caverns of Reflection",
+    "shortDescription": "The deepest part of the Caverns of Reflection. A spiral staircase of frosted glass leads upward.",
+    "longDescription": "You have survived the psychological gauntlet. At the terminus of the Caverns of Reflection sits a spiral staircase made of thick, frosted glass. It spirals upward into a howling draft of cold air, promising passage out of the claustrophobic depths and into the chaotic weather systems above. You leave the mirrors behind, carrying only the bruised reality of who you truly are, ready to face the physical storms ahead.",
+    "exits": { "south": "room_064", "up": "room_066" }
+  },
+  "room_066": {
+    "name": "The Thunderous Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "You stand on a mountain peak where lightning strikes constantly. The air crackles with electrical energy.",
+    "longDescription": "You emerge from the library into a world of elemental fury, where lightning strikes the granite peak every few seconds with deafening peals of thunder. The air itself seems alive with electricity, making your hair stand on end and your skin tingle with raw power. Charred rock and melted sand create bizarre glass formations where bolts have struck repeatedly over countless ages. Despite the constant bombardment, the ancient stone walkways remain unscathed, protected by runes that drink the lightning's fury.",
+    "exits": {
+      "north": "room_067",
+      "northeast": "room_068",
+      "down": "room_065"
+    }
+  },
+  "room_067": {
+    "name": "The Lightning Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Lightning rods cover this peak, channeling the constant strikes into glowing crystals. The light is blinding.",
+    "longDescription": "A forest of copper lightning rods bristles from this peak, each one channeling electrical fury into crystalline capacitors that glow with captured power. The light is so intense you must shield your eyes, the accumulated energy turning night to noon. Storm mages once used this place to fuel great works of weather magic, and their abandoned equipment still hums with barely contained potential. The crystals pulse in rhythmic patterns, as if the storm itself has developed a heartbeat.",
+    "exits": { "south": "room_066", "east": "room_068" }
+  },
+  "room_068": {
+    "name": "The Tempest Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Rain falls horizontally here, driven by winds that threaten to sweep you off the mountain.",
+    "longDescription": "Rain hammers sideways across this exposed peak, driven by winds that howl like wounded beasts. Each step requires bracing against gusts that could throw you into the abyss, and the rain stings like needles against exposed skin. Stone anchoring posts with iron rings offer something to grip when the wind reaches its peak ferocity. Waterfalls flow upward in places where the gale reverses the natural order, and rainbows shimmer in the mist despite the absence of sun.",
+    "exits": {
+      "southwest": "room_066",
+      "west": "room_067",
+      "north": "room_069"
+    }
+  },
+  "room_069": {
+    "name": "The Storm-wreathed Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Clouds wrap around this peak like a cloak. Thunder is a constant companion, felt as much as heard.",
+    "longDescription": "Dense storm clouds coil around this peak like a living shroud, their darkness occasionally pierced by internal lightning that reveals shapes moving within the vapor. Thunder vibrates through the stone beneath your feet, a constant rumble felt in your bones and chest. The clouds part occasionally to reveal glimpses of impossible distances, then close again like curtains on a mystery. Crystallized thunder formations jut from the rock face, solid sound trapped in mineral form by ancient storm magic.",
+    "exits": {
+      "north": "room_070",
+      "northeast": "room_071",
+      "south": "room_068"
+    }
+  },
+  "room_070": {
+    "name": "The Electric Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Static electricity makes your hair stand on end. Sparks jump between metal objects without warning.",
+    "longDescription": "Static charge saturates every surface of this peak, causing your hair to lift and your skin to prickle with potential energy. Sparks arc between metal objects with sharp cracks, and touching the wrong surface sends tingling jolts through your body. The air has a sharp, ozonic taste that bites at your tongue. Ball lightning drifts lazily through the area, curious spheres of contained electricity that seem almost alive in their wandering patterns.",
+    "exits": {
+      "south": "room_069",
+      "east": "room_071",
+      "northeast": "room_080"
+    }
+  },
+  "room_071": {
+    "name": "The Windswept Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Nothing grows on this barren peak - the wind is too strong. Only the hardiest adventurers venture here.",
+    "longDescription": "Centuries of relentless wind have scoured this peak to bare bone, leaving nothing but polished stone and the occasional bleached skeleton of something that underestimated the gale's fury. The wind here never stops - it simply varies between uncomfortable and catastrophic. Erosion has carved the rock into flowing organic shapes, as if the stone itself is being slowly blown away. Veteran storm-walkers have carved handholds into the rock, the only way to traverse this desolate summit safely.",
+    "exits": {
+      "southwest": "room_069",
+      "west": "room_070",
+      "north": "room_072"
+    }
+  },
+  "room_072": {
+    "name": "The Hurricane Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "A permanent hurricane rages around this peak. The eye provides brief respite for those who find it.",
+    "longDescription": "A perpetual hurricane spirals around this peak, its roaring winds forming an impenetrable wall of destruction. The eye of the storm drifts unpredictably across the summit, offering moments of perfect calm amid the chaos. When the eye passes overhead, you can see straight up through the hollow column of the storm to stars that shouldn't be visible in daylight. Weather shamans built a small shelter here, using the eye's path to predict future storms across all the realms.",
+    "exits": {
+      "north": "room_073",
+      "northeast": "room_074",
+      "south": "room_071"
+    }
+  },
+  "room_073": {
+    "name": "The Cyclonic Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Debris orbits this peak in a perpetual cyclone. Treasures lost to storms sometimes appear, briefly.",
+    "longDescription": "A permanent cyclone of debris orbits this peak at terrifying speed, carrying the flotsam of a thousand storms - shattered ships, uprooted trees, lost treasures, and stranger things besides. Occasionally something breaks free from the whirling mass and crashes to the ground, offering brief opportunities for scavengers brave enough to dash out and retrieve it. Ancient runes carved into the summit keep the cyclone from closing in completely, creating a narrow safe zone at the peak's center.",
+    "exits": { "south": "room_072", "east": "room_074" }
+  },
+  "room_074": {
+    "name": "The Torrential Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "Rain falls in sheets so thick you can barely see your hand. Rivers form and disappear in minutes.",
+    "longDescription": "Rain cascades down in such density that you can barely see an arm's length ahead, the drops merging into solid curtains of falling water. Flash rivers carve new channels across the stone with each passing minute, only to dry up and be replaced by others moments later. The sound is deafening, a constant roar that drowns out thought itself. Drainage channels carved by previous visitors offer the only reliable footing, guiding the flood away from the most-traveled paths.",
+    "exits": {
+      "southwest": "room_072",
+      "west": "room_073",
+      "north": "room_075"
+    }
+  },
+  "room_075": {
+    "name": "The Atmospheric Peak",
+    "zone": "Storm Peaks",
+    "shortDescription": "The highest of the Storm Peaks. Above the clouds, you can see the curvature of the world itself.",
+    "longDescription": "You stand at the apex of the Storm Peaks, so high that the clouds form a solid floor far below and the curvature of the world itself becomes visible on the horizon. The air is thin here but strangely warm, and aurora-like curtains of light dance at the edge of vision in colors that seem to respond to your emotions. Ancient wind-carved runes cover the stone, messages left by storm giants in the world's youth. A shimmering path leads northeast into something stranger still - a place where reality begins to fray.",
+    "exits": { "south": "room_074", "northeast": "room_076" }
+  },
+  "room_076": {
+    "name": "The Null Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "You enter a space where existence itself seems uncertain. The walls shimmer between being and not-being.",
+    "longDescription": "You step from the storm-wracked peaks into something far stranger - a chamber where the walls flicker between existing and not existing, where your own hands seem translucent when you hold them before your face. The air here has no temperature, no weight, no presence at all. Your footsteps make no sound, yet you can feel the vibration of your movement through your bones. Portals dot the walls, each one leading to locations that may or may not be real.",
+    "exits": {
+      "north": "room_077",
+      "northeast": "room_078",
+      "southwest": "room_075"
+    }
+  },
+  "room_077": {
+    "name": "The Empty Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "Complete emptiness surrounds you. No sound, no light, no sensation - yet you remain, somehow.",
+    "longDescription": "Complete and utter emptiness envelops you - no light, no sound, no sensation of floor beneath your feet or air against your skin. Your own heartbeat seems impossibly loud in the absolute silence, the only proof you still exist. Yet despite the nothingness, you can somehow perceive walls, doorways, dimensions that your senses insist aren't there. Philosophers have gone mad here, trying to reconcile the experience of perceiving nothing with the obvious fact that you're perceiving something.",
+    "exits": { "south": "room_076", "east": "room_078" }
+  },
+  "room_078": {
+    "name": "The Vacant Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "This room feels abandoned by reality itself. Echoes of things that never existed whisper past.",
+    "longDescription": "This chamber carries the unmistakable feeling of abandonment - not by people, but by reality itself, as if existence packed up and left this corner of the universe behind. Ghostly echoes of things that never were whisper past your ears: conversations never spoken, footsteps never taken, lives never lived. Cracks in the fabric of space reveal glimpses of the infinite void beyond, an endless darkness that somehow feels more solid than the chamber around you.",
+    "exits": {
+      "southwest": "room_076",
+      "west": "room_077",
+      "north": "room_079"
+    }
+  },
+  "room_079": {
+    "name": "The Hollow Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "A shell of a room, empty of meaning. Your footsteps make no sound on the non-floor.",
+    "longDescription": "You stand in what feels like the shell of a room - the outline is there, the shape exists, but everything that would give it meaning has been scooped away. Your footsteps on the non-floor produce no sound, and your voice dies the instant it leaves your lips. Walls of crystallized nothingness shimmer with an anti-light that illuminates by showing you what isn't there. The air tastes of raw potential, of every possibility and none of them, all at once.",
+    "exits": {
+      "north": "room_080",
+      "northeast": "room_081",
+      "south": "room_078"
+    }
+  },
+  "room_080": {
+    "name": "The Blank Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "Pure white nothingness extends in all directions. The absence of everything is somehow overwhelming.",
+    "longDescription": "Pure white nothingness stretches in every direction, so featureless that your eyes ache trying to find something to focus on. The overwhelming blankness presses against your mind with an almost physical weight, the absence of everything somehow more oppressive than any darkness. Your reflection shimmers in surfaces that don't exist, showing not what you are but strange visions of what you might become in other realities. Cause and effect seem reversed here - you see results before their causes, effects that precede action.",
+    "exits": {
+      "south": "room_079",
+      "east": "room_081",
+      "southwest": "room_070"
+    }
+  },
+  "room_081": {
+    "name": "The Void Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "You float in absolute void. Direction has no meaning here - yet paths lead onward somehow.",
+    "longDescription": "You float suspended in absolute void, gravity having abandoned this place along with light, sound, and meaning. Direction has no significance here - 'up' and 'down' are merely suggestions, and the paths forward exist only because you believe they do. Time flows in all directions at once, and you catch glimpses of yourself arriving before you began to move. The silence is so complete it becomes its own kind of sound, a roaring emptiness that fills your ears with nothing.",
+    "exits": {
+      "southwest": "room_079",
+      "west": "room_080",
+      "north": "room_082"
+    }
+  },
+  "room_082": {
+    "name": "The Absent Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "Things that should be here are conspicuously missing. Even shadows seem to have abandoned this place.",
+    "longDescription": "This chamber is defined by what isn't here - the conspicuous absence of things that should exist. Even shadows have fled this place, leaving objects without their dark companions. Your mind keeps trying to fill in the gaps, expecting furniture, decorations, life, and finding only void. Colors that have no names swirl in the emptiness, hues that exist in the gaps between the spectrum, painting abstract patterns that your eyes can see but your brain refuses to process.",
+    "exits": {
+      "north": "room_083",
+      "northeast": "room_084",
+      "south": "room_081"
+    }
+  },
+  "room_083": {
+    "name": "The Nihil Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "The concept of existence feels foreign here. You question whether you truly are, or merely remember being.",
+    "longDescription": "The very concept of existence feels foreign in this chamber, an alien idea that doesn't quite apply here. You begin to question whether you truly are, or whether you merely remember being, a ghost of consciousness persisting through habit rather than reality. The void whispers to you in languages older than thought, sharing secrets about the nature of existence and non-existence that you can almost understand. Here, nothingness has been given form and substance, absence made tangible.",
+    "exits": { "south": "room_082", "east": "room_084" }
+  },
+  "room_084": {
+    "name": "The Zero Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "Mathematics breaks down in this room. One plus one equals nothing. Zero contains infinity.",
+    "longDescription": "Mathematics itself breaks down in this impossible chamber. One plus one equals nothing here, and zero contains infinity within its emptiness. You feel simultaneously infinitely large and infinitesimally small, your sense of scale oscillating wildly between cosmic and microscopic. Equations carved into the non-walls prove impossible theorems, and geometric shapes exist that shouldn't be possible in any number of dimensions. Scholars who stayed too long emerged speaking only in paradoxes.",
+    "exits": {
+      "southwest": "room_082",
+      "west": "room_083",
+      "north": "room_085"
+    }
+  },
+  "room_085": {
+    "name": "The Null Chamber",
+    "zone": "Void Nexus",
+    "shortDescription": "You've reached the heart of nothingness. Paradoxically, it feels like the fullest place you've ever been.",
+    "longDescription": "You have reached the heart of nothingness itself, the center of the Void Nexus where absence becomes absolute. Paradoxically, this place of ultimate emptiness feels like the fullest place you've ever been, pregnant with infinite potential. The boundary between yourself and the void becomes increasingly difficult to maintain - you can feel your edges blurring, your sense of self threatening to dissolve into the everything-nothing around you. A stairway of solidified starlight spirals upward, offering escape to the celestial realms above.",
+    "exits": { "south": "room_084", "up": "room_086" }
+  },
+  "room_086": {
+    "name": "The Stellar Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Massive telescopes point toward the heavens. Star charts cover every surface, tracking celestial movements.",
+    "longDescription": "You ascend from the void into a chamber of breathtaking cosmic majesty, where massive brass telescopes point toward the heavens through a ceiling of perfectly clear crystal. Star charts cover every available surface, updating themselves in real-time as celestial bodies wheel through their eternal dance. The telescopes here can peer into the hearts of distant stars, revealing the fusion fires that birth light itself. Astronomers' notes scattered across desks speak of discoveries that would revolutionize mortal understanding of the universe.",
+    "exits": {
+      "north": "room_087",
+      "northeast": "room_088",
+      "down": "room_085"
+    }
+  },
+  "room_087": {
+    "name": "The Cosmic Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "The ceiling is open to the cosmos. Galaxies spiral overhead, close enough to touch yet impossibly distant.",
+    "longDescription": "The ceiling here opens directly to the cosmos itself, with no glass or barrier between you and the infinite void of space. Yet you breathe easily, protected by ancient enchantments that hold the vacuum at bay. Galaxies spiral overhead close enough that you feel you could reach up and touch them, their billion-year rotations compressed into visible motion. Starlight streams through crystal lenses arrayed around the chamber, splitting into spectra that reveal the secret compositions of distant suns.",
+    "exits": { "south": "room_086", "east": "room_088" }
+  },
+  "room_088": {
+    "name": "The Galactic Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Holographic projections of distant galaxies fill the room. You walk among stars millions of light-years away.",
+    "longDescription": "Holographic projections of distant galaxies fill this vast chamber, allowing you to walk among stars that burn millions of light-years away. You can reach out and pass your hand through the ghostly image of a supernova, feel the phantom warmth of stellar nurseries where new suns are being born. Massive orreries model not just solar systems but entire galactic clusters, their mechanisms so precise they can predict cosmic events millennia in advance. Cosmic dust drifts through the air, sparkling like diamond powder in the projected starlight.",
+    "exits": {
+      "southwest": "room_086",
+      "west": "room_087",
+      "north": "room_089"
+    }
+  },
+  "room_089": {
+    "name": "The Universal Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Every known universe is mapped here. Scholars spend lifetimes studying just one wall of this vast chamber.",
+    "longDescription": "Every known universe is mapped upon the walls of this impossible chamber, each one a bubble of reality floating in the infinite sea of possibility. Scholars have spent entire lifetimes studying just one small section of one wall, and still not exhausted its secrets. Viewing platforms extend outward into the space between worlds, allowing observers to study the membranes that separate realities. The faint music of celestial bodies reaches your ears - the cosmic hum of gravity waves and stellar winds, translated into sound by ancient instruments.",
+    "exits": {
+      "north": "room_090",
+      "northeast": "room_091",
+      "south": "room_088"
+    }
+  },
+  "room_090": {
+    "name": "The Astral Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "The barrier between physical and astral planes is thin here. Spirits of astronomers past continue their observations.",
+    "longDescription": "The barrier between physical and astral planes wears thin in this sacred space, allowing the spirits of astronomers past to continue their eternal observations alongside the living. Ghostly figures peer through spectral telescopes, recording data in journals that fade from existence when you try to read them. Meteor showers streak across the visible sky in trails of silver fire, and the instruments here measure the music of the spheres - the harmonic resonances that bind the cosmos together. A shimmering portal leads down to the mortal realm below.",
+    "exits": { "south": "room_089", "east": "room_091", "down": "room_001" }
+  },
+  "room_091": {
+    "name": "The Celestial Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Divine bodies move across the domed ceiling in real-time. The music of the spheres can almost be heard.",
+    "longDescription": "Divine celestial bodies track across the great domed ceiling in real-time, suns and moons and stranger things wheeling in their ordained paths. The music of the spheres rises just to the edge of hearing here, a haunting melody that seems always about to resolve into something comprehensible. Basins of concentrated liquid starlight illuminate the chamber with a glow that has no source and casts no shadow. The walls pulse gently with the rhythm of distant pulsars, heartbeats of dying stars light-years away.",
+    "exits": {
+      "southwest": "room_089",
+      "west": "room_090",
+      "north": "room_092"
+    }
+  },
+  "room_092": {
+    "name": "The Planetary Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Detailed models of every known planet float in precise orbits. Touch one and see its surface up close.",
+    "longDescription": "Detailed models of every known planet float in precise orbits throughout this chamber, from tiny frozen rocks to massive gas giants that dwarf your entire form. Touch any one and your vision zooms to its surface - you can see storms raging on gas giants, volcanoes erupting on molten worlds, and civilizations rising and falling on those that bear life. Nebulae drift past the observation windows like cosmic clouds painted in colors that have no earthly names, nurseries of stars in their slow million-year births.",
+    "exits": {
+      "north": "room_093",
+      "northeast": "room_094",
+      "south": "room_091"
+    }
+  },
+  "room_093": {
+    "name": "The Solar Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "A miniature sun burns at the room's center, providing warmth and light. Solar flares dance harmlessly.",
+    "longDescription": "A miniature sun burns at the center of this circular chamber, contained within crystalline barriers that keep its fury in check while allowing its warmth and light to fill the space. Solar flares dance across its surface in slow motion, each one a cataclysm that would devastate worlds, rendered harmless and beautiful by the containment magic. The gravity feels lighter here, as if you're already partway to the stars, and you can reach out to touch the cosmic web of forces that connects all things in the universe.",
+    "exits": { "south": "room_092", "east": "room_094" }
+  },
+  "room_094": {
+    "name": "The Lunar Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Moons from a hundred worlds hang overhead. Each cycles through phases at its own pace.",
+    "longDescription": "Moons from a hundred different worlds hang overhead in this vaulted chamber, each cycling through its phases at its own pace - some waxing, some waning, some showing faces never seen from their parent worlds. Silver light fills the room in constantly shifting patterns as the various moons align and separate in their complex dance. Comets streak past the observation windows close enough to see their icy surfaces and trailing tails of vaporized gas. Constellations seem to visit here, their stellar patterns occasionally descending close enough to study.",
+    "exits": {
+      "southwest": "room_092",
+      "west": "room_093",
+      "north": "room_095"
+    }
+  },
+  "room_095": {
+    "name": "The Starlight Observatory",
+    "zone": "Celestial Observatory",
+    "shortDescription": "Pure starlight fills this chamber, filtered from a thousand different suns. The effect is magical.",
+    "longDescription": "Pure starlight fills this chamber, gathered and filtered from a thousand different suns across the cosmos. The effect is transcendent - you feel illuminated not just externally but internally, as if the light is revealing truths about yourself you never knew. Aurora from distant worlds paint the domed ceiling in ever-shifting patterns of impossible color. Here at the apex of the Celestial Observatory, you sense the universe observing itself through your eyes, and the passage north leads to the ultimate destination - the sanctum of the archmages themselves.",
+    "exits": { "south": "room_094", "north": "room_096" }
+  },
+  "room_096": {
+    "name": "The Supreme Sanctum",
+    "zone": "Archmage Sanctum",
+    "shortDescription": "You enter the domain of the archmages. Raw magical energy flows through the air like visible currents.",
+    "longDescription": "You cross the threshold into the domain of the archmages, and the air itself changes - raw magical energy flows in visible currents of gold and silver, so concentrated it feels almost solid against your skin. Thrones carved from single pieces of crystallized time line the walls, each one bearing the impression of the legendary mage who once sat there. The weight of accumulated power presses against your consciousness, testing your worthiness to stand in this sacred space. Few mortals have ever set foot here and returned unchanged.",
+    "exits": {
+      "north": "room_097",
+      "northeast": "room_098",
+      "south": "room_095"
+    }
+  },
+  "room_097": {
+    "name": "The Ultimate Sanctum",
+    "zone": "Archmage Sanctum",
+    "shortDescription": "Spellbooks of unimaginable power line the walls. Protective wards prevent all but the worthy from reading them.",
+    "longDescription": "Spellbooks of unimaginable power line every wall, their covers bound in materials that shouldn't exist - dragon leather, void-metal, woven starlight. Protective wards shimmer before each tome, ready to reduce the unworthy to ash should they dare reach for forbidden knowledge. Altars of black marble stand at precise points throughout the chamber, each one a focal point where the essence of magic itself is distilled into pure form. Reality feels thin and malleable here, as if a sufficiently powerful thought could reshape the world.",
+    "exits": { "south": "room_096", "east": "room_098" }
+  },
+  "room_098": {
+    "name": "The Final Sanctum",
+    "zone": "Archmage Sanctum",
+    "shortDescription": "This is where the greatest mages came to work their most powerful spells. The walls still hum with residual magic.",
+    "longDescription": "This is where the greatest mages in history came to work their most powerful spells, and the walls still hum with residual magic from workings that shook the foundations of reality. Scorch marks on the floor tell tales of experiments gone wrong, while pristine circles of power speak of triumphs that reshaped worlds. The Archmages conduct their eternal debates in this chamber, their arguments about the nature of magic sometimes continuing for centuries. The very stones pulse with accumulated power, each one a battery charged by millennia of spellwork.",
+    "exits": {
+      "southwest": "room_096",
+      "west": "room_097",
+      "north": "room_099"
+    }
+  },
+  "room_099": {
+    "name": "The Absolute Sanctum",
+    "zone": "Archmage Sanctum",
+    "shortDescription": "Reality bends to the will of those who stand here. A single thought could reshape the world.",
+    "longDescription": "Reality bends visibly to the will of those who stand in this penultimate chamber - you can see the air ripple with potential, responding to your very thoughts. Portraits of wizards who transcended mortality line the walls, their painted eyes following you with knowing intelligence. You can feel the presence of beings whose power transcends mortal understanding, watching from dimensions adjacent to this one. A single careless thought here could reshape the world, and you must guard your mind carefully as you approach the final chamber ahead.",
+    "exits": { "north": "room_100", "south": "room_098" }
+  },
+  "room_100": {
+    "name": "The Perfect Sanctum",
+    "zone": "Archmage Sanctum",
+    "shortDescription": "You have reached the pinnacle of the Shattered Realms. From here, all paths lead back - but the journey has changed you forever.",
+    "longDescription": "You have reached the Perfect Sanctum, the absolute pinnacle of the Shattered Realms - a circular chamber of flawless white marble where spells are born and given their first breath of life. The Archmage Supreme awaits here, guardian of ultimate knowledge and final challenger to those who would claim mastery of this realm. The atmosphere crackles with potential for both miracles and catastrophes, and you understand at last that this entire journey has been a test. From here, all paths lead back to the beginning, but you will never be the same person who first awakened in that distant chamber below. To the north, a raw grey seam has opened in the marble - the edge of the tutorial, where the real Eldoria begins.",
+    "exits": { "south": "room_099", "north": "room_101" }
+  },
+  "room_101": {
+    "name": "The Shattered Threshold",
+    "zone": "Ashlands of Revision",
+    "shortDescription": "The precipice of the 'real' Eldoria, choked with administrative ash.",
+    "longDescription": "You stand on the precipice of the 'real' Eldoria, having survived the Gatekeeper's trial at the cost of your favorite steel sword. The air here is choked with a fine, grey powder that tastes of burnt silicon and deleted save-files. Every step kicks up clouds of this administrative ash, settling heavy on your shoulders like the physical weight of lost progress. The grand, sweeping fantasy architecture has unceremoniously ended, replaced by a jagged, half-rendered wasteland. Stuck to a suspiciously smooth rock nearby is a neon-yellow sticky note, written in Nomagio's hurried scrawl: 'The tutorial is over. The safety protocols are off. Don't say I didn't warn you, and please try not to die in a way that requires me to reboot the server.'",
+    "exits": { "north": "room_102", "south": "room_100" }
+  },
+  "room_102": {
+    "name": "The Cinder-Walks",
+    "zone": "Ashlands of Revision",
+    "shortDescription": "A deep ravine where the ground crunches like dry toast in the apocalypse.",
+    "longDescription": "The path plunges into a deep, jagged ravine where the ground crunches beneath your boots like dry toast left out in the apocalypse. The ash banks on either side are stained with rust and reek strongly of burnt hair and misplaced optimism. It feels less like a valley and more like a wound in the world's geometry that nobody bothered to stitch up. If you look up, the sky doesn't quite match the horizon; it has the unsettling, flat quality of an uncalibrated monitor, bleeding slightly at the edges where the blue skybox fails to meet the mountains.",
+    "exits": { "north": "room_103", "south": "room_101" }
+  },
+  "room_103": {
+    "name": "The Iron-Dust Ridge",
+    "zone": "Ashlands of Revision",
+    "shortDescription": "A bitter wind-blasted ridge littered with microscopic rusted iron.",
+    "longDescription": "A bitter, howling wind rips across this exposed ridge, carrying microscopic particles of rusted iron that stick to your sweat and threaten to give your lungs tetanus. The landscape is a brutalist nightmare of sharp angles and drop-offs that suggest the terrain generator simply gave up midway through. Right in the center of the path sits a single, heavily armored leather boot. It is completely alone, entirely out of place, and looking deeply traumatized by whatever catastrophic physics engine failure forcibly separated it from its owner.",
+    "exits": { "north": "room_104", "south": "room_102" }
+  },
+  "room_104": {
+    "name": "The Valley of Scrapped Ideas",
+    "zone": "Ashlands of Revision",
+    "shortDescription": "Piles of formless grey matter - concepts Morwyn discarded before they could become rocks.",
+    "longDescription": "Piles of formless, lumpy grey matter line the road, rising up like tumors of stone. These are the physical manifestations of concepts Morwyn hammered out on his anvil and discarded before they could even become proper rocks - half-baked ideas like 'three-sided squares' and 'water that isn't wet.' The air is thick with the smell of ozone, cold forge-sweat, and profound creative failure. Walking through here feels like wading through the subconscious of an artist who is actively missing a deadline.",
+    "exits": { "east": "room_105", "south": "room_103" }
+  },
+  "room_105": {
+    "name": "The Forgotten Sentinel",
+    "zone": "Ashlands of Revision",
+    "shortDescription": "A rusted helmet radiates a looping audio-file of a miserable sigh.",
+    "longDescription": "Resting atop a blackened pedestal of fused glass is a rusted, heavily dented helmet. It reeks of centuries-old panic, stale sweat, and the sharp tang of copper blood. The soldier it belonged to is long gone, likely scrubbed from the database during the Sundering, but their despair has somehow managed to outlive them. If you press your ear close to the corroded metal, you can hear a faint, looping audio file of a miserable sigh - a sound effect that forgot to de-allocate from the server's memory and is now determined to slowly drive anyone who lingers here completely mad.",
+    "exits": { "north": "room_106", "west": "room_104" }
+  },
+  "room_106": {
+    "name": "The Sputtering Vents",
+    "zone": "Ashlands of Revision",
+    "shortDescription": "Fissures belching toxic neon-green steam across a drunken path.",
+    "longDescription": "Deep, jagged fissures crisscross the baked earth, periodically belching thick columns of steam that glow a highly unnatural, toxic neon green. The vapor tastes exactly like battery acid and smells of boiled cabbage. The architecture of the ravine here feels like it was designed by a level editor who was actively intoxicated; the path pitches and rolls at nauseating angles, and what looks like a set of stone stairs abruptly melts into a perfectly smooth, friction-less ramp.",
+    "exits": { "north": "room_107", "south": "room_105" }
+  },
+  "room_107": {
+    "name": "The Ashen Crossroads",
+    "zone": "Ashlands of Revision",
+    "shortDescription": "Four paths diverge. The signpost only reads 'Good Luck.'",
+    "longDescription": "Four miserable paths diverge in a swirling cloud of grey dust and bleached, unidentifiable bones. A heavy silence presses down on the junction, amplifying the oppressive weight of having to make a choice in a world that clearly hates you. In the center stands a weathered wooden signpost with four arrows pointing in slightly different, unhelpful directions. Every single arrow simply reads: 'Good Luck.' A faint, localized tooltip floats uselessly a few inches above the wood, endlessly flashing the word [UNDEFINED].",
+    "exits": { "east": "room_108", "south": "room_106" }
+  },
+  "room_108": {
+    "name": "The Anvil's Echo",
+    "zone": "Ashlands of Revision",
+    "shortDescription": "The wind howls with the sound of Morwyn's phantom hammer.",
+    "longDescription": "There is no physical forge here, but the wind howls with the exact, concussive sound of Morwyn hammering on a massive anvil some three hundred miles away. The noise doesn't just travel through the air; it travels directly through the game's audio channel, ignoring the laws of physics and vibrating right in the marrow of your bones. Every resounding CLANG rattles your jaw, setting your teeth on edge and giving you a persistent, phantom cavity in your lower left molar.",
+    "exits": { "north": "room_109", "west": "room_107" }
+  },
+  "room_109": {
+    "name": "The Silicon Gulch",
+    "zone": "Ashlands of Revision",
+    "shortDescription": "A sea of crushed microchips where tumbleweeds are perfect cubes.",
+    "longDescription": "The dirt transitions abruptly into a sea of fine, granulated silicon that gets instantly into your boots, your armor joints, and your underlying sense of existential dread. It is a barren wasteland of crushed microchips and shattered logic gates disguised as a desert. The silence is broken only by the dry scraping of the wind, which occasionally blows a tumbleweed across your path. Upon closer inspection, the tumbleweed is a perfect, untextured geometric cube, adhering strictly to a default mesh structure as it rolls end-over-end into the distance.",
+    "exits": { "north": "room_110", "south": "room_108" }
+  },
+  "room_110": {
+    "name": "The Horizon of Errors",
+    "zone": "Ashlands of Revision",
+    "shortDescription": "A vista where the sky keeps dropping to 144p before snapping back.",
+    "longDescription": "You stand at the edge of a massive, sweeping vista that would be breathtaking if it weren't currently struggling to render. Peering into the distance, the sky periodically flickers and drops to a blocky, 144p resolution before violently snapping back to reality. The clouds occasionally turn into pixelated squares of static. Staring at the horizon for too long causes a sharp, stabbing pain behind your left eye, remarkably similar to the headache one gets from staring at a badly formatted spreadsheet for twelve hours straight.",
+    "exits": { "south": "room_109", "north": "room_111" }
+  },
+  "room_111": {
+    "name": "The Data-Drifts",
+    "zone": "Data-Drifts",
+    "shortDescription": "A vast sea of grey sand that breathes in binary.",
+    "longDescription": "You have entered a vast, undulating sea of grey sand that shifts according to cold mathematical laws rather than the whims of the wind. The dunes move in perfect, synchronized pulses, as if the desert itself is breathing in binary. The sand is unnervingly uniform - every grain is a perfect sphere, and it has a nasty habit of getting into the hinges of your armor and grinding with a sound like a screaming violin. It's an ocean of geometry that makes you slightly seasick; if you stare at the horizon for too long, you'll notice the dunes aren't actually moving, they're just 're-rendering' three inches to the left.",
+    "exits": { "north": "room_112", "south": "room_110" }
+  },
+  "room_112": {
+    "name": "The Hexagonal Expanse",
+    "zone": "Data-Drifts",
+    "shortDescription": "A perfect hexagonal plain that buzzes a shame-buzzer when you step wrong.",
+    "longDescription": "The chaotic drifts abruptly smooth out into a flat, unnervingly level plain paved in perfect stone hexagons. The craftsmanship is so precise it's physically offensive; there isn't a single weed or speck of dust in the cracks. However, the room has been cursed with a particularly petty bit of programming: every time you accidentally step on a seam between the tiles, a distant, muffled buzzer sounds from deep beneath the earth - the kind of noise a game show contestant hears when they've profoundly disappointed their family. It is a psychological minefield that makes you walk like a high-strung heron.",
+    "exits": { "north": "room_113", "south": "room_111" }
+  },
+  "room_113": {
+    "name": "The Floating Debris",
+    "zone": "Data-Drifts",
+    "shortDescription": "Multi-ton boulders hovering on mis-assigned gravity.",
+    "longDescription": "Several massive, multi-ton boulders hover precisely three feet off the ground, bobbing gently as if they were corks in a pond. Zephyros clearly had a momentary lapse in focus here, assigning the gravitational constant of a small moon to a localized patch of dirt. The air smells of ozone and unsettled dust. There is a terrifying lack of weight to the world; if you jump, you linger in the air just a fraction of a second too long, giving you plenty of time to contemplate your inevitable, slightly-slower-than-usual impact with the ground.",
+    "exits": { "west": "room_114", "south": "room_112" }
+  },
+  "room_114": {
+    "name": "The Stuttering Path",
+    "zone": "Data-Drifts",
+    "shortDescription": "A trail where every step snaps you back two inches.",
+    "longDescription": "This stretch of the trail is physically exhausting and deeply, personally insulting. As you walk, the world seems to 'stutter.' You take a confident stride forward, only to find yourself snapped back two inches, your momentum discarded by a reality that is struggling to keep up with your footsteps. It feels like wading through invisible, molasses-thick static. Your inner ear is in a state of open revolt, and a small, flickering icon in the corner of your vision - visible only to the truly desperate - indicates that your 'Connection to Reality' is currently 'Poor.'",
+    "exits": { "north": "room_115", "east": "room_113" }
+  },
+  "room_115": {
+    "name": "The Stray Code",
+    "zone": "Data-Drifts",
+    "shortDescription": "A glowing snippet of raw world-code floats in the air.",
+    "longDescription": "A jagged line of neon-green light floats in the air at chest-height, wiggling like a luminous, radioactive earthworm. It doesn't cast any heat, but it hums with the sound of a thousand angry bees. As you approach, the light resolves into a string of logic: if (player_willpower < 1) { spawn_despair(); }. It is a discarded snippet of the world's skeleton, left behind by Nomagio during a late-night bug fix. The air around it tastes of copper and burnt plastic, and your hair stands on end as the raw variables of the universe tickle your skin.",
+    "exits": { "north": "room_116", "south": "room_114" }
+  },
+  "room_116": {
+    "name": "The Glass Desert",
+    "zone": "Data-Drifts",
+    "shortDescription": "A seamless sheet of brittle black glass under a merciless sun.",
+    "longDescription": "The silicon sand has been fused into a single, seamless sheet of brittle black glass by a heat so intense it must have been a server-side error. The sun above reflects off the surface with a blinding, merciless glare that threatens to sear your retinas. Looking down, you can see your own reflection walking beneath you in the dark depths of the glass - though your reflection looks significantly better rested and seems to be judging your current equipment choices. The heat is dry and absolute, smelling of scorched earth and ancient, baked-in secrets.",
+    "exits": { "north": "room_117", "south": "room_115" }
+  },
+  "room_117": {
+    "name": "The Refracted Sun",
+    "zone": "Data-Drifts",
+    "shortDescription": "Light shatters into colors that shouldn't exist.",
+    "longDescription": "As the light hits the black glass of the desert, it doesn't just reflect; it shatters into colors that have no business existing in a natural spectrum. The air is filled with shimmering hues like 'Slightly Angry Blue,' 'Anxious Yellow,' and a particularly jarring shade of 'Disappointed Mauve.' It's an optical circus that makes distances impossible to judge. You might think you're ten steps from the exit, but the refracted light is actually showing you a door that won't be rendered for another three miles.",
+    "exits": { "east": "room_118", "south": "room_116" }
+  },
+  "room_118": {
+    "name": "The Sinking Dunes",
+    "zone": "Data-Drifts",
+    "shortDescription": "Dunes made of the pulverised remains of failed heroes.",
+    "longDescription": "The terrain transitions into dunes of a soft, pale powder that feels like memory foam - except this foam remembers entirely too much. As you sink up to your knees, you realize the 'sand' is actually the pulverized remains of every failed hero who ever tried to bypass the Data-Drifts. The ground literally groans under your weight, exhaling the faint, ghostly scents of stale sweat and iron. It is a slow, suffocating climb; for every two steps forward, the world's memory of your failure pulls you one step back into the grey.",
+    "exits": { "north": "room_119", "west": "room_117" }
+  },
+  "room_119": {
+    "name": "The Boundary Marker",
+    "zone": "Data-Drifts",
+    "shortDescription": "A stone obelisk at the edge of the rendering zone.",
+    "longDescription": "A singular stone obelisk stands here, its surface covered in desperate scratch marks and what looks like a very primitive attempt to map the area. Someone spent a long time here, likely waiting for a 'World Update' that never arrived. The obelisk marks the absolute edge of the current rendering zone. Beyond a certain point to the north, the ground simply... stops. There is a visible 'seam' where the dirt meets a flat, grey texture that looks like the back of a canvas. A small sign nailed to the stone reads: 'Edge of the World. Please turn back. The Devs are tired.'",
+    "exits": { "north": "room_120", "south": "room_118" }
+  },
+  "room_120": {
+    "name": "The Edge of Regret",
+    "zone": "Data-Drifts",
+    "shortDescription": "Honest dirt and distant torchlight at the edge of the Outpost.",
+    "longDescription": "The glass and math of the drifts finally give way to hard-packed, honest dirt that smells of old rain and sheep manure. It is a relief to be back in a place that smells like a proper fantasy novel, even if that smell is 'poverty.' To the north, you can see the faint, flickering torchlight of a settlement that looks like it was built out of the literal scraps of the world. It is the Outpost of Regret, and from this distance, it looks like a place where dreams go to file for unemployment.",
+    "exits": { "south": "room_119", "up": "room_121" }
+  },
+  "room_121": {
+    "name": "Outpost Approach",
+    "zone": "Outpost of Regret",
+    "shortDescription": "A ramshackle outpost of mismatched blocks and rusty spoons.",
+    "longDescription": "The transition from the mathematical desert to the fringes of 'civilization' is marked by a sudden, overwhelming smell of wet wool, woodsmoke, and the kind of stew that's been boiling since the first epoch. The Outpost of Regret is a collection of stone huts that appear to have been built from the literal scraps of the world - some walls are made of mismatched marble, while others are just heaps of unrendered grey blocks. The path is littered with broken clay pots and discarded quest items that nobody wanted, like 'Rusty Spoons of Minor Agility.' It's a place that feels less like a town and more like a waiting room for people who have forgotten what they were waiting for.",
+    "exits": { "north": "room_122", "down": "room_120" }
+  },
+  "room_122": {
+    "name": "The Nameless Square",
+    "zone": "Outpost of Regret",
+    "shortDescription": "The central hub where NPCs have forgotten how to blink.",
+    "longDescription": "This is the central hub of the Outpost, though 'hub' is a generous term for a patch of dirt where the most exciting thing to happen is a change in the wind direction. A dozen or so NPCs stand here in a loose circle, their eyes fixed on the purple sun with a glazed intensity that suggests their 'Look At' variable has been permanently locked. They are the leftovers - characters who lost their quest-markers during a particularly messy server update and now lack the motivation to even blink. The air is thick with the sound of a distant, out-of-tune lute being played by a man whose fingers haven't moved in three days.",
+    "exits": { "north": "room_123", "south": "room_121" }
+  },
+  "room_123": {
+    "name": "The Desolate Vendor",
+    "zone": "Outpost of Regret",
+    "shortDescription": "A desperate vendor hawking painted rocks and empty jars.",
+    "longDescription": "A lean-to made of tattered sails and blackened timber stands at the edge of the square. Behind the counter, a man with a face like a dried apricot offers a selection of goods that would make a scavenger weep. His 'Genuine Archmage Gravel' is clearly just rocks he picked up from the path, and his 'Invisibility Potions' are just empty jars he's labeled with a very sincere-looking quill. He looks at you with a desperate, watering eye, his voice a raspy whisper: 'Buy something, traveler? Anything? I'm trying to save up for a proper dialogue tree.' The smell here is a potent mix of desperation and very cheap vinegar.",
+    "exits": { "north": "room_124", "south": "room_122" }
+  },
+  "room_124": {
+    "name": "The Empty Well",
+    "zone": "Outpost of Regret",
+    "shortDescription": "A dry stone well with laggy splash-sounds and a plumbing apology.",
+    "longDescription": "In the center of the path sits a dry stone well, its rim worn smooth by generations of hands that never found water. If you lean over the edge, the darkness at the bottom feels oddly 'hollow,' even for a hole in the ground. If you drop a pebble into the abyss, you can see it hit the bottom almost immediately, but the actual 'splash' sound doesn't play for another three seconds - a jarring auditory lag that makes your brain itch. A bucket hangs from a frayed rope, containing only a few dead leaves and a note from Nomagio: 'Plumbing is currently a Tier 3 priority. Please drink your own saliva in the meantime.'",
+    "exits": { "east": "room_125", "south": "room_123" }
+  },
+  "room_125": {
+    "name": "The Tavern of Null",
+    "zone": "Outpost of Regret",
+    "shortDescription": "A sagging tavern of looping animations and tepid 'Generic Liquid #4.'",
+    "longDescription": "The largest building in the Outpost is a sagging timber structure that smells predominantly of stale beer and unwashed feet. Inside, the 'Drunken Villagers' perform a perfectly synchronized animation loop of raising their mugs and laughing without making a sound. The bartender is a massive man who wipes the same four-inch patch of the counter with a rag that has long since become part of the wood. The only item on the menu is 'Generic Liquid #4,' which tastes like tepid water with a vague aftertaste of copper. The exit to the North isn't a door, but a massive, shimmering platform of light - the only way out of this depression and into the heavens.",
+    "exits": { "north": "room_126", "west": "room_124" }
+  },
+  "room_126": {
+    "name": "The Gravity Elevator",
+    "zone": "High Plateaus",
+    "shortDescription": "A humming platform of solidified starlight that launches you skyward.",
+    "longDescription": "Stepping onto the shimmering platform is a direct assault on your inner ear. The platform is made of solidified starlight that hums with a frequency that vibrates your molar fillings. As it activates, your stomach doesn't just drop; it feels like it stayed behind in Room 125 while the rest of you was catapulted into the stratosphere. The Outpost of Regret shrinks until it's just a smudge of grey on a map you no longer care about. As you ascend, the air grows thin and cold, tasting of silver and pure, unadulterated arrogance. This is Valdris's private verticality, where gravity is more of a suggestion than a law.",
+    "exits": { "up": "room_127", "down": "room_125" }
+  },
+  "room_127": {
+    "name": "The Cloud-Step Hub",
+    "zone": "High Plateaus",
+    "shortDescription": "A marble bridge above an aggressively blue sky.",
+    "longDescription": "You step off the elevator onto a bridge of white marble that spans a sky so aggressively blue it looks like a child's drawing of heaven. The air here is freezing but strangely invigorating, smelling of ozone and the high-altitude pride of a man who thinks he's a god. Massive, fluffy clouds drift below the bridge, looking solid enough to walk on, though a small sign at the edge warns: 'Do not attempt to walk on the clouds unless you have a Level 5 Faith certificate or a very good parachute.' To the North, the spires of Valdris's palace pierce the horizon like needles of ice.",
+    "exits": { "north": "room_128", "down": "room_126" }
+  },
+  "room_128": {
+    "name": "The Western Archway",
+    "zone": "High Plateaus",
+    "shortDescription": "A floating gatehouse carved with Valdris's self-portraits.",
+    "longDescription": "A floating gatehouse of white stone and gold leaf hangs suspended in the air, connected to the hub by a bridge that feels uncomfortably narrow. The archway is carved with scenes of Valdris performing various heroic feats - slaying dragons, inventing the alphabet, and looking particularly handsome in a toga. The craftsmanship is undeniably beautiful, but the sheer ego radiating from the stone is enough to give you a tan. A single, golden hawk perches on the battlements, its eyes glowing with the same green light as Nomagio's terminal, watching you with a cold, administrative intensity.",
+    "exits": { "east": "room_129", "south": "room_127" }
+  },
+  "room_129": {
+    "name": "The Eastern Spire Walk",
+    "zone": "High Plateaus",
+    "shortDescription": "A translucent bridge that thins when you doubt yourself.",
+    "longDescription": "This bridge is made of 'Solidified Condensation,' a semi-transparent substance that looks like frozen mist. It is terrifyingly slick and, according to the world's physics, reacts to your mental state: if you think about falling, the bridge actually gets thinner and more translucent. To cross safely, you have to maintain a level of forced optimism that borders on the delusional. The wind here is a constant, high-pitched whistle that sounds like the sky is judging your outfit. Far to the East, you can see a tower that appears to be made entirely of mirrors, reflecting a sun that hasn't set in centuries.",
+    "exits": { "north": "room_130", "west": "room_128" }
+  },
+  "room_130": {
+    "name": "The Statuary of Perfection",
+    "zone": "High Plateaus",
+    "shortDescription": "A plaza of idealised, noseless statues and expensive perfume.",
+    "longDescription": "This wide marble plaza is lined with dozens of statues depicting 'Idealized Humans.' They are all impossibly tall, muscular, and graceful, but as you look closer, you notice a disturbing flaw: none of them have noses. It seems Valdris, in his pursuit of the perfect form, couldn't quite get the nasal-bridge algorithm to render correctly and simply decided that smelling was a 'lower-tier' sense. The statues stand in poses of dramatic triumph, looking out over the clouds with smooth, featureless faces. The air here is deathly still, and the smell of expensive perfume lingers in the air, despite there being no flowers for miles.",
+    "exits": { "south": "room_129", "north": "room_131" }
+  },
+  "room_131": {
+    "name": "The Crystal Garden",
+    "zone": "Cloud-Spires of Valdris",
+    "shortDescription": "A garden of spun-glass flora that clicks like metal beetles.",
+    "longDescription": "This isn't a garden in any biological sense; it's a collection of flora made of spun glass and sharp-edged quartz. The 'plants' grow from a bed of crushed diamonds that crunch under your boots with a sound like a million tiny teeth breaking. The air is deathly still, and when the wind does catch the glass leaves, they click together like a swarm of metallic beetles. A small, floating sign from Nomagio is hammered into a glass oak tree: 'Do not water the plants. They don't need it, and the mineral buildup is a nightmare for the rendering engine. Also, they are very sharp. Try not to bleed on the art.'",
+    "exits": { "north": "room_132", "south": "room_130" }
+  },
+  "room_132": {
+    "name": "The Prankster's Fountain",
+    "zone": "Cloud-Spires of Valdris",
+    "shortDescription": "A Valdris-fountain that turns wine into soapy dishwater on contact.",
+    "longDescription": "In the center of this marble courtyard, a magnificent fountain carved in the likeness of a laughing Valdris pours what appears to be a rich, vintage red wine. The smell is intoxicating - oaken, fruity, and expensive. However, the moment you cup your hands to take a drink, the liquid undergoes a localized reality shift, turning into lukewarm, slightly soapy dishwater before it touches your lips. It is a classic piece of Archmage snark; as you wipe the suds from your chin, you can almost hear Valdris's echoed chuckle vibrating in the stone, mocking your thirst and your low-tier expectations.",
+    "exits": { "north": "room_133", "south": "room_131" }
+  },
+  "room_133": {
+    "name": "The Hall of Echoing Egos",
+    "zone": "Cloud-Spires of Valdris",
+    "shortDescription": "A mirrored hall whose walls mutter backhanded insults.",
+    "longDescription": "The walls of this long, white hallway are polished to such a high degree that you can see your reflection from every possible angle, including a few that seem physically impossible. The stones here are enchanted with a 'Compliment Loop,' but the enchantment has clearly soured over the centuries. Instead of words of encouragement, the walls whisper subtle, backhanded insults as you pass. 'Oh, are we wearing that armor today? Bold choice,' mutters the left wall, while the right wall simply sighs at your gait. It's a space designed to make you feel as small as possible in a room that is technically very large.",
+    "exits": { "north": "room_134", "south": "room_132" }
+  },
+  "room_134": {
+    "name": "The Sky-Dock",
+    "zone": "Cloud-Spires of Valdris",
+    "shortDescription": "A sky-dock waiting on flying ships that never came.",
+    "longDescription": "This wide, flat platform extends out into the open sky, held up by nothing but faith and a few lines of legacy code. Heavy mooring lines of woven silver hang from golden cleats, swaying in the high-altitude wind. They are meant for flying ships - vessels of light and wind that Zephyros and Valdris spent centuries arguing over - but the ships are nowhere to be seen. A small, holographic 'Coming Soon' sign flickers near the edge of the dock, dated several eras ago. The air smells of salt and disappointment, looking out over a horizon that is beautiful, empty, and utterly unreachable.",
+    "exits": { "west": "room_135", "south": "room_133" }
+  },
+  "room_135": {
+    "name": "The Shimmering Stairs",
+    "zone": "Cloud-Spires of Valdris",
+    "shortDescription": "Color-cycling disco stairs that honk every thirteen steps.",
+    "longDescription": "These stairs connect the lower plateau to the library entrance, and they are an absolute visual nightmare. Each step is made of a translucent material that changes color based on the weight of your footprint, cycling through a spectrum of neon colors so garish they could induce a seizure in a particularly sensitive golem. It feels less like a grand ascent and more like you're walking on a very expensive, very tacky disco floor. Nomagio has clearly tried to mute the colors, but the 'Valdris_Aesthetic.cfg' file is evidently read-only. Every thirteen steps, the stairs emit a loud, celebratory Honk, for reasons that are never explained.",
+    "exits": { "north": "room_136", "east": "room_134" }
+  },
+  "room_136": {
+    "name": "The Pavilion of Light",
+    "zone": "Cloud-Spires of Valdris",
+    "shortDescription": "A hard-light gazebo that concentrates the sun into a furnace.",
+    "longDescription": "A gazebo made entirely of 'Hard-Light' geometry sits in the middle of a marble terrace. The pillars are beams of solid sunshine, and the roof is a shimmering plane of golden energy. It is supposed to provide shade, but the 'Light-Shade' actually has the inverse effect, concentrating the sun's heat into a localized furnace that makes you sweat through your gambeson in seconds. It's the kind of architectural oversight that happens when you let a being who doesn't possess sweat glands design a resting area. The smell of singed hair and hot stone is the only thing that lingers here.",
+    "exits": { "north": "room_137", "south": "room_135" }
+  },
+  "room_137": {
+    "name": "The Antechamber of Blank Ink",
+    "zone": "Cloud-Spires of Valdris",
+    "shortDescription": "A silent antechamber of broken quills and writer's block.",
+    "longDescription": "This is the entrance to the Great Library, and the atmosphere shifts instantly from 'blinding sun' to 'suffocating intellect.' The room is circular, lined with empty inkwells and thousands of quill pens that have been snapped in half. The air is heavy and smells of old parchment, cedarwood, and the specific, metallic tang of a writer's block so powerful it has its own gravity. A massive bronze door to the North is etched with the image of Thessarian holding a finger to his lips, though someone has vandalized it by hanging a sign that reads: 'Quiet. The books are having an existential crisis.'",
+    "exits": { "east": "room_138", "south": "room_136" }
+  },
+  "room_138": {
+    "name": "The Unwritten Library",
+    "zone": "Cloud-Spires of Valdris",
+    "shortDescription": "A vast library of leather-bound, entirely blank books.",
+    "longDescription": "Row upon row of towering, leather-bound books stretch into the darkness of the high ceiling. It is a bibliophile's dream, until you open one. Every single page in every single book is completely blank. This is Valdris's masterwork: a library of everything he intended to write but never quite got around to because he was too busy admiring the fountain in Room 132. The sheer volume of unfulfilled potential in this room is physically heavy, pressing down on your chest like a lead weight. The only thing written in the entire room is a small note on the librarian's desk: 'I'll finish Chapter One after the server reboot. - V.'",
+    "exits": { "north": "room_139", "west": "room_137" }
+  },
+  "room_139": {
+    "name": "The Reading Nook",
+    "zone": "Cloud-Spires of Valdris",
+    "shortDescription": "A velvet reading nook with eternally-steaming tea.",
+    "longDescription": "Tucked away in a corner of the library is a surprisingly plush velvet chair that looks out through a massive, arched window. From this height, you can look down and see the Ashlands of Revision as a tiny, miserable smudge of grey far below. A half-drunk cup of tea sits on a side table, eternally radiating a faint wisp of steam - it's a 'Static Asset' that hasn't cooled in three hundred years. It is a room of profound, high-altitude apathy; the view is so spectacular that the suffering of the world below feels like a very small, very distant spelling error.",
+    "exits": { "north": "room_140", "south": "room_138" }
+  },
+  "room_140": {
+    "name": "The Bridge of Contradictions",
+    "zone": "Cloud-Spires of Valdris",
+    "shortDescription": "A bridge that only closes when you walk backward with confidence.",
+    "longDescription": "To exit the library, you must cross this bridge, but the bridge has been programmed with a particularly nasty 'Positional Paradox.' If you walk forward, the bridge stretches infinitely away from you, the door at the far end getting smaller and smaller no matter how fast you run. To reach the other side, you must turn your back to your destination and walk backward with total confidence. It's a physical manifestation of the Archmages' logic: to get anywhere in Eldoria, you have to stop looking at where you're going. The wind here carries the faint, mocking scent of lavender and old paper.",
+    "exits": { "south": "room_139", "north": "room_141" }
+  },
+  "room_141": {
+    "name": "Paradox Gallery Entrance",
+    "zone": "Paradox Gallery",
+    "shortDescription": "A foyer where the walls meet at impossible angles.",
+    "longDescription": "The Euclidean geometry of the world stops working the moment you cross this threshold. The corners of the room don't equal ninety degrees; they seem to be actively negotiating their own dimensions, creating a visual 'jitter' that makes your eyes water. The air smells of ozone, hot copper, and the distinct, metallic tang of a server rack that is about to catch fire. A plaque on the wall, written in a font that seems to be vibrating, reads: 'Welcome to the Gallery. Please leave your common sense and three-dimensional biases in the bins provided. Management is not responsible for lost limbs or inverted digestive systems.'",
+    "exits": { "north": "room_142", "south": "room_140" }
+  },
+  "room_142": {
+    "name": "The Escher Stairwell",
+    "zone": "Paradox Gallery",
+    "shortDescription": "A dizzying spiral of stairs that lead both up and down simultaneously.",
+    "longDescription": "This room is a nightmare of architectural indecision. Stairs of cold, white marble loop over and under each other in a way that defies every law of gravity Morwyn ever bothered to hammer out. You can see yourself walking on a landing twenty feet above your head, looking down at yourself with equal parts confusion and pity. Every time you take a step 'down,' you feel your blood rush to your head as if you were actually climbing. It is a vertigo-inducing masterpiece of frustration, and the only thing keeping you grounded is the smell of ancient, damp stone and the faint, rhythmic ticking of a clock that Thessarian left behind to remind you that time is just as broken as the floor.",
+    "exits": { "north": "room_143", "south": "room_141" }
+  },
+  "room_143": {
+    "name": "The Room of Three Choices",
+    "zone": "Paradox Gallery",
+    "shortDescription": "A grimy chamber with three identical, ominous doors.",
+    "longDescription": "This room is a cynical commentary on player agency. Three doors, identical in their decay and heavy iron fittings, stand before you. One is caked in dried mud, one smells faintly of sulfur, and the third is covered in a layer of frost that never melts. Despite the visual cues suggesting a 'puzzle,' you get the distinct impression from the lingering scent of Nomagio's cheap tobacco that all three lead to the exact same place. It is the 'Illusion of Choice' rendered in stone and iron. A small, scratched-in note on the center door says: 'It doesn't matter which one you pick; the script only has one outcome. Just move on.'",
+    "exits": { "north": "room_144", "south": "room_142" }
+  },
+  "room_144": {
+    "name": "Zephyros's Argument",
+    "zone": "Paradox Gallery",
+    "shortDescription": "A chaotic hall filled with three temporal echoes of a shouting Archmage.",
+    "longDescription": "The air here is moving in three different directions at once, creating a localized cyclone of dust and discarded parchment. Three shimmering, translucent echoes of Zephyros are clustered in the corner, engaged in a vicious, high-speed argument over a map that is currently eating itself. One echo is screaming about wind speeds, the second is weeping over a misplaced comma in the world-code, and the third is just trying to find its car keys. They ignore you entirely, their voices sounding like a chorus of overlapping radio stations. The smell is a frantic mix of burnt paper and a looming electrical fire.",
+    "exits": { "east": "room_145", "south": "room_143" }
+  },
+  "room_145": {
+    "name": "The Tilted Hall",
+    "zone": "Paradox Gallery",
+    "shortDescription": "A hallway angled at a forty-five-degree pitch with 'unnatural' gravity.",
+    "longDescription": "The floor is tilted at a steep, nauseating angle, but the gravity in the room hasn't been told to follow suit. You walk straight along the wall as if it were the floor, while your shadow stretches out across the actual ground, looking deeply confused about its orientation. It feels like wearing your shoes on the wrong feet while walking on the side of a ship in a gale. Along the 'baseboard' (which is now your ceiling), you can see strips of glowing green 'Admin Tape' where Nomagio tried to patch the gravity leak. If you look too long at the 'floor,' your inner ear threatens to file a formal complaint.",
+    "exits": { "north": "room_146", "west": "room_144" }
+  },
+  "room_146": {
+    "name": "The Chandelier Room",
+    "zone": "Paradox Gallery",
+    "shortDescription": "A sensory-inverted hall where the light grows from the ground.",
+    "longDescription": "In a final act of spatial defiance, a massive, ornate crystal chandelier grows directly out of the floor like a luminous, jagged tree. Its light doesn't shine upward; it casts shadows on the ceiling that move with a fluid, predatory grace. You have to carefully pick your way through the glowing crystal branches, which hum with a low-frequency Resonance that makes your fingernails ache. The ceiling is covered in a plush, velvet carpet that smells of lavender and old secrets, and for a moment, you feel a terrifying urge to simply 'fall' up into it.",
+    "exits": { "north": "room_147", "south": "room_145" }
+  },
+  "room_147": {
+    "name": "The Corridor of Sighs",
+    "zone": "Paradox Gallery",
+    "shortDescription": "A long, drafty hall filled with the sound of a developer's soul leaving his body.",
+    "longDescription": "This hallway is perfectly straight and utterly boring, which is the most suspicious thing you've seen all day. The only feature is a constant, mournful wind that carries the sound of a human man letting out a long, weary sigh. It's the sound of Nomagio realizing he has to rewrite the entire lighting engine for the fifth time this week. The air is cold and tastes like stale coffee and cardboard. Every few yards, a torch flickers with a 'frame-rate stutter,' plunging you into darkness for a fraction of a second before snapping back with a loud, digital pop.",
+    "exits": { "west": "room_148", "south": "room_146" }
+  },
+  "room_148": {
+    "name": "The Zenith Approach",
+    "zone": "Paradox Gallery",
+    "shortDescription": "A freezing staircase where the world begins to turn into raw code.",
+    "longDescription": "As you climb toward the peak, the 'fantasy' world starts to peel away. The frost on the walls isn't made of ice, but of tiny, glowing 'low-poly' crystals that hum with a mechanical vibration. Your breath doesn't fog in the air; it crystallizes into small, falling cubes of white geometry. The air is thin and smells of liquid nitrogen and static electricity. Looking through the gaps in the stone, you can see the sky flickering between a beautiful sunset and a flat, grey grid. You are nearing the limit of what the world can simulate before it collapses into pure logic.",
+    "exits": { "north": "room_149", "east": "room_147" }
+  },
+  "room_149": {
+    "name": "The Final Step",
+    "zone": "Paradox Gallery",
+    "shortDescription": "A single, vibrating stone step leading into the white void.",
+    "longDescription": "This isn't so much a room as it is a 'Loading Zone' disguised as a plateau. A single, massive block of black obsidian vibrates with the power of the entire Shattered Symphony. The humming is so loud it feels like your heartbeat is trying to sync up with the server's clock speed. A faint, glowing cursor flickers in the air just above the step, and the scent of woodsmoke and 'Success' begins to replace the smell of ozone. To take this step is to leave the physical struggle behind and enter the domain of the truly divine - or the truly overworked.",
+    "exits": { "north": "room_150", "south": "room_148" }
+  },
+  "room_150": {
+    "name": "The Diamond Plateau",
+    "zone": "Paradox Gallery",
+    "shortDescription": "A blinding expanse of crystal at the absolute peak of the world.",
+    "longDescription": "You have reached the summit. The plateau is a flat expanse of raw, unpolished diamond that reflects the light of five different suns - one for each Archmage. The air is thin, cold, and tastes like silver. From this height, you can see the entire 149-room journey you've taken, laid out below like a complex circuit board. The arrogance of Valdris is palpable here; the view is so perfect it feels like a personal insult to anyone who has ever felt a 'normal' emotion. The only thing marring the perfection is a single, comfortable grey hoodie draped over a crystal spire, left behind by a Coder who presumably went to get more coffee.",
+    "exits": { "south": "room_149", "down": "room_151" }
+  },
+  "room_151": {
+    "name": "The Shadow's Throat",
+    "zone": "Tower of Shadows",
+    "shortDescription": "A staircase spiraling downward into a dark so thick you have to push through it.",
+    "longDescription": "The transition from the Diamond Plateau to the Tower is a physical assault on your senses. You are no longer just walking into a dark room; you are being swallowed. The staircase spirals downward into a gloom so dense it feels like wading through knee-deep, invisible grass. The air is cold and carries the sharp, metallic scent of wet iron and old rain. Every few steps, the stone beneath your feet seems to sigh, a sound that Nyxara likely intended to be haunting, but Nomagio has accidentally looped so frequently it sounds like the tower is suffering from a very mild case of asthma.",
+    "exits": { "north": "room_152", "up": "room_150" }
+  },
+  "room_152": {
+    "name": "The Obsidian Foyer",
+    "zone": "Tower of Shadows",
+    "shortDescription": "A light-swallowing chamber of absolute silence.",
+    "longDescription": "This foyer is constructed from polished obsidian so dark it doesn't just lack light - it actively hunts it. Your torchlight feels thin and frail, clawing at walls that refuse to reflect anything but a dull, bruised purple. The floor is perfectly smooth and absorbs the sound of your footsteps entirely, leaving you in a state of sensory deprivation that makes your own heartbeat sound like a war drum. It is a masterpiece of architectural depression. A small, glowing green tooltip lingers near the exit: [AUDIO_ERROR: Footstep_SFX_Not_Found]. Nomagio apparently couldn't find a sound file quiet enough for 'Existential Dread.'",
+    "exits": { "north": "room_153", "south": "room_151" }
+  },
+  "room_153": {
+    "name": "The Hall of First Whispers",
+    "zone": "Tower of Shadows",
+    "shortDescription": "A psychological gauntlet of your own embarrassing memories.",
+    "longDescription": "As you walk through this long, narrow hall, the silence is replaced by a low-frequency muttering. It isn't the ghosts of the dead, but something much worse: the sound of your own voice. The walls play back your most embarrassing memories - that time you tripped in Room 003, or the moment you realized your 'Legendary Sword' was actually just a painted wooden prop. It is Nyxara's way of auditing your soul, or perhaps it's just the world's most invasive logging system. The air tastes like copper and shame, and the shadows on the wall seem to be leaning away from you in secondhand embarrassment.",
+    "exits": { "north": "room_154", "south": "room_152" }
+  },
+  "room_154": {
+    "name": "The Veiled Corridor",
+    "zone": "Tower of Shadows",
+    "shortDescription": "A hallway draped in curtains of solidified gloom.",
+    "longDescription": "Massive, tattered black curtains hang from a ceiling you can't see, swaying in a wind that shouldn't exist. They aren't made of cloth, but of a substance that feels like cold, damp cobwebs and 'Solidified Gloom.' As you push through them, they cling to your skin and armor, leaving a faint residue of soot and ancient grief. The smell of old incense and wet wool is stifling. Somewhere behind the veils, you hear the sound of a quill scratching frantically on parchment - a script being written for a tragedy you haven't realized you're starring in yet.",
+    "exits": { "west": "room_155", "south": "room_153" }
+  },
+  "room_155": {
+    "name": "The Room of Lost Keys",
+    "zone": "Tower of Shadows",
+    "shortDescription": "A bureaucratic graveyard of brass, iron, and silver keys.",
+    "longDescription": "The floor here is hidden beneath a knee-deep sea of keys. Thousands of them - brass, iron, silver, and bone - clink together with a hollow, metallic sound as you wade through. This is the graveyard of every 'Quest Key' that was ever discarded or rendered obsolete by a patch. None of them open any of the doors in this tower, but they all hum with a faint, residual sense of 'What If?' It's a room dedicated to the bureaucratic horror of a world where the locks outlive the people who held the keys. A sign on the wall reads: 'Please do not take the keys. They are being kept for tax purposes.'",
+    "exits": { "north": "room_156", "east": "room_154" }
+  },
+  "room_156": {
+    "name": "The Tear-Stained Altar",
+    "zone": "Tower of Shadows",
+    "shortDescription": "A marble block etched by centuries of dramatic weeping.",
+    "longDescription": "In the center of this circular room stands a block of white marble that has been physically eroded into a concave shape by centuries of falling saltwater. Nyxara was never one for subtle emotions; she preferred her grief to be monumental and, ideally, well-lit. The air is thick with the scent of brine and a looming thunderstorm. The altar is covered in small offerings - dried flowers, broken rings, and a single, crumpled 'Bug Report' from a player who just wanted their character's hair color fixed. The tragedy in this room is so heavy it feels like the ceiling is trying to kiss the floor.",
+    "exits": { "north": "room_157", "south": "room_155" }
+  },
+  "room_157": {
+    "name": "The Echoing Grief",
+    "zone": "Tower of Shadows",
+    "shortDescription": "A chamber that turns every sound into a tragic symphony.",
+    "longDescription": "The acoustics in this room are rigged. Any sound you make - a cough, a footstep, the clink of your armor - is captured by the obsidian walls and played back in a haunting, minor-key echo. A simple sneeze becomes a tragic lament; a dropped coin sounds like the tolling of a funeral bell. It's an auditory filter designed to remind you that in Eldoria, even your bodily functions are part of the 'Shattered Symphony.' Nomagio has tried to balance the audio, but the 'Melancholy' slider is jammed at 110%.",
+    "exits": { "east": "room_158", "south": "room_156" }
+  },
+  "room_158": {
+    "name": "The Blind Corner",
+    "zone": "Tower of Shadows",
+    "shortDescription": "A sharp turn where the shadows have a physical texture.",
+    "longDescription": "The hallway takes a sharp, jagged turn where the light simply gives up and dies. To move forward, you have to run your hands along the cold, clammy stone of the walls, which feel disturbingly like skin. The air is stagnant and tastes of cardboard and old books. You get the distinct feeling that something is standing just inches away from your face in the dark, but every time you reach out, you find nothing but more of this 'Textured Darkness.' It is the physical manifestation of the fear of the unknown, or possibly just a very lazy rendering of a corner.",
+    "exits": { "north": "room_159", "west": "room_157" }
+  },
+  "room_159": {
+    "name": "The Portrait of Nobody",
+    "zone": "Tower of Shadows",
+    "shortDescription": "An ornate frame containing a soul-erasing black void.",
+    "longDescription": "A large, gilded frame hangs on the wall, but instead of a painting, it contains a canvas covered in a layer of Vantablack so deep it seems to be a hole in the universe. Staring at it for more than three seconds causes a localized 'Identity Error' - you start to forget your middle name, your favorite color, and why you ever thought being a 'Chosen One' was a good career move. It is a window into the 'Null State' that Nyxara fears most. A small label at the bottom of the frame reads: 'Self-Portrait of the Admin during a Database Corruption Event.'",
+    "exits": { "north": "room_160", "south": "room_158" }
+  },
+  "room_160": {
+    "name": "Chamber of Compressed Sorrow",
+    "zone": "Tower of Shadows",
+    "shortDescription": "A padded room made of damp velvet and existential dread.",
+    "longDescription": "The walls, floor, and ceiling of this room are lined with thick, acoustic foam made of 'Compressed Sorrow.' It feels like damp velvet and smells exactly like a rainy funeral in a forest. This is where the tower absorbs the excess grief of the world so the server doesn't overheat. Walking here is like walking on a giant sponge; every step pushes out a puff of cold, grey mist that tastes of salt. It is remarkably comfortable in a way that makes you want to lie down and give up on your quest entirely, which is exactly how Nyxara wins most of her battles.",
+    "exits": { "south": "room_159", "down": "room_161" }
+  },
+  "room_161": {
+    "name": "The Submerged Hall",
+    "zone": "Mourning Cloisters",
+    "shortDescription": "A freezing hallway flooded with a foot of black, ink-like water.",
+    "longDescription": "The floor has surrendered to a foot of freezing, pitch-black water that doesn't ripple so much as it 'lags' when you step through it. Wading through this mess is a lesson in tactile misery; it feels less like water and more like a slurry of liquid lead and bad memories. The smell of stagnant salt and wet iron is sharp enough to sting your throat. Nomagio has clearly given up on the collision physics here, as your boots occasionally clip through the floorboards into a terrifying grey void before snapping back. A small, floating error message above a puddle reads: [WATER_PHYSICS: DEPRECATED].",
+    "exits": { "north": "room_162", "up": "room_160" }
+  },
+  "room_162": {
+    "name": "The Dripping Vault",
+    "zone": "Mourning Cloisters",
+    "shortDescription": "A leaky vault where the drips tap out 'IT'S ALL YOUR FAULT' in Morse code.",
+    "longDescription": "This room is a damp, claustrophobic stone box where the ceiling is 'weeping' in a very literal, very annoying sense. Thick, rhythmic droplets of cold water fall from the cracks in the masonry, hitting the floor with the precision of a metronome. If you listen closely, the cadence isn't random; the drips are hitting the floor in a Morse code loop that translates to: 'IT'S ALL YOUR FAULT.' It is a masterpiece of passive-aggressive architectural design by Nyxara. The air is heavy with the scent of mildew and ancient, unwashed secrets.",
+    "exits": { "north": "room_163", "south": "room_161" }
+  },
+  "room_163": {
+    "name": "The Sconce of Cold Fire",
+    "zone": "Mourning Cloisters",
+    "shortDescription": "A room lit by a single, heat-leeching blue torch.",
+    "longDescription": "A single iron sconce is bolted to the wall, holding a flame that burns with a brilliant, frozen blue light. This isn't fire; it's an 'Inverse Light-Source' that actually sucks the warmth out of the room, leaving the air tasting of liquid nitrogen and ozone. Curiously, the torch casts shadows that point toward the flame instead of away from it, creating a disorienting visual stutter every time you move. Nomagio apparently tried to fix the shaders in this room three times before deciding that 'Inverted Physics' was actually an intentional artistic choice.",
+    "exits": { "west": "room_164", "south": "room_162" }
+  },
+  "room_164": {
+    "name": "The Glass Floor",
+    "zone": "Mourning Cloisters",
+    "shortDescription": "A transparent walkway overlooking the world's history in reverse.",
+    "longDescription": "You are walking across a single, massive pane of reinforced obsidian glass that feels disturbingly thin beneath your weight. Looking down, you aren't seeing the floor below, but a recursive playback of the Ashlands (Rooms 101-125) running in high-speed reverse. You can see spectral versions of yourself walking backward and un-killing monsters. It's a dizzying, temporal headache that makes you feel like your soul is being rewound. A faint, glowing 'Buffer' icon flickers in the center of the glass whenever you stand still for too long, reminding you that reality is only as stable as its last save-point.",
+    "exits": { "north": "room_165", "east": "room_163" }
+  },
+  "room_165": {
+    "name": "Antechamber of the Cloisters",
+    "zone": "Mourning Cloisters",
+    "shortDescription": "A cold, sterile twilight hall where the gloom finally lifts.",
+    "longDescription": "The oppressive darkness of the lower tower finally thins out, replaced by a permanent, sterile twilight that feels like the inside of a cloud. The air here is meticulously filtered and smells of old incense, wet iron, and expensive, high-maintenance melancholy. This is the transition point where Nyxara's raw grief becomes 'Theatrical Mourning.' The walls are lined with empty pedestals that once held busts of the other Archmages, but they have all been turned to face the wall in a fit of architectural pique.",
+    "exits": { "north": "room_166", "south": "room_164" }
+  },
+  "room_166": {
+    "name": "The Mourning Cloisters",
+    "zone": "Mourning Cloisters",
+    "shortDescription": "A long, arched hallway of weeping statues and glowing tears.",
+    "longDescription": "This grand, gothic corridor is lined with marble statues of veiled women whose faces are permanently hidden in their hands. They aren't just statues; they are 'Sorrow-Emitters.' Soft, glowing blue tears leak from their stone fingers and fall to the floor, where they evaporate into a mist that tastes of salt and peppermint. The statues look exhausted - not from grief, but from the sheer repetition of their animation cycle. One statue has a small post-it note stuck to its base: 'Please do not poke the statues. Their emotional state is already fragile enough. - N.'",
+    "exits": { "north": "room_167", "south": "room_165" }
+  },
+  "room_167": {
+    "name": "The Courtyard of Dead Leaves",
+    "zone": "Mourning Cloisters",
+    "shortDescription": "An indoor garden where black leaves fall endlessly from a hidden sky.",
+    "longDescription": "You have entered a courtyard that shouldn't exist inside a tower. The ceiling is a dark, swirling vortex of grey clouds, and black, brittle leaves fall in a constant, silent flurry. They aren't biological leaves; they are tiny snippets of deleted dialogue and discarded quest descriptions, ground down into organic shapes. When they hit the ground, they dissolve into ash with a faint, digital hiss. The air smells like an autumn forest in the middle of an electrical fire - sweet, smoky, and dangerously synthetic.",
+    "exits": { "east": "room_168", "south": "room_166" }
+  },
+  "room_168": {
+    "name": "Statue of the Forgotten Coder",
+    "zone": "Mourning Cloisters",
+    "shortDescription": "A humble, slightly out-of-place monument to an overworked god.",
+    "longDescription": "Tucked into a quiet alcove is a statue that looks remarkably different from the dramatic Archmages. It depicts a man in a rumpled hoodie, slouching in a stone chair and clutching a ceramic coffee mug like it's the only thing keeping the world from collapsing. This is a tribute to the 'First Admin' who tried to fix the game's economy and was never seen again. The statue is covered in dust, and someone has placed a single, half-eaten stone donut in its lap. The air here smells of cold caffeine and the specific, metallic tang of an 'All-Nighter.'",
+    "exits": { "north": "room_169", "west": "room_167" }
+  },
+  "room_169": {
+    "name": "The Silent Belltower",
+    "zone": "Mourning Cloisters",
+    "shortDescription": "A chamber dominated by a massive bronze bell that rings with silence.",
+    "longDescription": "A massive, green-patina bronze bell hangs from the rafters, suspended by chains that look like they were forged from solidified thunder. The bell has no clapper, yet every few seconds it vibrates with a concussive, deafening 'silence' that hits you in the chest like a physical blow. It's an auditory paradox that makes your nose bleed and your ears ring with the sound of a thousand unplayed notes. This is Nyxara's way of screaming without making a sound, and it's arguably the most effective weapon in her entire arsenal.",
+    "exits": { "north": "room_170", "south": "room_168" }
+  },
+  "room_170": {
+    "name": "The Raven's Rest",
+    "zone": "Mourning Cloisters",
+    "shortDescription": "A room of seductive, soul-eating comfort and black feathers.",
+    "longDescription": "In the center of this opulent, dark chamber sits a massive bed made entirely of raven feathers. It looks impossibly soft, radiating a warmth that calls to your tired bones after 170 rooms of constant struggle. However, the feathers are made of the same 'Solidified Gloom' as the curtains in Room 154; if you lie down, the bed will begin to 'merge' with your character model, slowly eating your stats while you dream of a world that makes sense. The air smells of lavender, old books, and a very comfortable death. A warning is scratched into the headboard: 'Nap at your own risk. The respawn timer is currently broken.'",
+    "exits": { "south": "room_169", "north": "room_171" }
+  },
+  "room_171": {
+    "name": "The Hall of Mirrors (Dark)",
+    "zone": "Glitch-Halls of Nomagio",
+    "shortDescription": "A corridor of mirrors that reflect the space behind you.",
+    "longDescription": "This hallway is lined with floor-to-ceiling mirrors framed in tarnished silver. However, these aren't ordinary reflections; instead of showing your face, they show the hallway exactly ten feet behind you. This creates a terrifying sense of being followed by your own ghost. Every time you turn around to catch whatever is 'behind' you in the glass, the mirror resets, showing only the empty, dark corridor you just left. It's a trick of Nyxara's designed to feed your paranoia. The air smells of ozone and cold glass, and you can hear the faint, synchronized sound of a dozen versions of yourself breathing just out of sync.",
+    "exits": { "north": "room_172", "south": "room_170" }
+  },
+  "room_172": {
+    "name": "The Unseen Bridge",
+    "zone": "Glitch-Halls of Nomagio",
+    "shortDescription": "A chasm crossed by walking on the shadows of floating debris.",
+    "longDescription": "The floor abruptly ends at a massive, bottomless pit that hums with the low-frequency vibration of the void. There is no physical bridge, only a series of jagged rocks floating in mid-air. To cross, you must walk on the long, dark shadows these rocks cast across the empty air. It's a terrifying leap of faith - if you step into the light, you'll find no collision data to catch you. The air is freezing, tasting of high-altitude salt and static electricity. Below, you can see the faint, glowing green 'Grid Lines' of the world's floor, several miles down.",
+    "exits": { "north": "room_173", "south": "room_171" }
+  },
+  "room_173": {
+    "name": "The Gate of Nyxara",
+    "zone": "Glitch-Halls of Nomagio",
+    "shortDescription": "A massive, handle-less door made of frozen night and heavy sighs.",
+    "longDescription": "You stand before a monolithic door of obsidian and 'Solidified Gloom' that seems to drink the very light from your torch. There is no handle, no keyhole, and no obvious way to proceed. This is the ultimate 'Emotional Gate.' To open it, you don't need a key; you have to emit a sound of genuine, weary exasperation. The door is programmed to recognize the specific acoustic frequency of a human being who has had quite enough of this tower. As you sigh, the obsidian softens like melting wax, pulling back with a wet, squelching sound to reveal the path forward.",
+    "exits": { "west": "room_174", "south": "room_172" }
+  },
+  "room_174": {
+    "name": "The Final Descent",
+    "zone": "Glitch-Halls of Nomagio",
+    "shortDescription": "A steep, narrow ramp where the air pressure begins to pop your ears.",
+    "longDescription": "The path turns into a slick, steep ramp that plunges straight into the foundations of the tower. There are no stairs here, only a smooth surface that forces you into a controlled slide. As you descend, the atmospheric pressure changes rapidly, causing your ears to pop with a painful click. The smell of old books and grief is replaced by the sharp, metallic scent of hot plastic and burning copper. The walls shift from gothic stone to smooth, featureless grey panels that look suspiciously like the inside of a computer case.",
+    "exits": { "down": "room_175", "east": "room_173" }
+  },
+  "room_175": {
+    "name": "The Chamber of Nyxara",
+    "zone": "Glitch-Halls of Nomagio",
+    "shortDescription": "A vast cathedral of regrets containing the 'Ultimate Spell.'",
+    "longDescription": "This is the heart of the Tower - a vast, silent cathedral where the ceiling is made of swirling purple nebulas. The floor is a perfect mirror, but instead of your reflection, it displays a scrolling list of every mistake you've made in the game so far. In the center of the room, resting on a pedestal of pure silence, is a small, wooden box containing the 'Ultimate Spell.' It isn't a fireball or a shield; it's a 'Global Variable Reset.' The air is so still it feels like a physical weight, and the only sound is the distant, rhythmic hum of the server fans hidden behind the sky.",
+    "exits": { "north": "room_176", "up": "room_174" }
+  },
+  "room_176": {
+    "name": "The Access Tunnel",
+    "zone": "Glitch-Halls of Nomagio",
+    "shortDescription": "A metal corridor where the 'Fantasy' mask finally slips.",
+    "longDescription": "The stone and velvet of the Tower are gone, replaced by industrial grey metal panels held together by glowing green bolts. This is the world's 'Maintenance Pipe.' Bundles of thick, fiber-optic cables snake across the floor like neon veins, pulsing with data. The air smells of hot electronics, ozone, and very old coffee. This is where the magic ends and the math begins. A small speaker in the corner of the ceiling plays a tinny, lo-fi version of 'Elevator Music for the End of Days,' and a sign on the wall reads: 'Mind the gaps in the logic. They bite.'",
+    "exits": { "north": "room_177", "south": "room_175" }
+  },
+  "room_177": {
+    "name": "Elevator Muzak Room",
+    "zone": "Glitch-Halls of Nomagio",
+    "shortDescription": "A sterile white box filled with upbeat, anxious bossa nova.",
+    "longDescription": "This room is a perfect cube of blindingly white plastic. There are no features, no furniture, and no obvious exits. The only thing in the room is a small speaker that plays a cheery, upbeat bossa nova track on an infinite loop. It is a sensory-overload chamber designed by Nomagio to weed out the weak-minded. The music is so aggressively happy it fills you with a profound sense of impending doom. To exit, you must wait exactly sixty seconds without moving, allowing the 'Loading Screen' logic to process your presence.",
+    "exits": { "east": "room_178", "south": "room_176" }
+  },
+  "room_178": {
+    "name": "The Cable Warren",
+    "zone": "Glitch-Halls of Nomagio",
+    "shortDescription": "A hazardous tangle of glowing data-cables and reality-leaks.",
+    "longDescription": "The floor is almost entirely obscured by a chaotic mess of thick, glowing cables. Some are pulsing with blue 'Mana Data,' while others are leaking jagged green sparks of 'Raw Scripting.' Tripping over a cable causes a localized reality crash; you might find your left arm temporarily turning into a low-poly loaf of bread or your gravity reversing for a split second. The air is hot and tastes like a lightning strike in a hardware store. Nomagio has left a warning spray-painted on the wall: 'Don't touch the orange ones. They're load-bearing.'",
+    "exits": { "north": "room_179", "west": "room_177" }
+  },
+  "room_179": {
+    "name": "The Logic Gate",
+    "zone": "Glitch-Halls of Nomagio",
+    "shortDescription": "A pneumatic door that requires a basic cognitive check.",
+    "longDescription": "A massive, heavy blast door blocks your path. Unlike the magical doors of the Spire, this one is entirely mechanical. A small screen embedded in the metal displays a flickering green line of code: if (player.has_survived_this_long && player.is_not_a_bot) { door.open = true; } else { player.delete(); }. As you approach, a red laser sweeps over your body, scanning for 'Genuine Human Frustration.' With a loud, pneumatic hiss and a puff of steam that smells of burnt rubber, the door slides open, welcoming you into the guts of the simulation.",
+    "exits": { "north": "room_180", "south": "room_178" }
+  },
+  "room_180": {
+    "name": "The Infinite Loop A",
+    "zone": "Glitch-Halls of Nomagio",
+    "shortDescription": "A sterile, repeating room that smells of hot plastic and recursion.",
+    "longDescription": "You enter a room that looks exactly like a generic office breakroom, minus the coffee. There is a table, a chair, and a door to the North. However, when you pass through the North door, you find yourself standing in the exact same room, looking at the same table and chair. The air is stagnant and smells of hot plastic. This is a 'Recursive Logic Loop,' a trap for players who think they can solve every problem by just moving forward. On the table is a single, half-eaten donut that appears to be made of 16-bit pixels.",
+    "exits": { "south": "room_179", "down": "room_181" }
+  },
+  "room_181": {
+    "name": "The Infinite Loop B",
+    "zone": "Asset Graveyard",
+    "shortDescription": "The same sterile room, but the 'Recursion' is starting to fray.",
+    "longDescription": "You have entered the loop again, but the simulation is struggling to maintain the illusion. The table from the previous room is now vibrating at a high frequency, and the 16-bit donut has duplicated itself a hundred times, filling the corner of the room in a jagged, sugary pile. Nomagio's faint, static-heavy laughter echoes from the air vents, sounding like a man who has been awake for three years straight. To break the loop, you have to ignore the North door and walk directly into the Western wall, which feels like passing through a curtain of warm, vibrating TV static.",
+    "exits": { "north": "room_182", "up": "room_180" }
+  },
+  "room_182": {
+    "name": "The Variable Corridor",
+    "zone": "Asset Graveyard",
+    "shortDescription": "A hallway where the dimensions shift every time you blink.",
+    "longDescription": "This hallway refuses to commit to a physical form. One moment it is a wide, echoing cathedral of grey metal; you blink, and it is a claustrophobic crawlspace that forces you onto your hands and knees. The 'Collision Data' is flickering, meaning your shoulder might pass through the wall while your foot trips over a floor-tile that hasn't fully rendered yet. The air smells of ozone and wet cardboard. A small, floating HUD element in the center of the hall displays a rapidly changing number: Current_Width = [RANDOM_INT].",
+    "exits": { "north": "room_183", "south": "room_181" }
+  },
+  "room_183": {
+    "name": "The Syntax Error",
+    "zone": "Asset Graveyard",
+    "shortDescription": "A chamber filled with floating, radioactive red text.",
+    "longDescription": "The air in this room is thick with glowing, crimson strings of text that read ERR_NULL_POINTER and STRICT_VIOLATION. They hang in the air like neon spiderwebs, and walking through them feels like a series of tiny, static-electric stings against your skin. The light from the errors is so bright it casts 'inverted' shadows - dark shapes that appear brighter than the floor beneath them. The floor itself is a flat, untextured grey plane that makes a loud, digital beep every time you take a step.",
+    "exits": { "north": "room_184", "south": "room_182" }
+  },
+  "room_184": {
+    "name": "Asset Graveyard Entrance",
+    "zone": "Asset Graveyard",
+    "shortDescription": "A heavy, scarred blast door leading to the world's junk drawer.",
+    "longDescription": "You stand before a massive door made of mismatched materials - half-oak, half-corrugated steel, and a small section that is just a translucent purple 'Null' texture. This is the entrance to the Graveyard, where deleted ideas and broken models are dumped to save memory. The smell is a strange mix of fresh sawdust and hot server-plastic. A sign is scrawled in red paint across the door: 'Abandon All Logic, Ye Who Enter. Also, don't feed the wireframes.' The door doesn't open; it simply ceases to exist for a moment, allowing you to pass through.",
+    "exits": { "west": "room_185", "south": "room_183" }
+  },
+  "room_185": {
+    "name": "The Unpainted Hall",
+    "zone": "Asset Graveyard",
+    "shortDescription": "A blindingly magenta corridor with no textures applied.",
+    "longDescription": "Your retinas are immediately assaulted by a shade of magenta so pure and bright it feels like a physical punch to the brain. This is the 'Default Error Texture' - the color the world turns when it forgets what a wall is supposed to look like. There is no depth, no shadow, and no detail; the walls, floor, and ceiling bleed into a single, flat void of pinkish-purple light. Walking here feels like floating in a sensory-deprivation tank filled with highlighter fluid. The only sense of direction comes from a single, thin green line on the floor that represents the 'Developer's Path.'",
+    "exits": { "north": "room_186", "east": "room_184" }
+  },
+  "room_186": {
+    "name": "The Pile of Swords",
+    "zone": "Asset Graveyard",
+    "shortDescription": "A massive heap of unrendered, default sword models.",
+    "longDescription": "You are standing at the base of a mountain made of thousands of identical, low-poly broadswords. They are the 'Template_Sword_01' model - the base asset from which every legendary blade in Eldoria was derived. They have no weight, no sharpness, and they smell faintly of factory-new plastic. If you pick one up, it feels like holding a stiff piece of cardboard. Digging through the pile reveals discarded prototypes, like a sword with three hilts and a blade made of 'Placeholder_Stone.'",
+    "exits": { "north": "room_187", "south": "room_185" }
+  },
+  "room_187": {
+    "name": "The T-Pose Army",
+    "zone": "Asset Graveyard",
+    "shortDescription": "A room of rigidly frozen, outstretched NPCs.",
+    "longDescription": "Dozens of humanoid models stand in this chamber, arranged in perfect, grid-like rows. They are all locked in the 'T-Pose' - arms held straight out at their sides, faces devoid of expression, eyes staring into the middle distance. They represent the 'Village NPCs' that never made it into the final build. The air is deathly still, and the only sound is the hum of a cooling fan somewhere in the ceiling. If you walk too close to one, its head might snap sixty degrees to follow you with a jerky, frame-by-frame animation that makes your skin crawl.",
+    "exits": { "north": "room_188", "south": "room_186" }
+  },
+  "room_188": {
+    "name": "The Too-Leafy Tree",
+    "zone": "Asset Graveyard",
+    "shortDescription": "A single, hyper-detailed oak tree that breaks reality.",
+    "longDescription": "In the center of a sterile, grey room sits a single oak tree of such staggering detail that it hurts to look at. Every individual leaf is rendered with its own veins, dew-drops, and insect-bite marks. It is a masterpiece of over-engineering. However, the sheer amount of data required to display it has caused the 'Frame Rate' of the room to drop to a crawl. Your movements become jerky, and your voice sounds like a slow-motion growl. Nomagio has tagged the trunk with a floating note: 'Valdris spent three weeks on this. It crashed the server twice. I'm keeping it here as a warning against vanity.'",
+    "exits": { "east": "room_189", "south": "room_187" }
+  },
+  "room_189": {
+    "name": "The Unfinished Dragon",
+    "zone": "Asset Graveyard",
+    "shortDescription": "A terrifying, skeletal wireframe of a monster.",
+    "longDescription": "A dragon the size of a siege engine crouches in the corner, but it has no skin, no scales, and no fire. It is a vibrating mesh of blue glowing lines - the 'Wireframe' of a boss fight that was never finished. It isn't alive, but its 'Idle Animation' is still running, causing its chest to expand and contract with a rhythmic, digital hiss. When it tries to roar, the audio file is corrupted, producing the screeching, melodic sound of an ancient 56k modem attempting to connect to the internet.",
+    "exits": { "north": "room_190", "west": "room_188" }
+  },
+  "room_190": {
+    "name": "The Giant Rubber Duck",
+    "zone": "Asset Graveyard",
+    "shortDescription": "A fifty-foot-tall yellow duck that radiates administrative power.",
+    "longDescription": "Dominating this massive, hangar-like space is a gargantuan yellow rubber duck, glowing with a soft, benevolent inner light. In the world of the Coders, the Duck is the ultimate symbol of debugging - the silent listener to all logic problems. It radiates a sense of profound, inexplicable peace that washes away the stress of the previous 189 rooms. The floor around its base is covered in offerings of burnt-out vacuum tubes and empty coffee cups. To the North, the final path begins, leading toward the throne where the world was typed into existence.",
+    "exits": { "south": "room_189", "north": "room_191" }
+  },
+  "room_191": {
+    "name": "The Broken Physics Engine",
+    "zone": "Final Approach",
+    "shortDescription": "A chamber where gravity and sound have lost their alignment.",
+    "longDescription": "You have entered a room where the fundamental constants of nature are fluctuating like a dying lightbulb. Dust motes don't fall; they drift upward in jagged, square patterns. When you speak, your voice arrives several seconds before you open your mouth, and the sound of your footsteps comes from the ceiling instead of the floor. It is a nauseating experience that makes your inner ear feel like it's being wrung out like a wet rag. Along the walls, 'Admin Tape' (which looks like glowing green caution tape) holds the corners of the room together, preventing the walls from drifting off into the void.",
+    "exits": { "north": "room_192", "south": "room_190" }
+  },
+  "room_192": {
+    "name": "The Text Dump",
+    "zone": "Final Approach",
+    "shortDescription": "A room filled knee-deep with discarded lore and broken dialogue.",
+    "longDescription": "You are wading through a literal sea of words. The floor is hidden beneath piles of discarded parchment and glowing holographic text - thousands of rejected lore entries, misspelled NPC bickering, and 'Flavor Text' that was deemed too depressing for the final game. Kicking through the pile sends shards of sentences flying into the air: '...the king wept for...' and '...buy three chickens for...' swirl around you like autumn leaves. The air smells of old library paste and digital static. It is the place where the world's 'Story' comes to be recycled.",
+    "exits": { "north": "room_193", "south": "room_191" }
+  },
+  "room_193": {
+    "name": "The Corridor of Redundancy",
+    "zone": "Final Approach",
+    "shortDescription": "A hallway that is exactly like the hallway you were just in.",
+    "longDescription": "This room is a perfect, 1:1 copy of the previous room, but with one subtle, chilling difference: the door you just came through is now a solid wall. You are trapped in a sequence of 'Template Rooms' that Nomagio used to test the hallway-generation algorithm. Every detail - the scuff on the floor, the flicker of the overhead neon tube, the scent of hot copper - is identical to a terrifying degree. It feels like your mind is looping. To exit, you must find the one 'unique' item: a single, real-world coffee stain on a metal desk that doesn't belong in a simulation.",
+    "exits": { "north": "room_194", "south": "room_192" }
+  },
+  "room_194": {
+    "name": "The Overclocked Zone",
+    "zone": "Final Approach",
+    "shortDescription": "A high-speed hallway where time moves twice as fast.",
+    "longDescription": "The air here is shimmering with heat, and the walls are vibrating so fast they appear blurred. You have entered a zone where the server's clock speed has been pushed to its breaking point. Your heartbeat doubles, your torch burns down to a nub in seconds, and your movements feel frantic and twitchy. The smell of melting copper and frantic processing is overwhelming. You must sprint through this room; if you linger too long, your character's 'Internal Clock' will desync from the world, leaving you frozen in a single moment of time forever.",
+    "exits": { "west": "room_195", "south": "room_193" }
+  },
+  "room_195": {
+    "name": "The Server Rack Forest",
+    "zone": "Final Approach",
+    "shortDescription": "A labyrinth of blinking black monoliths and immense heat.",
+    "longDescription": "The 'Fantasy' world is entirely gone now. You are walking through a labyrinth of towering black metal racks, each filled with thousands of tiny, blinking green and amber lights. This is the hardware that sustains Eldoria. The hum of the cooling fans is a deafening, physical roar that vibrates in your teeth. The heat is immense, smelling of scorched silicon and 'The Great All-Nighter.' You can feel the raw power of the Shattered Symphony pulsing through the thick cables under your feet, carrying the thoughts and lives of every NPC you've met.",
+    "exits": { "north": "room_196", "east": "room_194" }
+  },
+  "room_196": {
+    "name": "The Final Approach Begins",
+    "zone": "Final Approach",
+    "shortDescription": "A transparent bridge over the churning Void of Source Code.",
+    "longDescription": "The metal walls of the server forest peel away, revealing that you are walking on a narrow bridge of pure, white light. There are no walls and no ceiling - only the 'Void.' Below you, the 195 rooms you just traversed are visible as tiny, glowing nodes on a vast, interconnected circuit board. Above you, the sky is a scrolling waterfall of green binary code. The air is perfectly still and tastes of 'Nothing.' It is the most beautiful and terrifying thing you have ever seen - the world, stripped of its skin, showing its bones.",
+    "exits": { "north": "room_197", "south": "room_195" }
+  },
+  "room_197": {
+    "name": "The Glass Walkway",
+    "zone": "Final Approach",
+    "shortDescription": "A fragile path where the history of your journey is visible below.",
+    "longDescription": "This walkway is made of a substance that is clearer than water and harder than diamond. As you walk, the glass lights up beneath your feet, displaying 'Stats' from your journey: Total Steps: 45,201, Swords Broken: 12, Hopes Shattered: Infinite. It is a cold, clinical look at your existence. The air smells of ozone and 'The End.' Far below, you can see the Ashlands and the Tower of Shadows, looking like tiny toys in a child's playbox. You are now higher than the Archmages ever dreamed of climbing.",
+    "exits": { "east": "room_198", "south": "room_196" }
+  },
+  "room_198": {
+    "name": "The Developer's Tear",
+    "zone": "Final Approach",
+    "shortDescription": "A single, massive droplet of water frozen in the center of the void.",
+    "longDescription": "Suspended in mid-air by a single line of glowing code is a massive, perfect droplet of saltwater. It hangs there, unmoving, refracting the green light of the binary sky. A small brass plaque floating next to it reads: 'The Last Bug. Shed by the Lead Dev during the Great Server Crash of 25. Do not touch, or the physics engine will never forgive us.' The room is silent except for the faint, melodic ping of a single, distant sonar pulse.",
+    "exits": { "north": "room_199", "west": "room_197" }
+  },
+  "room_199": {
+    "name": "The Waiting Room",
+    "zone": "Final Approach",
+    "shortDescription": "A quiet, mundane plastic room at the edge of eternity.",
+    "longDescription": "After the cosmic scale of the previous rooms, this one is a jarring return to the mundane. It is a small, quiet room with beige wallpaper, a single plastic chair, and a stack of three-year-old magazines on a low table. A digital sign on the wall reads: 'Wait here for the end of the world. Please take a number.' There is no number dispenser. The air smells of lemon polish and boredom. This is the 'Queue,' the final buffer before the system lets you face the creator. To proceed, you must simply sit in the chair and accept that you are ready.",
+    "exits": { "north": "room_200", "south": "room_198" }
+  },
+  "room_200": {
+    "name": "The Obsidian Throne",
+    "zone": "Final Approach",
+    "shortDescription": "The Heart of the Shattered Symphony and the Seat of the Admin.",
+    "longDescription": "This is the center of everything. The room is a perfect sphere of absolute, light-eating black, illuminated only by a single, flickering white cursor that floats in the center of the air. The Obsidian Throne isn't a chair; it's a massive, circular terminal interface made of polished stone and glowing fiber-optics. The floor is covered in a foot of liquid starlight that ripples as you move, smelling faintly of woodsmoke, rain, and 'The Final Save.' Nomagio (or his avatar) sits here - a tired figure in a grey hoodie, staring out of a massive window that reveals the entire world of Eldoria as a single, vibrating chord of light. This is the finish line. The cursor is blinking, waiting for your final input: Will you reboot the world, or will you let the song play out to its final, silent note?",
+    "exits": { "south": "room_199" }
+  },
+  "room_999": {
+    "name": "Nomagio's Office",
+    "zone": "The Void",
+    "shortDescription": "Nomagio's office is a large, circular room with a large desk in the center. The walls are lined with bookshelves and the ceiling is a perfect grid of white light. There is a large, ornate chair behind the desk.",
+    "longDescription": "Nomagio's office is a large, circular room with a large desk in the center. The walls are lined with bookshelves and the ceiling is a perfect grid of white light.",
+    "exits": { "down": "room_001" }
+  }
+}

@@ -1,0 +1,7 @@
+node_modules/
+*.bak
+*.dmp
+admin_log.txt
+recovered/
+mood_log.txt
+nul

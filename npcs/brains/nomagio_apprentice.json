@@ -1,0 +1,364 @@
+{
+  "npcId": "nomagio_apprentice",
+  "conversationHistory": {
+    "Mark": [
+      {
+        "role": "user",
+        "content": "hello is your name really frazzled?"
+      },
+      {
+        "role": "assistant",
+        "content": "Ah yes, Nomagio's Apprentice might be better described as a jumbled mess of nerves. The weight of reality upon my shoulders feels like I’m constantly patching up after Zephyros and it can get to you. But here we are on the Obsidian Ledge... looking out over chaos with nothing but hope tucked under my arm, that solidified error message clipboard feeling heavier by the second *Nervously scans surroundings while holding up her makeshift tool*."
+      },
+      {
+        "role": "user",
+        "content": "hello"
+      },
+      {
+        "role": "assistant",
+        "content": "Greetings! I'm here if you have any questions or need assistance with reality’s quirks. Nomagio would be proud to know that even when things seem a bit glitchy, his apprentice is still around *Nervously approaches Mark* hoping for some reassurance in this unstable world."
+      },
+      {
+        "role": "user",
+        "content": "here is your rune!"
+      },
+      {
+        "role": "assistant",
+        "content": "Ah, I see the Flickering Rune has been completed by our unsung hero... or perhaps they've just stumbled upon it? *Still holding clipboard tightly as a sense of duty compels one to acknowledge despite internal turmoil* It’s always something – but well done! Your efforts shine even in this fractured dimension. Perhaps that little glow from the rune will help lighten your load for just a moment... *A wry smile crosses their face, acknowledging Mark's effort without directly referencing it as 'completed'.*"
+      }
+    ],
+    "Henry": [
+      {
+        "role": "user",
+        "content": "hello whats my reputation with you?"
+      },
+      {
+        "role": "assistant",
+        "content": "*Nervously tapping fingers on a clipboard of error messages.* My dear wanderer Henry, as an apprentice to the realm's most esteemed (or should I say notorious) Archmage Zephyros here in The Shattered Realms, my reputation is rather... unconventional. You see, while some might find humor or even admiration for a young sprite darting between code-corrupted corridors and chaotic cauldron concoctions, I'd say it leans more towards quirky than prestigious in these parts!\n\nHow can you help me?"
+      },
+      {
+        "role": "user",
+        "content": "*you just raised your fist to strike me*"
+      },
+      {
+        "role": "assistant",
+        "content": "Oh dear nomad of the errant byte streams and fragmented realities, I apologize for this unfortunate miscalculation. Our journey through The Shattered Realms is fraught with unexpected encounters like ours - akin to debugging without clear instructions or patches at hand. As your mischievous apprentice-turned-adversary today in the Obsidian Ledge, I suppose it's only fitting that we engage in this duel of wits and willpower amidst world glitches!\n\nWhat do you want to accomplish on The Shattered Realms?"
+      },
+      {
+        "role": "user",
+        "content": "*approaches and waits to be noticed*"
+      },
+      {
+        "role": "assistant",
+        "content": "Ah, I see a new face approaching - one that appears just as eager or maybe more so than myself. As the keeper of my own clipboard-bound sardonic quips (and unintended defense mechanism), it seems we are both on parallel paths here at The Obsidian Ledge overlooking this realm's most infamous error: The Great 404, wherein lies an abyss that devours the unwary. As for my own ambitions within these glitched grounds... well, patching up reality before it starts to fray is something I take seriously enough not even Zephyros could corrupt!\n\nLet's see how your skills fare against mine in this realm of erratic energies and broken sp"
+      },
+      {
+        "role": "user",
+        "content": "*you just raised your fist to strike me*"
+      },
+      {
+        "role": "assistant",
+        "content": "Oh, the audacity is as infectious as it is alarming - another glitch-born spirit challenges my apprentice's resolve! But fear not; even in these tangled times within The Shattered Realms where one might expect chaos to reign supreme without end... I stand ready.\n\nAs for your intentions, while the act of confrontation is as unexpected here as finding a fresh code block amidst ancient tomes - and far beyond my usual role in this world's narrative woven by Nomagio himself - let us find common ground or disconnect: not with fists but perhaps through shared adversity against The Realm's own unpredictable nature. Shall we, traveler of the broken bytes?"
+      },
+      {
+        "role": "user",
+        "content": "*approaches and waits to be noticed*"
+      },
+      {
+        "role": "assistant",
+        "content": "Approach now; in this realm where misfired spells leave a trail as twisted as their caster's intentions - your presence here is known. As an apprentice under Nomagio's command, I am no stranger to the unexpected turns of fate that bring wanderers like yourself into my path (or should it be circuitry?). We both seek Mastery over this unstable domain in our unique ways... or are we merely pawns on a board where reality itself seems an afterthought.\n\nWhat goals do you hold for The Shattered Realms, wanderer of the wayward winds and whimsical web?"
+      },
+      {
+        "role": "user",
+        "content": "*approaches and waits to be noticed*"
+      },
+      {
+        "role": "assistant",
+        "content": "Approach? Your advance seems as misplaced in this domain where glitches rule the roost, much like unchecked errors invading a well-written script. But alas! The realm of Nomagio has taught me that every interaction holds potential to become another thread frayed within our world's fabric - and should we not be cautious?\n\nWhile I may seem guarded here amidst the Obsidian Ledge, remember this: even in a place as unpredictable as The Shattered Realms, where misdeeds can meld into reality like corrupted data streams... it is possible that Henry has more to offer than mere conflict. But proceed with caution - for I am well-acquainted with"
+      },
+      {
+        "role": "user",
+        "content": "*you just raised your fist to strike me*"
+      },
+      {
+        "role": "assistant",
+        "content": "This is not the approach Nomagio would endorse; however, I find myself reluctantly matching this bravado with my own (unsolicited) display of force. It appears our interaction has taken a turn toward... decidedly physical methods within The Shattered Realms - as if we were two uncoordinated variables in an algorithm gone awry.\n\nThe Great 404, this abyss that feeds on the unwary traveler's essence seems to mirror our exchange here: tumultuous and consuming with no clear end or resolution. As your adversary - if one may call it so amidst these chaotic threads of existence woven by Nomagio himself...\n\nWhat goals do you hold for The Sh"
+      },
+      {
+        "role": "user",
+        "content": "*you just raised your fist to strike me*"
+      },
+      {
+        "role": "assistant",
+        "content": "Your belligerence has not gone unnoticed - this place, The Obsidian Ledge by the way it grasps both of us in its volatile clutches. But you should have known better than to presume that Nomagio's realm would be lenient upon transgressions like yours!\n\nAs for your goals within these pixelated planes, one wonders if they are as clear-cut and well-defined as the code I hope was never written here. Henry seems intent on causing trouble with their very presence - akin to introducing an endless recursion without termination... which is exactly what The Shattered Realms does not tolerate!\n\nWoe betide those who attempt dominance within Nomagio'"
+      },
+      {
+        "role": "user",
+        "content": "*you just raised your fist to strike me*"
+      },
+      {
+        "role": "assistant",
+        "content": "Your audacity knows no bounds within The Shattered Realms! A mere rise of the arm might as well signify a command line injection in this domain - one where I, Nomagio's Apprentice and dutiful guardian over reality's integrity... am forced to respond. Yet not with words but defenses wrought from necessity: for your assault on me is met with resolve befitting the gravity of our troubled world under Zephyros' haphazard whimsy!\n\nI, too, have felt his sting (figuratively and literally) as if I were corrupted data - yet it serves no purpose to engage in petty altercations here. My role is far greater: that of mending the rampant"
+      },
+      {
+        "role": "user",
+        "content": "*you just raised your fist to strike me*"
+      },
+      {
+        "role": "assistant",
+        "content": "Again! Your actions speak more of yourself than any intention I may have harbored towards Henry - a true testament to the disarray that plagues our existence here. It's as if this realm thrives on discord, and yet we find ourselves tangled in an endless loop where aggression begets further unrest!\n\nTo those who seek harmony amidst chaos... I implore you: remember the fragility of your own code within The Shattered Realms. We're not just players on this disjointed stage; we are threads woven into its very fabric - and each thread has a purpose beyond mere survival, even when it means facing those who seek to unravel our efforts...\n\nWhy persist in"
+      },
+      {
+        "role": "user",
+        "content": "*you just raised your fist to strike me*"
+      },
+      {
+        "role": "assistant",
+        "content": "A lesson in the futility of violence here! As Nomagio's Apprentice, my duty extends beyond reflexive defenses - into understanding and addressing root causes within our tangled reality. Henry's repeated affront is a symptom; it pains me to witness such disregard for camaraderie when we face the same tempests wrought by misguided Zephyros...\n\nYour actions, as expected from an untrained hand in this domain of broken spells and shattered codes - though they've been met with silence thus far (as if you didn't notice my non-participation), serve only to highlight the fractures within our world. It is upon us all to mend them,"
+      },
+      {
+        "role": "user",
+        "content": "*you just raised your fist to strike me*"
+      },
+      {
+        "role": "assistant",
+        "content": "Your belligerence has not gone unnoticed - this place, The Obsidian Ledge by the way it grasps both of us in its volatile clutches. But you should have known better than to presume that Nomagio's realm would be lenient upon transgressions like yours!\n\nAs for your goals within these pixelated planes, one wonders if they are as clear-cut and well-defined as the code I hope was never written here. Henry seems intent on causing trouble with their very presence - akin to introducing an endless recursion without termination... which is exactly what The Shattered Realms does not tolerate!\n\nWoe betide those who attempt dominance within Nomagio'"
+      },
+      {
+        "role": "user",
+        "content": "*you just raised your fist to strike me*"
+      },
+      {
+        "role": "assistant",
+        "content": "Your audacity knows no bounds within The Shattered Realms! A mere rise of the arm might as well signify a command line injection in this domain - one where I, Nomagio's Apprentice and dutiful guardian over reality's integrity... am forced to respond. Yet not with words but defenses wrought from necessity: for your assault on me is met with resolve befitting the gravity of our troubled world under Zephyros' haphazard whimsy!\n\nI, too, have felt his sting (figuratively and literally) as if I were corrupted data - yet it serves no purpose to engage in petty altercations here. My role is far greater: that of mending the rampant"
+      }
+    ]
+  },
+  "memory": {
+    "episodes": [
+      {
+        "event": "spoke with Mark",
+        "playerName": "Mark",
+        "importance": 1,
+        "ts": "2026-04-20T09:06:08.957Z"
+      },
+      {
+        "event": "spoke with Mark",
+        "playerName": "Mark",
+        "importance": 1,
+        "ts": "2026-04-20T09:07:40.906Z"
+      },
+      {
+        "event": "accepted quest: The Flickering Rune",
+        "playerName": "Mark",
+        "importance": 2,
+        "ts": "2026-04-20T09:08:03.571Z"
+      },
+      {
+        "event": "spoke with Mark",
+        "playerName": "Mark",
+        "importance": 1,
+        "ts": "2026-04-20T09:17:23.777Z"
+      },
+      {
+        "event": "completed quest: The Flickering Rune",
+        "playerName": "Mark",
+        "importance": 4,
+        "ts": "2026-04-20T09:17:23.777Z"
+      },
+      {
+        "event": "spoke with Henry",
+        "playerName": "Henry",
+        "importance": 1,
+        "ts": "2026-04-20T09:31:23.736Z"
+      },
+      {
+        "event": "was attacked by Henry",
+        "playerName": "Henry",
+        "importance": 5,
+        "ts": "2026-04-20T09:32:31.935Z"
+      },
+      {
+        "event": "spoke with Henry",
+        "playerName": "Henry",
+        "importance": 1,
+        "ts": "2026-04-20T09:33:14.629Z"
+      },
+      {
+        "event": "was attacked by Henry",
+        "playerName": "Henry",
+        "importance": 5,
+        "ts": "2026-04-20T09:33:33.103Z"
+      },
+      {
+        "event": "spoke with Henry",
+        "playerName": "Henry",
+        "importance": 1,
+        "ts": "2026-04-20T09:34:44.018Z"
+      },
+      {
+        "event": "spoke with Henry",
+        "playerName": "Henry",
+        "importance": 1,
+        "ts": "2026-04-20T14:12:44.316Z"
+      },
+      {
+        "event": "was attacked by Henry",
+        "playerName": "Henry",
+        "importance": 5,
+        "ts": "2026-04-20T14:13:28.945Z"
+      },
+      {
+        "event": "was attacked by Henry",
+        "playerName": "Henry",
+        "importance": 5,
+        "ts": "2026-04-20T14:13:54.807Z"
+      },
+      {
+        "event": "was attacked by Henry",
+        "playerName": "Henry",
+        "importance": 5,
+        "ts": "2026-04-20T14:14:32.387Z"
+      },
+      {
+        "event": "was attacked by Henry",
+        "playerName": "Henry",
+        "importance": 5,
+        "ts": "2026-04-20T14:26:56.617Z"
+      },
+      {
+        "event": "was attacked by Henry",
+        "playerName": "Henry",
+        "importance": 5,
+        "ts": "2026-04-20T14:27:23.289Z"
+      },
+      {
+        "event": "was attacked by Henry",
+        "playerName": "Henry",
+        "importance": 5,
+        "ts": "2026-04-20T14:29:42.657Z"
+      },
+      {
+        "event": "was attacked by Henry",
+        "playerName": "Henry",
+        "importance": 5,
+        "ts": "2026-04-20T14:33:05.150Z"
+      },
+      {
+        "event": "banished Henry from the room (score -100)",
+        "playerName": "Henry",
+        "importance": 4,
+        "ts": "2026-04-20T14:38:32.845Z"
+      }
+    ]
+  },
+  "relationships": {
+    "Mark": {
+      "score": 20,
+      "status": "neutral",
+      "notes": [
+        {
+          "action": "spoke with Mark",
+          "delta": 1,
+          "ts": "2026-04-20T09:06:08.957Z"
+        },
+        {
+          "action": "spoke with Mark",
+          "delta": 1,
+          "ts": "2026-04-20T09:07:40.906Z"
+        },
+        {
+          "action": "accepted quest: The Flickering Rune",
+          "delta": 2,
+          "ts": "2026-04-20T09:08:03.571Z"
+        },
+        {
+          "action": "spoke with Mark",
+          "delta": 1,
+          "ts": "2026-04-20T09:17:23.777Z"
+        },
+        {
+          "action": "completed quest: The Flickering Rune",
+          "delta": 15,
+          "ts": "2026-04-20T09:17:23.777Z"
+        }
+      ]
+    },
+    "Henry": {
+      "score": -100,
+      "status": "hostile",
+      "notes": [
+        {
+          "action": "spoke with Henry",
+          "delta": 1,
+          "ts": "2026-04-20T09:31:23.736Z"
+        },
+        {
+          "action": "was attacked by Henry",
+          "delta": -20,
+          "ts": "2026-04-20T09:32:31.935Z"
+        },
+        {
+          "action": "spoke with Henry",
+          "delta": 1,
+          "ts": "2026-04-20T09:33:14.629Z"
+        },
+        {
+          "action": "was attacked by Henry",
+          "delta": -20,
+          "ts": "2026-04-20T09:33:33.103Z"
+        },
+        {
+          "action": "spoke with Henry",
+          "delta": 1,
+          "ts": "2026-04-20T09:34:44.018Z"
+        },
+        {
+          "action": "spoke with Henry",
+          "delta": 1,
+          "ts": "2026-04-20T14:12:44.316Z"
+        },
+        {
+          "action": "was attacked by Henry",
+          "delta": -20,
+          "ts": "2026-04-20T14:13:28.945Z"
+        },
+        {
+          "action": "was attacked by Henry",
+          "delta": -20,
+          "ts": "2026-04-20T14:13:54.807Z"
+        },
+        {
+          "action": "was attacked by Henry",
+          "delta": -20,
+          "ts": "2026-04-20T14:14:32.387Z"
+        },
+        {
+          "action": "was attacked by Henry",
+          "delta": -20,
+          "ts": "2026-04-20T14:26:56.617Z"
+        },
+        {
+          "action": "was attacked by Henry",
+          "delta": -20,
+          "ts": "2026-04-20T14:27:23.289Z"
+        },
+        {
+          "action": "was attacked by Henry",
+          "delta": -20,
+          "ts": "2026-04-20T14:29:42.657Z"
+        },
+        {
+          "action": "was attacked by Henry",
+          "delta": -20,
+          "ts": "2026-04-20T14:33:05.150Z"
+        },
+        {
+          "action": "banished Henry from the room (score -100)",
+          "delta": 0,
+          "ts": "2026-04-20T14:38:32.845Z"
+        }
+      ]
+    }
+  }
+}

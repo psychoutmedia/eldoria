@@ -1,0 +1,126 @@
+{
+  "flickering_rune": {
+    "id": "flickering_rune",
+    "title": "The Flickering Rune",
+    "giver": "nomagio_apprentice",
+    "description": "Nomagio's Apprentice is patching reality-leaks and needs a Flickering Rune Fragment from deep in the Crystal Caverns. Find it and bring it back before the cycle ends.",
+    "hint": "The shard is said to glint among The Sparkling Depths.",
+    "objectives": [
+      {
+        "id": "get_rune",
+        "type": "item_pickup",
+        "targetId": "flickering_rune_fragment",
+        "count": 1,
+        "description": "Retrieve the Flickering Rune Fragment"
+      }
+    ],
+    "rewards": { "gold": 50, "xp": 30, "relationship": 15 },
+    "questItems": [
+      {
+        "id": "flickering_rune_fragment",
+        "name": "Flickering Rune Fragment",
+        "room": "room_015",
+        "description": "A shard of resonance crystal, etched with a rune that flickers like a dying computer monitor. Warm to the touch."
+      }
+    ]
+  },
+  "silenced_whisper": {
+    "id": "silenced_whisper",
+    "title": "Silence the Whisper",
+    "giver": "obsidian_scribe",
+    "description": "A Bookworm is chewing through forbidden pages in the Ethereal Library. The Scribe wants it silenced. Permanently.",
+    "hint": "Hunt a Bookworm among the shelves of the Ethereal Library.",
+    "objectives": [
+      {
+        "id": "kill_bookworm",
+        "type": "monster_kill",
+        "targetId": "bookworm",
+        "count": 1,
+        "description": "Slay a Bookworm in the Ethereal Library"
+      }
+    ],
+    "rewards": { "gold": 30, "xp": 75, "relationship": 15 }
+  },
+  "wind_the_clock": {
+    "id": "wind_the_clock",
+    "title": "Wind Thessarian's Clock",
+    "giver": "thessarian_clockwatcher",
+    "description": "The cycle-clock is slowing. Touch three observatory waypoints in sequence and return to the Clockwatcher before time runs out.",
+    "hint": "Visit room_088, room_091, and room_095 - in any order - then return.",
+    "timeLimitMs": 900000,
+    "objectives": [
+      {
+        "id": "visit_waypoints",
+        "type": "visit_rooms",
+        "targetIds": ["room_088", "room_091", "room_095"],
+        "count": 3,
+        "description": "Visit three observatory waypoints"
+      }
+    ],
+    "rewards": { "gold": 40, "xp": 100, "relationship": 20 },
+    "failureRelationship": -5
+  },
+  "feed_the_void": {
+    "id": "feed_the_void",
+    "title": "Feed the Void",
+    "giver": "void_merchant",
+    "description": "The Void Merchant requires a tribute of 200 gold. Hand it over and the Void will remember you - possibly fondly.",
+    "hint": "Use 'give 200 gold merchant' in the Vacant Chamber.",
+    "objectives": [
+      {
+        "id": "give_gold",
+        "type": "give_gold",
+        "targetId": "void_merchant",
+        "count": 200,
+        "description": "Give 200 gold to the Void Merchant"
+      }
+    ],
+    "rewards": { "gold": 0, "xp": 60, "relationship": 25 }
+  },
+  "collect_five_instruments": {
+    "id": "collect_five_instruments",
+    "title": "The Shattered Symphony",
+    "giver": "nomagio_apprentice",
+    "description": "Reality is out of tune. Five Primordial Instruments must be recovered from the harmonic realm beyond level 15, and played together in the Zero Point Chamber to sing the world home.",
+    "hint": "Beyond the Gatekeeper of Resonance. Seek the five wizards and their instruments; the Silver Harp sleeps in Lyralei's garden.",
+    "keepItems": true,
+    "objectives": [
+      {
+        "id": "get_drum",
+        "type": "item_pickup",
+        "targetId": "obsidian_drum_stave_instrument",
+        "count": 1,
+        "description": "Claim the Obsidian Drum-Stave (from Morwyn Ironheart)"
+      },
+      {
+        "id": "get_harp",
+        "type": "item_pickup",
+        "targetId": "silver_harp_of_creation",
+        "count": 1,
+        "description": "Retrieve the Silver Harp of Creation (Lyralei's garden, room 138)"
+      },
+      {
+        "id": "get_trumpet",
+        "type": "item_pickup",
+        "targetId": "golden_trumpet_of_change",
+        "count": 1,
+        "description": "Claim the Golden Trumpet of Change (from the Recursive Zephyros)"
+      },
+      {
+        "id": "get_lute",
+        "type": "item_pickup",
+        "targetId": "lute_of_whispering_shadows",
+        "count": 1,
+        "description": "Claim the Lute of Whispering Shadows (from Nyxara)"
+      },
+      {
+        "id": "get_flute",
+        "type": "item_pickup",
+        "targetId": "crystal_flute_of_wisdom",
+        "count": 1,
+        "description": "Claim the Crystal Flute of Wisdom (from Thessarian the Patient)"
+      }
+    ],
+    "rewards": { "gold": 2000, "xp": 5000, "relationship": 50, "suffix": "the Symphonist" }
+  }
+}
