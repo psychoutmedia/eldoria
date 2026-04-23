@@ -1,0 +1,73 @@
+{
+  "recipes": {
+    "sharpened_dagger": {
+      "skill": "weaponsmith",
+      "reqLevel": 1,
+      "inputs": [ { "itemId": "iron_scrap", "count": 2 } ],
+      "output": { "itemId": "sharpened_dagger" }
+    },
+    "warhammer": {
+      "skill": "weaponsmith",
+      "reqLevel": 4,
+      "inputs": [
+        { "itemId": "iron_scrap", "count": 3 },
+        { "itemId": "ember_core", "count": 1 }
+      ],
+      "output": { "itemId": "warhammer" }
+    },
+    "resonant_edge": {
+      "skill": "weaponsmith",
+      "reqLevel": 7,
+      "inputs": [
+        { "itemId": "harmonic_shard", "count": 2 },
+        { "itemId": "iron_scrap", "count": 1 }
+      ],
+      "output": { "itemId": "resonant_edge" }
+    },
+    "fire_ward_ring": {
+      "skill": "enchanter",
+      "reqLevel": 2,
+      "inputs": [
+        { "itemId": "silver_band", "count": 1 },
+        { "itemId": "fire_essence", "count": 1 }
+      ],
+      "output": { "itemId": "fire_ward_ring" }
+    },
+    "spell_focus_amulet": {
+      "skill": "enchanter",
+      "reqLevel": 5,
+      "inputs": [
+        { "itemId": "traveler_amulet", "count": 1 },
+        { "itemId": "harmonic_shard", "count": 2 }
+      ],
+      "output": { "itemId": "spell_focus_amulet" }
+    },
+    "minor_healing_brew": {
+      "skill": "alchemist",
+      "reqLevel": 1,
+      "inputs": [
+        { "itemId": "herb_bundle", "count": 2 },
+        { "itemId": "spring_water", "count": 1 }
+      ],
+      "output": { "itemId": "minor_healing_brew" }
+    },
+    "mana_draught": {
+      "skill": "alchemist",
+      "reqLevel": 3,
+      "inputs": [
+        { "itemId": "mana_petal", "count": 1 },
+        { "itemId": "spring_water", "count": 1 }
+      ],
+      "output": { "itemId": "mana_draught" }
+    },
+    "greater_healing_brew": {
+      "skill": "alchemist",
+      "reqLevel": 6,
+      "inputs": [
+        { "itemId": "herb_bundle", "count": 3 },
+        { "itemId": "phoenix_feather", "count": 1 }
+      ],
+      "output": { "itemId": "greater_healing_brew" }
+    }
+  }
+}

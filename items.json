@@ -692,5 +692,142 @@
     "thessarian_patient": {
       "guaranteed": ["crystal_flute_of_wisdom", "arcane_infusion", "superior_mana_potion"]
     }
+  },
+  "crafting": {
+    "iron_scrap": {
+      "name": "Iron Scrap",
+      "type": "crafting",
+      "value": 4,
+      "description": "A shard of raw iron. Crafting material."
+    },
+    "ember_core": {
+      "name": "Ember Core",
+      "type": "crafting",
+      "value": 25,
+      "description": "A still-burning coal drawn from the Molten Forges. Crafting material."
+    },
+    "harmonic_shard": {
+      "name": "Harmonic Shard",
+      "type": "crafting",
+      "value": 40,
+      "description": "A crystal that hums in sympathy with spoken words. Crafting material."
+    },
+    "fire_essence": {
+      "name": "Fire Essence",
+      "type": "crafting",
+      "value": 30,
+      "description": "Bottled flame. Burns cold until broken. Crafting material."
+    },
+    "herb_bundle": {
+      "name": "Herb Bundle",
+      "type": "crafting",
+      "value": 6,
+      "description": "A tied bundle of medicinal herbs. Crafting material."
+    },
+    "spring_water": {
+      "name": "Spring Water",
+      "type": "crafting",
+      "value": 3,
+      "description": "Crystal-clear spring water. Crafting material."
+    },
+    "mana_petal": {
+      "name": "Mana Petal",
+      "type": "crafting",
+      "value": 20,
+      "description": "A petal that stores arcane energy. Crafting material."
+    },
+    "phoenix_feather": {
+      "name": "Phoenix Feather",
+      "type": "crafting",
+      "value": 120,
+      "description": "A feather that still remembers being fire. Rare crafting material."
+    },
+    "sharpened_dagger": {
+      "name": "Sharpened Dagger",
+      "type": "weapon",
+      "levelReq": 1,
+      "damageBonus": 8,
+      "value": 30,
+      "description": "A dagger honed to a whisper-edge by a weaponsmith's patience."
+    },
+    "warhammer": {
+      "name": "Warhammer",
+      "type": "weapon",
+      "levelReq": 4,
+      "damageBonus": 18,
+      "value": 90,
+      "description": "A two-handed hammer with an ember-warm head."
+    },
+    "resonant_edge": {
+      "name": "Resonant Edge",
+      "type": "weapon",
+      "levelReq": 7,
+      "damageBonus": 28,
+      "damageType": "harmonic",
+      "value": 180,
+      "description": "A blade forged around a harmonic shard. It sings when it strikes."
+    },
+    "fire_ward_ring": {
+      "name": "Ring of Fire Ward",
+      "type": "armor",
+      "slot": "finger",
+      "levelReq": 2,
+      "armorBonus": 1,
+      "resistBonus": { "fire": 10 },
+      "value": 60,
+      "description": "Silver band etched with fire wards. Softens fire damage."
+    },
+    "spell_focus_amulet": {
+      "name": "Spell Focus Amulet",
+      "type": "armor",
+      "slot": "neck",
+      "levelReq": 5,
+      "armorBonus": 2,
+      "manaBonus": 15,
+      "value": 100,
+      "description": "A traveler's amulet wound with harmonic thread. Widens the well of mana."
+    },
+    "minor_healing_brew": {
+      "name": "Minor Healing Brew",
+      "type": "consumable",
+      "healAmount": 30,
+      "value": 15,
+      "description": "A bitter brew that patches wounds closed."
+    },
+    "mana_draught": {
+      "name": "Mana Draught",
+      "type": "consumable",
+      "manaAmount": 40,
+      "value": 25,
+      "description": "A petal-green draught that restores mana."
+    },
+    "greater_healing_brew": {
+      "name": "Greater Healing Brew",
+      "type": "consumable",
+      "healAmount": 100,
+      "value": 75,
+      "description": "A phoenix-warm brew. Mends even deep wounds."
+    }
+  },
+  "qp_gear": {
+    "resonant_blade": {
+      "name": "Resonant Blade",
+      "type": "weapon",
+      "levelReq": 15,
+      "damageBonus": 30,
+      "damageType": "harmonic",
+      "value": 500,
+      "description": "A blade that vibrates with stored questing-will. QP redemption item."
+    },
+    "quiet_ring": {
+      "name": "Ring of Quiet Hours",
+      "type": "armor",
+      "slot": "finger",
+      "levelReq": 10,
+      "armorBonus": 5,
+      "manaBonus": 10,
+      "value": 800,
+      "description": "A ring of brushed steel. The world hushes when you turn it. QP redemption item."
+    }
   }
 }

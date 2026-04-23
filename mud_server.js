@@ -1332,7 +1332,16 @@ function createPlayer(name = null) {
     bankUses: 0,
     roomsVisited: [], // mirror of stats.roomsExplored for Tier 1 audits
     mail: [], // inbox [{from,title,body,timestamp,read}]
-    lastChatAt: Date.now()
+    lastChatAt: Date.now(),
+    // === Tier 2 ===
+    questPoints: 0,
+    campaign: null,
+    campaignLastCompletedAt: 0,
+    campaignsCompleted: 0,
+    pets: [],
+    skills: { weaponsmith: 0, enchanter: 0, alchemist: 0 },
+    remortTier: 0,
+    permStatBonuses: { str: 0, dex: 0, con: 0, int: 0, wis: 0 }
   };
 }
 
@@ -1551,6 +1560,15 @@ function savePlayer(player, socket = null, silent = false) {
     bank: player.bank || 0,
     bankUses: player.bankUses || 0,
     mail: player.mail || [],
+    // Tier 2
+    questPoints: player.questPoints || 0,
+    campaign: player.campaign || null,
+    campaignLastCompletedAt: player.campaignLastCompletedAt || 0,
+    campaignsCompleted: player.campaignsCompleted || 0,
+    pets: player.pets || [],
+    skills: player.skills || { weaponsmith: 0, enchanter: 0, alchemist: 0 },
+    remortTier: player.remortTier || 0,
+    permStatBonuses: player.permStatBonuses || { str: 0, dex: 0, con: 0, int: 0, wis: 0 },
     lastPlayed: new Date().toISOString()
   };
 
@@ -1679,7 +1697,16 @@ function loadPlayer(playerName) {
       bank: typeof data.bank === 'number' ? data.bank : 0,
       bankUses: data.bankUses || 0,
       mail: data.mail || [],
-      lastChatAt: Date.now()
+      lastChatAt: Date.now(),
+      // Tier 2 back-fill
+      questPoints: typeof data.questPoints === 'number' ? data.questPoints : 0,
+      campaign: data.campaign || null,
+      campaignLastCompletedAt: data.campaignLastCompletedAt || 0,
+      campaignsCompleted: data.campaignsCompleted || 0,
+      pets: data.pets || [],
+      skills: Object.assign({ weaponsmith: 0, enchanter: 0, alchemist: 0 }, data.skills || {}),
+      remortTier: data.remortTier || 0,
+      permStatBonuses: Object.assign({ str: 0, dex: 0, con: 0, int: 0, wis: 0 }, data.permStatBonuses || {})
     };
 
     return player;
@@ -1725,7 +1752,7 @@ function formatNumber(num) {
 // Get an item template by its ID
 function getItemById(itemId) {
   // Check all item categories
-  const categories = ['weapons', 'armor', 'shields', 'accessories', 'consumables', 'treasure', 'boss_drops', 'instruments'];
+  const categories = ['weapons', 'armor', 'shields', 'accessories', 'consumables', 'treasure', 'boss_drops', 'instruments', 'crafting', 'qp_gear'];
   for (const category of categories) {
     if (itemData[category] && itemData[category][itemId]) {
       return { ...itemData[category][itemId], id: itemId };
@@ -1748,6 +1775,9 @@ function createItem(itemId) {
     damageBonus: template.damageBonus || 0,
     armorBonus: template.armorBonus || 0,
     healAmount: template.healAmount || 0,
+    manaBonus: template.manaBonus || 0,
+    resistBonus: template.resistBonus || null,
+    damageType: template.damageType || null,
     value: template.value || 0,
     description: template.description
   };
@@ -3308,7 +3338,11 @@ function monsterAttackPlayer(socket, player, monster) {
 function handleMonsterDeath(socket, player, monster) {
   // Boss monsters give 4x XP (level × 200), regular monsters give level × 50
   const isBoss = monster.type === 'Boss';
-  const xpGain = isBoss ? monster.level * 200 : monster.level * 50;
+  let xpGain = isBoss ? monster.level * 200 : monster.level * 50;
+  // Tier 2.6: remort XP bonus (+5% per tier, compounded additively)
+  if (player.remortTier && player.remortTier > 0) {
+    xpGain = Math.floor(xpGain * (1 + 0.05 * player.remortTier));
+  }
 
   // Victory message
   const victoryMsg = colorize(
@@ -3375,6 +3409,15 @@ function handleMonsterDeath(socket, player, monster) {
   if (typeof player.practicePoints !== 'number') player.practicePoints = 0;
   player.practicePoints += 1;
 
+  // Tier 2.1: campaign progress
+  if (typeof tickCampaignOnKill === 'function' && monster && monster.templateId) {
+    tickCampaignOnKill(socket, player, monster.templateId);
+  }
+  // Tier 2.3: pets share XP
+  if (typeof petShareXP === 'function') {
+    petShareXP(socket, player, xpGain);
+  }
+
   // Tier 1.8 achievement triggers
   if (player.stats.monstersKilled === 1) unlockAchievement(socket, player, 'first_blood');
   if (player.stats.monstersKilled >= 100) unlockAchievement(socket, player, 'hundred_kills');
@@ -3410,6 +3453,9 @@ function handleMonsterDeath(socket, player, monster) {
     unlockAchievement(socket, player, 'first_boss');
     if (player.stats.bossesDefeated.length >= 5) unlockAchievement(socket, player, 'five_bosses');
     if (player.stats.bossesDefeated.length >= 9) unlockAchievement(socket, player, 'nine_bosses');
+    // Tier 2.2: first-time boss kill grants +5 QP
+    player.questPoints = (player.questPoints || 0) + 5;
+    socket.write(colorize('[+5 Quest Points] First-time boss victory.\r\n', 'brightMagenta'));
     // Auto-save after boss defeat
     savePlayer(player, socket, true);
     // Log activity
@@ -11235,6 +11281,9 @@ function processCommand(socket, player, input) {
   // Tier 1 dispatch
   if (handleTier1Command(socket, player, input)) return true;
 
+  // Tier 2 dispatch
+  if (handleTier2Command(socket, player, input)) return true;
+
   // Unknown command
   socket.write(`Unknown command: ${input}\r\n`);
   socket.write('Try: look, attack [monster], flee, stats, levels, save, quit\r\n');
@@ -12073,6 +12122,711 @@ function handleTier1Command(socket, player, input) {
     handleMail(socket, player, q);
     return true;
   }
+
+  return false;
+}
+
+// ============================================
+// TIER 2 SYSTEMS (§2.1 – §2.6)
+// ============================================
+
+function ensureT2Defaults(player) {
+  if (typeof player.questPoints !== 'number') player.questPoints = 0;
+  if (player.campaign === undefined) player.campaign = null;
+  if (typeof player.campaignLastCompletedAt !== 'number') player.campaignLastCompletedAt = 0;
+  if (typeof player.campaignsCompleted !== 'number') player.campaignsCompleted = 0;
+  if (!Array.isArray(player.pets)) player.pets = [];
+  if (!player.skills) player.skills = { weaponsmith: 0, enchanter: 0, alchemist: 0 };
+  if (typeof player.remortTier !== 'number') player.remortTier = 0;
+  if (!player.permStatBonuses) player.permStatBonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0 };
+}
+
+// ---------- 2.1 Campaign system ----------
+
+const CAMPAIGN_COOLDOWN_MS = 3600000; // 1 hour
+const CAMPAIGN_TARGET_COUNT = 3;
+const CAMPAIGN_LEVEL_RANGE = 3;
+
+function pickCampaignTargets(playerLevel) {
+  const candidates = [];
+  try {
+    // monsters.json top-level key is `templates` (regular mobs) — not `monsters`.
+    const mons = (monsterData && (monsterData.templates || monsterData.monsters)) || {};
+    for (const [tid, tpl] of Object.entries(mons)) {
+      const lvl = tpl.level || 1;
+      if (Math.abs(lvl - playerLevel) <= CAMPAIGN_LEVEL_RANGE) {
+        candidates.push({ templateId: tid, name: tpl.name || tid, level: lvl });
+      }
+    }
+  } catch (e) { /* defensive */ }
+  if (candidates.length === 0) return [];
+  // Pick unique targets
+  const picks = [];
+  const used = new Set();
+  let attempts = 0;
+  while (picks.length < CAMPAIGN_TARGET_COUNT && attempts < 50) {
+    const c = candidates[Math.floor(Math.random() * candidates.length)];
+    if (!used.has(c.templateId)) {
+      used.add(c.templateId);
+      const required = 1 + Math.floor(Math.random() * 3); // 1..3
+      picks.push({ templateId: c.templateId, name: c.name, required, killed: 0 });
+    }
+    attempts++;
+  }
+  return picks;
+}
+
+function handleCampaign(socket, player, args) {
+  ensureT2Defaults(player);
+  const arg = (args || '').trim().toLowerCase();
+
+  if (arg === 'abandon') {
+    if (!player.campaign) {
+      socket.write(colorize('You have no active campaign to abandon.\r\n', 'yellow'));
+      return;
+    }
+    player.campaign = null;
+    socket.write(colorize('Campaign abandoned. Your cooldown is unchanged.\r\n', 'yellow'));
+    return;
+  }
+
+  if (arg === 'start') {
+    // Cooldown check
+    const since = Date.now() - (player.campaignLastCompletedAt || 0);
+    if (player.campaignLastCompletedAt && since < CAMPAIGN_COOLDOWN_MS) {
+      const remainMin = Math.ceil((CAMPAIGN_COOLDOWN_MS - since) / 60000);
+      socket.write(colorize(`You must wait ${remainMin} minute(s) before starting another campaign.\r\n`, 'yellow'));
+      return;
+    }
+    if (player.campaign) {
+      socket.write(colorize('You already have an active campaign. Use "campaign" to view it, or "campaign abandon".\r\n', 'yellow'));
+      return;
+    }
+    const targets = pickCampaignTargets(player.level || 1);
+    if (targets.length === 0) {
+      socket.write(colorize('No suitable campaign targets could be found at your level.\r\n', 'yellow'));
+      return;
+    }
+    player.campaign = { targets, startedAt: Date.now() };
+    socket.write('\r\n');
+    socket.write(colorize('=== New Campaign ===\r\n', 'brightMagenta'));
+    socket.write(colorize('A voice whispers: slay these foes for Nomagio\'s favour.\r\n', 'brightCyan'));
+    for (const t of targets) {
+      socket.write(`  - ${t.name}  (0/${t.required})\r\n`);
+    }
+    socket.write(colorize('Reward: Quest Points + XP + gold on completion.\r\n', 'yellow'));
+    socket.write('\r\n');
+    return;
+  }
+
+  // status (default when a campaign is active)
+  if (!player.campaign) {
+    const since = Date.now() - (player.campaignLastCompletedAt || 0);
+    if (player.campaignLastCompletedAt && since < CAMPAIGN_COOLDOWN_MS) {
+      const remainMin = Math.ceil((CAMPAIGN_COOLDOWN_MS - since) / 60000);
+      socket.write(colorize(`No active campaign. Next available in ${remainMin} minute(s).\r\n`, 'yellow'));
+    } else {
+      socket.write(colorize('No active campaign. Type "campaign start" to begin one.\r\n', 'yellow'));
+    }
+    return;
+  }
+
+  socket.write('\r\n');
+  socket.write(colorize('=== Campaign Status ===\r\n', 'brightMagenta'));
+  for (const t of player.campaign.targets) {
+    const done = t.killed >= t.required;
+    const mark = done ? colorize('[X]', 'brightGreen') : '[ ]';
+    socket.write(`  ${mark} ${t.name}  (${t.killed}/${t.required})\r\n`);
+  }
+  socket.write('\r\n');
+}
+
+function tickCampaignOnKill(socket, player, templateId) {
+  ensureT2Defaults(player);
+  if (!player.campaign || !player.campaign.targets) return;
+  let progressed = false;
+  for (const t of player.campaign.targets) {
+    if (t.templateId === templateId && t.killed < t.required) {
+      t.killed++;
+      progressed = true;
+    }
+  }
+  if (progressed) {
+    // Notify per-tick
+    socket.write(colorize('[Campaign progress]\r\n', 'yellow'));
+  }
+  // All done?
+  const allDone = player.campaign.targets.every(t => t.killed >= t.required);
+  if (allDone) {
+    completeCampaign(socket, player);
+  }
+}
+
+function completeCampaign(socket, player) {
+  const lvl = player.level || 1;
+  const qp = 50 + 10 * lvl;
+  const xp = 250 * lvl;
+  const gold = 50 * lvl;
+  player.questPoints = (player.questPoints || 0) + qp;
+  player.experience += xp;
+  player.gold += gold;
+  player.campaign = null;
+  player.campaignLastCompletedAt = Date.now();
+  player.campaignsCompleted = (player.campaignsCompleted || 0) + 1;
+
+  socket.write('\r\n');
+  socket.write(colorize('*** CAMPAIGN COMPLETE ***\r\n', 'brightMagenta'));
+  socket.write(colorize(`+${qp} Quest Points   +${xp} XP   +${gold} gold\r\n`, 'brightYellow'));
+  socket.write('\r\n');
+
+  if (typeof unlockAchievement === 'function') {
+    if (player.campaignsCompleted === 1) unlockAchievement(socket, player, 'campaigner_first');
+    if (player.campaignsCompleted >= 10) unlockAchievement(socket, player, 'campaigner_ten');
+  }
+  if (typeof checkLevelUp === 'function') checkLevelUp(socket, player);
+}
+
+function handleQP(socket, player) {
+  ensureT2Defaults(player);
+  socket.write(colorize(`You have ${player.questPoints} Quest Points.\r\n`, 'brightMagenta'));
+  socket.write(colorize(`Campaigns completed: ${player.campaignsCompleted}\r\n`, 'dim'));
+}
+
+// ---------- 2.2 Quest Points shop (Nomagio's Repository) ----------
+
+const NOMAGIO_REPOSITORY_ROOM = 'room_001';
+const NOMAGIO_REPOSITORY = {
+  resonant_blade: { kind: 'gear', name: 'Resonant Blade', cost: 500, payload: { itemId: 'resonant_blade' } },
+  quiet_ring:     { kind: 'gear', name: 'Ring of Quiet Hours', cost: 800, payload: { itemId: 'quiet_ring' } },
+  aura_resolute:   { kind: 'aura', name: 'Aura: the Resolute',   cost: 300, payload: { suffix: 'the Resolute' } },
+  aura_campaigner: { kind: 'aura', name: 'Aura: the Campaigner', cost: 500, payload: { suffix: 'the Campaigner' } },
+  egg_loyal:    { kind: 'pet_egg', name: 'Pet Egg: Loyal Spirit',  cost: 1000, payload: { templateId: 'loyal_spirit',  petName: 'Spirit', level: 5 } },
+  egg_singing:  { kind: 'pet_egg', name: 'Pet Egg: Singing Hound', cost: 1500, payload: { templateId: 'singing_hound', petName: 'Hound',  level: 8 } }
+};
+
+function handleRedeem(socket, player, args) {
+  ensureT2Defaults(player);
+  const arg = (args || '').trim().toLowerCase();
+
+  if (player.currentRoom !== NOMAGIO_REPOSITORY_ROOM) {
+    socket.write(colorize("You must be in Nomagio's Repository (room 001) to redeem.\r\n", 'yellow'));
+    return;
+  }
+
+  if (!arg) {
+    socket.write('\r\n');
+    socket.write(colorize("=== Nomagio's Repository ===\r\n", 'brightMagenta'));
+    socket.write(colorize(`Your Quest Points: ${player.questPoints}\r\n\r\n`, 'brightYellow'));
+    for (const [id, entry] of Object.entries(NOMAGIO_REPOSITORY)) {
+      const affordable = player.questPoints >= entry.cost;
+      const mark = affordable ? colorize('[OK]', 'brightGreen') : colorize('[--]', 'dim');
+      socket.write(`  ${mark}  ${id.padEnd(18)} ${String(entry.cost).padStart(5)} QP   ${entry.name}\r\n`);
+    }
+    socket.write(colorize('\r\nType "redeem <id>" to purchase.\r\n', 'dim'));
+    socket.write('\r\n');
+    return;
+  }
+
+  // Match by id or partial name
+  let entry = NOMAGIO_REPOSITORY[arg];
+  let entryId = arg;
+  if (!entry) {
+    for (const [id, v] of Object.entries(NOMAGIO_REPOSITORY)) {
+      if (id.includes(arg) || v.name.toLowerCase().includes(arg)) {
+        entry = v;
+        entryId = id;
+        break;
+      }
+    }
+  }
+  if (!entry) {
+    socket.write(colorize(`No redemption matches "${arg}".\r\n`, 'yellow'));
+    return;
+  }
+  if (player.questPoints < entry.cost) {
+    const gap = entry.cost - player.questPoints;
+    socket.write(colorize(`You need ${gap} more Quest Points to redeem ${entry.name}.\r\n`, 'yellow'));
+    return;
+  }
+
+  if (entry.kind === 'gear') {
+    const item = typeof createItem === 'function' ? createItem(entry.payload.itemId) : null;
+    if (!item) {
+      socket.write(colorize('That item is currently unavailable. (Create failed.)\r\n', 'yellow'));
+      return;
+    }
+    player.questPoints -= entry.cost;
+    player.inventory.push(item);
+    socket.write(colorize(`You redeem ${entry.name}. It materialises in your pack.\r\n`, 'brightGreen'));
+  } else if (entry.kind === 'aura') {
+    player.questPoints -= entry.cost;
+    player.suffix = entry.payload.suffix;
+    socket.write(colorize(`Aura applied: your name now carries "${entry.payload.suffix}".\r\n`, 'brightCyan'));
+  } else if (entry.kind === 'pet_egg') {
+    if ((player.pets || []).length >= 3) {
+      socket.write(colorize('You cannot keep more than 3 pets. Release one before claiming this egg.\r\n', 'yellow'));
+      return;
+    }
+    player.questPoints -= entry.cost;
+    grantPetFromEgg(socket, player, entry.payload);
+    socket.write(colorize(`Egg hatched: ${entry.payload.petName} is now bound to you.\r\n`, 'brightCyan'));
+  }
+  if (typeof unlockAchievement === 'function' && player.campaignsCompleted >= 0) {
+    unlockAchievement(socket, player, 'redemption_first');
+  }
+}
+
+// ---------- 2.3 Pet system ----------
+
+const PET_FOLLOW_CAP = 3;
+const PET_TAME_CHANCE = { Passive: 0.25, Neutral: 0.15, Aggressive: 0.08 };
+let petIdCounter = 1;
+
+function nextPetId() { return `pet_${Date.now()}_${petIdCounter++}`; }
+
+function grantPetFromEgg(socket, player, payload) {
+  const level = payload.level || 1;
+  const pet = {
+    id: nextPetId(),
+    templateId: payload.templateId || 'generic_pet',
+    name: payload.petName || 'Companion',
+    level,
+    maxHp: 40 + level * 12,
+    hp: 40 + level * 12,
+    str: 6 + level * 2,
+    xp: 0,
+    active: !(player.pets || []).some(p => p.active),
+    stabledAt: 0
+  };
+  if (!Array.isArray(player.pets)) player.pets = [];
+  player.pets.push(pet);
+}
+
+function handleTame(socket, player, args) {
+  ensureT2Defaults(player);
+  const name = (args || '').trim();
+  if (!name) {
+    socket.write('Tame what?\r\n');
+    return;
+  }
+  if ((player.pets || []).length >= PET_FOLLOW_CAP) {
+    socket.write(colorize('You already have 3 pets. Release one first.\r\n', 'yellow'));
+    return;
+  }
+  const monster = typeof findMonsterInRoom === 'function' ? findMonsterInRoom(player.currentRoom, name) : null;
+  if (!monster) {
+    socket.write(colorize(`No "${name}" to tame here.\r\n`, 'yellow'));
+    return;
+  }
+  if (monster.type === 'Boss') {
+    socket.write(colorize('You cannot tame a boss. They are not pets.\r\n', 'yellow'));
+    return;
+  }
+  const chance = PET_TAME_CHANCE[monster.type] || 0.1;
+  if (Math.random() < chance) {
+    const pet = {
+      id: nextPetId(),
+      templateId: monster.templateId,
+      name: monster.name,
+      level: monster.level || 1,
+      maxHp: monster.maxHp || monster.hp || 40,
+      hp: monster.maxHp || monster.hp || 40,
+      str: monster.str || 8,
+      xp: 0,
+      active: !(player.pets || []).some(p => p.active),
+      stabledAt: 0
+    };
+    player.pets.push(pet);
+    socket.write(colorize(`\r\nThe ${monster.name} stills and bows. It is yours now.\r\n`, 'brightGreen'));
+    if (typeof removeMonster === 'function') removeMonster(monster.id);
+    if (typeof unlockAchievement === 'function') unlockAchievement(socket, player, 'pet_first');
+  } else {
+    socket.write(colorize(`The ${monster.name} resists your call.\r\n`, 'yellow'));
+    // Aggressive monsters will retaliate — existing grace period / combat is untouched.
+  }
+}
+
+function handlePets(socket, player) {
+  ensureT2Defaults(player);
+  if (!player.pets || player.pets.length === 0) {
+    socket.write(colorize('You have no pets.\r\n', 'yellow'));
+    return;
+  }
+  socket.write('\r\n');
+  socket.write(colorize('=== Your Pets ===\r\n', 'brightCyan'));
+  for (const p of player.pets) {
+    const tag = p.active ? colorize('[Active]', 'brightGreen') : colorize('[Stabled]', 'dim');
+    socket.write(`  ${tag} ${p.name} (L${p.level})  HP ${p.hp}/${p.maxHp}  XP ${p.xp}\r\n`);
+  }
+  socket.write('\r\n');
+}
+
+function handleRelease(socket, player, args) {
+  ensureT2Defaults(player);
+  const name = (args || '').trim().toLowerCase();
+  if (!name) { socket.write('Release which pet?\r\n'); return; }
+  const before = player.pets.length;
+  player.pets = (player.pets || []).filter(p => p.name.toLowerCase() !== name);
+  if (player.pets.length === before) {
+    socket.write(colorize(`No pet named "${args.trim()}".\r\n`, 'yellow'));
+    return;
+  }
+  socket.write(colorize(`Released. They return to the wild.\r\n`, 'yellow'));
+}
+
+function handlePetSub(socket, player, args) {
+  ensureT2Defaults(player);
+  const trimmed = (args || '').trim().toLowerCase();
+  if (trimmed === 'stable' || trimmed.startsWith('stable ')) {
+    if (player.currentRoom !== 'room_001') {
+      socket.write(colorize('The pet stable is only accessible in room 001.\r\n', 'yellow'));
+      return;
+    }
+    const active = player.pets.find(p => p.active);
+    if (!active) {
+      socket.write(colorize('You have no active pet to stable.\r\n', 'yellow'));
+      return;
+    }
+    active.active = false;
+    active.stabledAt = Date.now();
+    socket.write(colorize(`${active.name} settles into the stable.\r\n`, 'dim'));
+    return;
+  }
+  if (trimmed.startsWith('summon ')) {
+    if (player.currentRoom !== 'room_001') {
+      socket.write(colorize('The pet stable is only accessible in room 001.\r\n', 'yellow'));
+      return;
+    }
+    const want = trimmed.slice(7).trim().toLowerCase();
+    const pet = player.pets.find(p => p.name.toLowerCase() === want);
+    if (!pet) {
+      socket.write(colorize(`You have no pet named "${want}".\r\n`, 'yellow'));
+      return;
+    }
+    for (const p of player.pets) p.active = false;
+    pet.active = true;
+    socket.write(colorize(`${pet.name} pads to your side.\r\n`, 'brightCyan'));
+    return;
+  }
+  // "pet <name>" shows a single pet
+  const pet = (player.pets || []).find(p => p.name.toLowerCase() === trimmed);
+  if (pet) {
+    socket.write('\r\n');
+    socket.write(colorize(`=== ${pet.name} ===\r\n`, 'brightCyan'));
+    socket.write(`  Level:    ${pet.level}\r\n`);
+    socket.write(`  HP:       ${pet.hp}/${pet.maxHp}\r\n`);
+    socket.write(`  Strength: ${pet.str}\r\n`);
+    socket.write(`  XP:       ${pet.xp}\r\n`);
+    socket.write(`  State:    ${pet.active ? 'Active' : 'Stabled'}\r\n`);
+    socket.write('\r\n');
+    return;
+  }
+  socket.write(colorize('Usage: pet <name> | pet stable | pet summon <name>\r\n', 'dim'));
+}
+
+function petShareXP(socket, player, xpGain) {
+  if (!player.pets || player.pets.length === 0) return;
+  const active = player.pets.find(p => p.active);
+  if (!active || active.hp <= 0) return;
+  active.xp += Math.floor(xpGain / 3);
+  // Level-up pet every 200*level XP
+  const threshold = 200 * active.level;
+  if (active.xp >= threshold) {
+    active.xp -= threshold;
+    active.level += 1;
+    active.maxHp += 12;
+    active.hp = active.maxHp;
+    active.str += 2;
+    socket.write(colorize(`Your pet ${active.name} has grown stronger! (L${active.level})\r\n`, 'brightCyan'));
+  }
+}
+
+function petAssistAttack(socket, player, monster) {
+  if (!player.pets || player.pets.length === 0) return;
+  const active = player.pets.find(p => p.active);
+  if (!active || active.hp <= 0) return;
+  if (!monster || monster.hp <= 0) return;
+  const dmg = Math.floor(active.level * 1.5) + Math.floor(Math.random() * (active.str + 1));
+  monster.hp -= dmg;
+  socket.write(colorize(`${active.name} lunges — hits ${monster.name} for ${dmg}!\r\n`, 'cyan'));
+}
+
+function followPet(socket, player, fromRoom, toRoom) {
+  if (!player.pets || player.pets.length === 0) return;
+  const active = player.pets.find(p => p.active);
+  if (!active || active.hp <= 0) return;
+  // Pets have no "current room" of their own; they are owned by the player and
+  // simply move with them. Nothing to persist — this hook exists so other
+  // systems (future work) can react to pet movement.
+}
+
+// ---------- 2.4 Crafting ----------
+
+let recipeData = null;
+function loadRecipes() {
+  try {
+    const p = path.join(__dirname, 'recipes.json');
+    if (fs.existsSync(p)) {
+      recipeData = JSON.parse(fs.readFileSync(p, 'utf8'));
+    } else {
+      recipeData = { recipes: {} };
+    }
+  } catch (e) {
+    console.log('Failed to load recipes.json:', e.message);
+    recipeData = { recipes: {} };
+  }
+}
+
+function handleRecipes(socket, player, args) {
+  ensureT2Defaults(player);
+  if (!recipeData) loadRecipes();
+  const filter = (args || '').trim().toLowerCase();
+  const entries = Object.entries(recipeData.recipes || {});
+  const filtered = filter ? entries.filter(([id, r]) => (r.skill || '').toLowerCase() === filter) : entries;
+
+  if (filtered.length === 0) {
+    socket.write(colorize('No recipes match.\r\n', 'yellow'));
+    return;
+  }
+
+  socket.write('\r\n');
+  socket.write(colorize('=== Recipes ===\r\n', 'brightCyan'));
+  for (const [id, r] of filtered) {
+    const skillLvl = (player.skills && player.skills[r.skill]) || 0;
+    const canCraft = skillLvl + 2 >= (r.reqLevel || 0);
+    const mark = canCraft ? colorize('[OK]', 'brightGreen') : colorize('[--]', 'dim');
+    const inputs = (r.inputs || []).map(i => `${i.count}x ${i.itemId}`).join(', ');
+    socket.write(`  ${mark}  ${id.padEnd(22)} ${r.skill.padEnd(11)} L${r.reqLevel}  <= ${inputs}\r\n`);
+  }
+  socket.write(colorize('\r\nUse: craft <recipe-id>\r\n', 'dim'));
+  socket.write('\r\n');
+}
+
+function handleCraft(socket, player, args) {
+  ensureT2Defaults(player);
+  if (!recipeData) loadRecipes();
+  const id = (args || '').trim().toLowerCase();
+  if (!id) { socket.write('Craft what?\r\n'); return; }
+  const recipe = recipeData.recipes[id];
+  if (!recipe) {
+    socket.write(colorize(`No recipe "${id}".\r\n`, 'yellow'));
+    return;
+  }
+  const skillLvl = (player.skills && player.skills[recipe.skill]) || 0;
+  if (skillLvl + 2 < (recipe.reqLevel || 0)) {
+    socket.write(colorize(`Your ${recipe.skill} skill is too low (${skillLvl} < ${recipe.reqLevel - 2}).\r\n`, 'yellow'));
+    return;
+  }
+  // Check materials
+  const inv = player.inventory || [];
+  for (const inp of recipe.inputs || []) {
+    const have = inv.filter(it => it && it.id === inp.itemId).length;
+    if (have < inp.count) {
+      socket.write(colorize(`Missing materials: need ${inp.count}x ${inp.itemId}, have ${have}.\r\n`, 'yellow'));
+      return;
+    }
+  }
+  // Consume materials
+  for (const inp of recipe.inputs || []) {
+    let toConsume = inp.count;
+    for (let i = 0; i < player.inventory.length && toConsume > 0; i++) {
+      if (player.inventory[i] && player.inventory[i].id === inp.itemId) {
+        player.inventory.splice(i, 1);
+        i--; toConsume--;
+      }
+    }
+  }
+  // Produce output
+  const outItem = typeof createItem === 'function' ? createItem(recipe.output.itemId) : null;
+  if (!outItem) {
+    socket.write(colorize(`The craft failed — "${recipe.output.itemId}" is not a known item.\r\n`, 'red'));
+    return;
+  }
+  player.inventory.push(outItem);
+  // Bump skill
+  if (!player.skills) player.skills = { weaponsmith: 0, enchanter: 0, alchemist: 0 };
+  if (player.skills[recipe.skill] < 10) player.skills[recipe.skill] += 1;
+  socket.write(colorize(`You craft ${outItem.name}!\r\n`, 'brightGreen'));
+  socket.write(colorize(`${recipe.skill} skill: ${player.skills[recipe.skill]}/10\r\n`, 'dim'));
+  if (typeof unlockAchievement === 'function') {
+    unlockAchievement(socket, player, 'craft_first');
+    if (player.skills[recipe.skill] >= 10) unlockAchievement(socket, player, 'craft_master');
+  }
+}
+
+function handleSkills(socket, player) {
+  ensureT2Defaults(player);
+  socket.write('\r\n');
+  socket.write(colorize('=== Crafting Skills ===\r\n', 'brightCyan'));
+  for (const k of ['weaponsmith', 'enchanter', 'alchemist']) {
+    const lvl = (player.skills && player.skills[k]) || 0;
+    socket.write(`  ${k.padEnd(12)} ${lvl}/10\r\n`);
+  }
+  socket.write('\r\n');
+}
+
+// ---------- 2.6 Remort ----------
+
+const REMORT_CAP = 5;
+
+function getAbilityScore(player, key) {
+  const base = (player.abilities && typeof player.abilities[key] === 'number') ? player.abilities[key] : 10;
+  const bonus = (player.permStatBonuses && player.permStatBonuses[key]) || 0;
+  return base + bonus;
+}
+
+function handleRemort(socket, player, args) {
+  ensureT2Defaults(player);
+  const arg = (args || '').trim().toLowerCase();
+
+  if (!arg) {
+    // Show preview
+    socket.write('\r\n');
+    socket.write(colorize('=== Remort Preview ===\r\n', 'brightMagenta'));
+    if ((player.level || 0) < 30) {
+      socket.write(colorize(`You must reach level 30 to remort. You are level ${player.level || 1}.\r\n`, 'yellow'));
+      socket.write('\r\n');
+      return;
+    }
+    if (!player.stats || !player.stats.storyFlags || !player.stats.storyFlags.finaleCompleted) {
+      socket.write(colorize('You must complete the Shattered Symphony finale (room 200) before remorting.\r\n', 'yellow'));
+      socket.write('\r\n');
+      return;
+    }
+    if (player.remortTier >= REMORT_CAP) {
+      socket.write(colorize(`You have reached the maximum remort tier (${REMORT_CAP}). No further remorts are possible.\r\n`, 'yellow'));
+      socket.write('\r\n');
+      return;
+    }
+    const nextTier = player.remortTier + 1;
+    socket.write(colorize(`Current tier: ${player.remortTier}   ->   next tier: ${nextTier}\r\n`, 'brightCyan'));
+    socket.write('  Level will reset to 1.\r\n');
+    socket.write('  Experience will reset to 0.\r\n');
+    socket.write('  Equipped gear will be unequipped (kept in inventory).\r\n');
+    socket.write('  Inventory, gold, story flags, and achievements will be preserved.\r\n');
+    socket.write(colorize('  +1 permanent bonus to one ability score (your choice).\r\n', 'brightGreen'));
+    socket.write(colorize(`  +${nextTier * 5}% permanent XP gain.\r\n`, 'brightGreen'));
+    socket.write(colorize(`  New title suffix: "the Tier-${nextTier} Harmonist".\r\n`, 'brightGreen'));
+    socket.write('\r\n');
+    socket.write(colorize('Type: remort confirm <str|dex|con|int|wis>\r\n', 'brightYellow'));
+    socket.write('\r\n');
+    return;
+  }
+
+  if (!arg.startsWith('confirm ')) {
+    socket.write(colorize('Usage: remort  (preview)  or  remort confirm <stat>\r\n', 'yellow'));
+    return;
+  }
+
+  const stat = arg.slice(8).trim();
+  const validStats = ['str', 'dex', 'con', 'int', 'wis'];
+  if (!validStats.includes(stat)) {
+    socket.write(colorize('Stat must be one of: str, dex, con, int, wis.\r\n', 'yellow'));
+    return;
+  }
+  if ((player.level || 0) < 30) {
+    socket.write(colorize(`You must reach level 30 to remort.\r\n`, 'yellow'));
+    return;
+  }
+  if (!player.stats || !player.stats.storyFlags || !player.stats.storyFlags.finaleCompleted) {
+    socket.write(colorize('You must complete the Shattered Symphony finale before remorting.\r\n', 'yellow'));
+    return;
+  }
+  if (player.remortTier >= REMORT_CAP) {
+    socket.write(colorize('You have reached the remort cap.\r\n', 'yellow'));
+    return;
+  }
+
+  // Apply remort
+  player.remortTier += 1;
+  if (!player.permStatBonuses) player.permStatBonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0 };
+  player.permStatBonuses[stat] = (player.permStatBonuses[stat] || 0) + 1;
+
+  // Unequip
+  if (player.equipped) {
+    const slots = ['weapon', 'armor', 'shield', 'head', 'neck', 'hands', 'feet', 'finger'];
+    for (const s of slots) {
+      if (player.equipped[s]) {
+        player.inventory.push(player.equipped[s]);
+        player.equipped[s] = null;
+      }
+    }
+  }
+
+  // Reset level / XP / HP / mana
+  player.level = 1;
+  player.experience = 0;
+  const ld = typeof getLevelData === 'function' ? getLevelData(1) : { hp: 50, dmgMin: 5, dmgMax: 10, title: 'Novice Seeker' };
+  player.maxHP = ld.hp;
+  player.currentHP = ld.hp;
+  player.maxMana = 15;
+  player.currentMana = 15;
+  player.baseDamage = { min: ld.dmgMin, max: ld.dmgMax };
+  player.title = ld.title;
+
+  // Title suffix (do not overwrite a purchased aura)
+  const newSuffix = `the Tier-${player.remortTier} Harmonist`;
+  const purchasedAuras = ['the Resolute', 'the Campaigner'];
+  if (!player.suffix || !purchasedAuras.includes(player.suffix)) {
+    player.suffix = newSuffix;
+  }
+
+  socket.write('\r\n');
+  socket.write(colorize('*** THE LOOP CLOSES AND OPENS ANEW ***\r\n', 'brightMagenta'));
+  socket.write(colorize(`You are reborn as a Tier-${player.remortTier} Harmonist.\r\n`, 'brightCyan'));
+  socket.write(colorize(`Permanent +1 ${stat.toUpperCase()}.   +${player.remortTier * 5}% permanent XP gain.\r\n`, 'brightGreen'));
+  socket.write('\r\n');
+
+  if (typeof savePlayer === 'function') savePlayer(player, socket, true);
+  if (typeof unlockAchievement === 'function') {
+    unlockAchievement(socket, player, 'remort_first');
+    if (player.remortTier >= REMORT_CAP) unlockAchievement(socket, player, 'remort_max');
+  }
+  if (typeof logActivity === 'function') logActivity(`${player.name} has remorted to Tier ${player.remortTier}.`);
+}
+
+// ---------- Tier 2 router ----------
+
+function handleTier2Command(socket, player, input) {
+  const command = (input || '').toLowerCase().trim();
+  ensureT2Defaults(player);
+
+  // 2.1 campaigns
+  if (command === 'campaign' || command === 'camp') { handleCampaign(socket, player, ''); return true; }
+  if (command.startsWith('campaign ') || command.startsWith('camp ')) {
+    const q = command.startsWith('campaign ') ? command.slice(9) : command.slice(5);
+    handleCampaign(socket, player, q);
+    return true;
+  }
+
+  // 2.2 QP + redeem
+  if (command === 'qp' || command === 'questpoints') { handleQP(socket, player); return true; }
+  if (command === 'redeem') { handleRedeem(socket, player, ''); return true; }
+  if (command.startsWith('redeem ')) { handleRedeem(socket, player, command.slice(7)); return true; }
+
+  // 2.3 pets
+  if (command === 'pets') { handlePets(socket, player); return true; }
+  if (command === 'tame') { handleTame(socket, player, ''); return true; }
+  if (command.startsWith('tame ')) { handleTame(socket, player, command.slice(5)); return true; }
+  if (command === 'release' || command.startsWith('release ')) {
+    handleRelease(socket, player, command === 'release' ? '' : command.slice(8));
+    return true;
+  }
+  if (command === 'pet' || command.startsWith('pet ')) {
+    handlePetSub(socket, player, command === 'pet' ? '' : command.slice(4));
+    return true;
+  }
+
+  // 2.4 crafting
+  if (command === 'recipes') { handleRecipes(socket, player, ''); return true; }
+  if (command.startsWith('recipes ')) { handleRecipes(socket, player, command.slice(8)); return true; }
+  if (command === 'craft') { socket.write('Craft what? Use "recipes" to list.\r\n'); return true; }
+  if (command.startsWith('craft ')) { handleCraft(socket, player, command.slice(6)); return true; }
+  if (command === 'skills') { handleSkills(socket, player); return true; }
+
+  // 2.6 remort
+  if (command === 'remort') { handleRemort(socket, player, ''); return true; }
+  if (command.startsWith('remort ')) { handleRemort(socket, player, command.slice(7)); return true; }
 
   return false;
 }
@@ -13489,6 +14243,7 @@ server.listen(PORT, '0.0.0.0', () => {
   // Load help topics and pre-build zone map index (Tier 0.3 / 0.5)
   loadHelpData();
   buildZoneMap();
+  loadRecipes();
 
   // Start the Wandering Healer NPC
   startHealerWandering();
