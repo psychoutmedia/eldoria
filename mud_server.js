@@ -1358,6 +1358,7 @@ function checkLevelUp(socket, player) {
   if (newLevel > player.level) {
     // LEVEL UP!
     const oldLevel = player.level;
+    const levelDelta = newLevel - oldLevel;
     player.level = newLevel;
 
     const levelData = getLevelData(newLevel);
@@ -1366,10 +1367,28 @@ function checkLevelUp(socket, player) {
     player.currentHP = levelData.hp; // Full heal on level up!
     player.baseDamage = { min: levelData.dmgMin, max: levelData.dmgMax };
 
+    // Tier 1.2: class HP/mana multipliers
+    if (player.charClass && CLASS_DEFS && CLASS_DEFS[player.charClass]) {
+      const def = CLASS_DEFS[player.charClass];
+      player.maxHP = Math.floor(player.maxHP * def.hpMult);
+      player.currentHP = player.maxHP;
+    }
+
     // Mana increases with level
     const oldMaxMana = player.maxMana;
     player.maxMana = newLevel * 15;
+    if (player.charClass && CLASS_DEFS && CLASS_DEFS[player.charClass]) {
+      player.maxMana = Math.floor(player.maxMana * CLASS_DEFS[player.charClass].manaMult);
+    }
     player.currentMana = player.maxMana; // Full mana on level up!
+
+    // Tier 1.9: +5 practice per level gained
+    if (typeof player.practicePoints !== 'number') player.practicePoints = 0;
+    player.practicePoints += 5 * levelDelta;
+
+    // Tier 1.8: level milestones
+    if (newLevel >= 15) unlockAchievement(socket, player, 'level_15');
+    if (newLevel >= 30) unlockAchievement(socket, player, 'level_30');
 
     // Celebration message
     socket.write('\r\n');
@@ -2348,6 +2367,13 @@ function handlePray(socket, player) {
   player.currentMana = player.maxMana;
   player.lastChapelHeal = now;
 
+  // Tier 1.8: chapel_pilgrim — pray at all 5 chapels
+  if (!player.chapelsPrayed) player.chapelsPrayed = [];
+  if (!player.chapelsPrayed.includes(player.currentRoom)) {
+    player.chapelsPrayed.push(player.currentRoom);
+    if (player.chapelsPrayed.length >= 5) unlockAchievement(socket, player, 'chapel_pilgrim');
+  }
+
   socket.write('\r\n');
   socket.write(colorize('You kneel before the sacred altar and pray...\r\n', 'brightCyan'));
   socket.write(colorize('Divine light washes over you, mending all wounds and restoring your spirit!\r\n', 'brightWhite'));
@@ -2415,6 +2441,11 @@ function handlePlayInstrument(socket, player, instrumentName) {
   }
 
   player.stats.storyFlags.instrumentsPlayed[flagKey] = true;
+  // Tier 1.8: harmonist — all 5 played in cycle
+  const p = player.stats.storyFlags.instrumentsPlayed;
+  if (p.drum && p.harp && p.trumpet && p.lute && p.flute) {
+    unlockAchievement(socket, player, 'harmonist');
+  }
 
   socket.write('\r\n');
   socket.write(colorize(`You lift the ${found.item.name} and strike a single, true note.`, 'brightCyan') + '\r\n');
@@ -2435,6 +2466,7 @@ function checkHarmonicFinale(socket, player) {
   if (player.stats.storyFlags.finaleCompleted) return;
 
   player.stats.storyFlags.finaleCompleted = true;
+  unlockAchievement(socket, player, 'symphonist');
 
   socket.write('\r\n');
   socket.write(colorize('===============================================================', 'brightMagenta') + '\r\n');
@@ -2877,6 +2909,11 @@ function awardQuestRewards(socket, player, npc, def, state) {
     player.sessionXPGained += r.xp;
     player.cycleXPGained += r.xp;
   }
+  // Tier 1.8: quest achievements
+  if (!player.stats.questsCompleted) player.stats.questsCompleted = 0;
+  player.stats.questsCompleted++;
+  unlockAchievement(socket, player, 'quest_first');
+  if (player.stats.questsCompleted >= 5) unlockAchievement(socket, player, 'quest_five');
   if (r.relationship && npc) {
     npc.brain.recordInteraction(player.name, `completed quest: ${def.title}`, r.relationship, 4);
   }
@@ -3065,7 +3102,7 @@ function manaRegenTick() {
     if (player.currentMana >= player.maxMana) return;
 
     // Calculate regen amount (base + level bonus)
-    const regenAmount = MANA_REGEN_AMOUNT + Math.floor(player.level / 3);
+    const regenAmount = MANA_REGEN_AMOUNT + Math.floor(player.level / 3) + getWisRegenBonus(player);
     const oldMana = player.currentMana;
     player.currentMana = Math.min(player.maxMana, player.currentMana + regenAmount);
     const actualRegen = player.currentMana - oldMana;
@@ -3095,7 +3132,8 @@ function playerAttackMonster(socket, player, monster) {
   const baseDmg = rollDamage(player.baseDamage.min, player.baseDamage.max);
   const bonusDmg = rollDamage(1, 5);
   const weaponBonus = getEquippedDamageBonus(player);
-  let totalDamage = baseDmg + bonusDmg + weaponBonus;
+  const strBonus = getStrBonus(player);
+  let totalDamage = baseDmg + bonusDmg + weaponBonus + strBonus;
 
   // Apply spell damage bonuses from active buffs
   let spellBonus = 0;
@@ -3110,6 +3148,13 @@ function playerAttackMonster(socket, player, monster) {
   if (spellBonus > 0) {
     totalDamage = Math.floor(totalDamage * (1 + spellBonus / 100));
   }
+
+  // Tier 1.4: apply monster resistance against weapon damage type
+  const weaponType = (player.equipped && player.equipped.weapon && player.equipped.weapon.damageType) || 'physical';
+  totalDamage = applyMonsterResist(totalDamage, weaponType, monster);
+
+  // Tier 1.8: big_hit achievement
+  if (totalDamage >= 500) unlockAchievement(socket, player, 'big_hit');
 
   // Calculate max possible damage for message selection
   const maxPossibleDamage = player.baseDamage.max + 5 + weaponBonus;
@@ -3204,6 +3249,10 @@ function monsterAttackPlayer(socket, player, monster) {
   if (extraDamageTaken > 0) {
     rawDamage = Math.floor(rawDamage * (1 + extraDamageTaken / 100));
   }
+
+  // Tier 1.4: apply player resist vs monster damage type
+  const monsterDmgType = monster.damageType || 'physical';
+  rawDamage = applyPlayerResist(rawDamage, monsterDmgType, player);
 
   let totalDamage = Math.max(1, rawDamage - armorBonus);
   let absorbed = rawDamage - totalDamage;
@@ -3357,11 +3406,23 @@ function handleMonsterDeath(socket, player, monster) {
     player.stats.bossesDefeated.push(monster.name);
     player.cycleBossesDefeated.push(monster.name);
     updateCycleLeaderboard(player.name, 'boss', 1);
+    // Tier 1.8: boss achievements
+    unlockAchievement(socket, player, 'first_boss');
+    if (player.stats.bossesDefeated.length >= 5) unlockAchievement(socket, player, 'five_bosses');
+    if (player.stats.bossesDefeated.length >= 9) unlockAchievement(socket, player, 'nine_bosses');
     // Auto-save after boss defeat
     savePlayer(player, socket, true);
     // Log activity
     logActivity(`${player.name} defeated ${monster.name}`);
   }
+
+  // Tier 1.8: silencer (kill a Bookworm)
+  if (monster.templateId && monster.templateId.toLowerCase().includes('bookworm')) {
+    unlockAchievement(socket, player, 'silencer');
+  }
+
+  // Tier 1.8: rich (hold 10k gold)
+  if (player.gold >= 10000) unlockAchievement(socket, player, 'rich');
 
   // Eldoria 2.0: Morwyn Ironheart forges the Tuning Fork into the Obsidian Drum-Stave.
   if (isBoss && monster.templateId === 'morwyn_ironheart' && player.stats.storyFlags && !player.stats.storyFlags.drumStaveForged) {
@@ -3412,9 +3473,30 @@ function handleMonsterDeath(socket, player, monster) {
     scheduleMonsterRespawn(deadMonster.spawnZone);
   }
 
-  // Add XP and check for level up
-  player.experience += xpGain;
-  checkLevelUp(socket, player);
+  // Add XP and check for level up (Tier 1.5: group XP split)
+  const grp = (typeof findGroupOf === 'function') ? findGroupOf(player.name) : null;
+  const sameRoomMembers = [];
+  if (grp && grp.members && grp.members.length >= 2) {
+    for (const [sock, p] of players) {
+      if (p && p.name && grp.members.includes(p.name) && p.currentRoom === player.currentRoom) {
+        sameRoomMembers.push({ sock, p });
+      }
+    }
+  }
+  if (sameRoomMembers.length >= 2) {
+    const splitXP = Math.floor((xpGain * 1.2) / sameRoomMembers.length);
+    for (const m of sameRoomMembers) {
+      m.p.experience += splitXP;
+      if (m.p.name !== player.name) {
+        m.sock.write(colorize(`[Group XP] You gain ${splitXP} XP from ${player.name}'s kill.\r\n`, 'brightYellow'));
+      }
+      checkLevelUp(m.sock, m.p);
+    }
+    if (typeof unlockAchievement === 'function') unlockAchievement(socket, player, 'group_kill');
+  } else {
+    player.experience += xpGain;
+    checkLevelUp(socket, player);
+  }
 }
 
 // Handle player death
@@ -3446,6 +3528,7 @@ function handlePlayerDeath(socket, player) {
 
   // Update statistics
   player.stats.deaths++;
+  if (player.stats.deaths >= 10) unlockAchievement(socket, player, 'died_10');
 
   socket.write(colorize(
     'You awaken in the Awakening Chamber, your wounds mysteriously healed.\r\n',
@@ -3605,7 +3688,7 @@ function handleFlee(socket, player) {
   socket.write(colorize('You attempt to flee!\r\n', 'yellow'));
 
   // 60% success chance
-  if (Math.random() < FLEE_SUCCESS_CHANCE) {
+  if (Math.random() < getFleeChance(player)) {
     // SUCCESS - Pick random exit and move there
     const [direction, targetRoomId] = exits[Math.floor(Math.random() * exits.length)];
     const oldRoom = player.currentRoom;
@@ -4005,7 +4088,7 @@ function handleMonsterCombatFlee(socket, player) {
   socket.write(colorize('You attempt to flee!\r\n', 'yellow'));
 
   // 60% success chance
-  if (Math.random() < FLEE_SUCCESS_CHANCE) {
+  if (Math.random() < getFleeChance(player)) {
     // SUCCESS - Pick random exit and move there
     const [direction, targetRoomId] = exits[Math.floor(Math.random() * exits.length)];
     const oldRoom = player.currentRoom;
@@ -4427,6 +4510,8 @@ function handlePvpVictory(combatId, winner, loser) {
   winner.experience += xpGain;
   winner.gold += goldGain;
   winner.stats.pvpKills++;
+  unlockAchievement(winnerSocket, winner, 'pvp_first');
+  if (winner.stats.pvpKills >= 10) unlockAchievement(winnerSocket, winner, 'pvp_10');
   checkLevelUp(winnerSocket, winner);
 
   // Apply penalties to loser
@@ -4537,7 +4622,7 @@ function handlePvpFlee(socket, player) {
   opponentSocket.write(colorize(`\r\n${player.name} attempts to flee!\r\n`, 'yellow'));
 
   // 60% chance to flee successfully
-  if (Math.random() < FLEE_SUCCESS_CHANCE) {
+  if (Math.random() < getFleeChance(player)) {
     const [direction, targetRoomId] = exits[Math.floor(Math.random() * exits.length)];
 
     // Stop combat timer
@@ -5340,6 +5425,7 @@ function handleGive(socket, player, args) {
 
   // Messages
   socket.write(colorize(`You give ${item.name} to ${getDisplayName(targetPlayerObj)}.\r\n`, 'yellow'));
+  unlockAchievement(socket, player, 'helped');
   targetSocket.write(colorize(`${getDisplayName(player)} gives you ${item.name}!\r\n`, 'brightGreen'));
 
   // Broadcast to room (excluding both giver and receiver)
@@ -5606,6 +5692,7 @@ function handleSay(socket, player, message) {
     socket.write('Say what? Usage: say [message] or \' [message]\r\n');
     return;
   }
+  player.lastChatAt = Date.now();
 
   const text = message.trim();
   socket.write(`You say: ${colorize(text, 'white')}\r\n`);
@@ -5626,6 +5713,7 @@ function handleShout(socket, player, message) {
     socket.write('Shout what? Usage: shout [message] or ! [message]\r\n');
     return;
   }
+  player.lastChatAt = Date.now();
 
   const text = message.trim();
   socket.write(`You shout: ${colorize(text, 'red')}\r\n`);
@@ -7767,6 +7855,42 @@ function handleCast(socket, player, args) {
     return;
   }
 
+  // Tier 1.3: new-system silenced affect
+  if (hasAffect(player, 'silenced')) {
+    socket.write(colorize(`You are silenced! ${spell.name} fizzles on your tongue.\r\n`, 'brightMagenta'));
+    return;
+  }
+
+  // Tier 1.2: class school gating (level 5+ with a class chosen)
+  if (player.level >= 5 && player.charClass && CLASS_DEFS[player.charClass] && spell.school) {
+    const allowed = CLASS_DEFS[player.charClass].schools;
+    if (!allowed.includes(spell.school)) {
+      socket.write(colorize(`Your class cannot wield ${spell.school} magic. ${spell.name} fizzles.\r\n`, 'brightMagenta'));
+      return;
+    }
+  }
+
+  // Tier 1.8: track schools cast (Scholar of the Schools)
+  if (spell.school) {
+    if (!player.schoolsCast) player.schoolsCast = [];
+    if (!player.schoolsCast.includes(spell.school)) {
+      player.schoolsCast.push(spell.school);
+      if (player.schoolsCast.length >= 5) unlockAchievement(socket, player, 'all_classes_met');
+    }
+  }
+
+  // Tier 1.9: practice-based fizzle roll
+  if (!rollCastSuccess(player, spellKey)) {
+    socket.write(colorize(`You lose focus. ${spell.name} fizzles!\r\n`, 'yellow'));
+    socket.write(colorize(`Practice the spell with: practice ${spell.name.toLowerCase()}\r\n`, 'dim'));
+    player.currentMana = Math.max(0, player.currentMana - Math.floor(spell.manaCost / 2));
+    if (spell.cooldown > 0) {
+      if (!player.spellCooldowns) player.spellCooldowns = {};
+      player.spellCooldowns[spellKey] = Date.now() + Math.floor(spell.cooldown * 1000 / 2);
+    }
+    return;
+  }
+
   // Execute spell based on type
   let success = false;
   switch (spell.type) {
@@ -9597,6 +9721,10 @@ function handleMove(socket, player, direction) {
   // Track rooms explored (unique)
   if (!player.stats.roomsExplored.includes(newRoomId)) {
     player.stats.roomsExplored.push(newRoomId);
+    // Tier 1.8: explorer achievements
+    const count = player.stats.roomsExplored.length;
+    if (count >= 50) unlockAchievement(socket, player, 'explorer_50');
+    if (count >= Object.keys(rooms).length) unlockAchievement(socket, player, 'explorer_all');
   }
 
   // Quest objective: visit_rooms
@@ -11128,6 +11256,20 @@ const ABILITY_NAME = { str: 'Strength', dex: 'Dexterity', con: 'Constitution', i
 const ABILITY_CAP = 25;
 
 function abilityMod(v) { return Math.floor((v - 10) / 2); }
+function getStrBonus(player) {
+  if (!player || !player.abilities) return 0;
+  return Math.max(0, abilityMod(player.abilities.str || 10));
+}
+function getFleeChance(player) {
+  if (!player || !player.abilities) return FLEE_SUCCESS_CHANCE;
+  const dex = player.abilities.dex || 10;
+  const bonus = Math.max(0, (dex - 10)) * 0.02;
+  return Math.min(0.9, FLEE_SUCCESS_CHANCE + bonus);
+}
+function getWisRegenBonus(player) {
+  if (!player || !player.abilities) return 0;
+  return Math.max(0, abilityMod(player.abilities.wis || 10));
+}
 function trainingCost(current) {
   // cheap early, steep 20+
   if (current < 13) return 50;
@@ -11200,6 +11342,14 @@ function handleTrain(socket, player, args) {
   player.abilities[stat] = cur + 1;
   player.gold -= cost;
   player.practicePoints -= 1;
+  // Tier 1.1: CON +1 maxHP, INT +1 maxMana per train rank
+  if (stat === 'con') {
+    player.maxHP += 1;
+    player.currentHP = Math.min(player.maxHP, player.currentHP + 1);
+  } else if (stat === 'int') {
+    player.maxMana += 1;
+    player.currentMana = Math.min(player.maxMana, player.currentMana + 1);
+  }
   socket.write(colorize(`Your ${ABILITY_NAME[stat]} rises to ${player.abilities[stat]}! (-${cost} gold, -1 practice)\r\n`, 'brightGreen'));
   if (player.abilities[stat] >= 25) unlockAchievement(socket, player, 'master_smith');
 }
@@ -11312,6 +11462,10 @@ setInterval(() => {
   const now = Date.now();
   for (const [sock, player] of players) {
     if (!player || !player.isRegistered) continue;
+    // Tier 1.8: hermit — 1 hour without chatting
+    if (player.lastChatAt && (now - player.lastChatAt) >= 3600000) {
+      unlockAchievement(sock, player, 'hermit');
+    }
     if (!player.affects || player.affects.length === 0) continue;
     const remaining = [];
     for (const a of player.affects) {
@@ -12061,6 +12215,7 @@ function handleAlias(socket, player, args) {
   player.aliases = player.aliases || {};
   player.aliases[key] = value;
   socket.write(colorize(`Alias set: ${key} = ${value}\r\n`, 'green'));
+  if (Object.keys(player.aliases).length >= 10) unlockAchievement(socket, player, 'alias_power');
 }
 
 function handleUnalias(socket, player, args) {
