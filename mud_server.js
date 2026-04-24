@@ -1341,7 +1341,8 @@ function createPlayer(name = null) {
     pets: [],
     skills: { weaponsmith: 0, enchanter: 0, alchemist: 0 },
     remortTier: 0,
-    permStatBonuses: { str: 0, dex: 0, con: 0, int: 0, wis: 0 }
+    permStatBonuses: { str: 0, dex: 0, con: 0, int: 0, wis: 0 },
+    unlockedZones: []
   };
 }
 
@@ -1569,6 +1570,7 @@ function savePlayer(player, socket = null, silent = false) {
     skills: player.skills || { weaponsmith: 0, enchanter: 0, alchemist: 0 },
     remortTier: player.remortTier || 0,
     permStatBonuses: player.permStatBonuses || { str: 0, dex: 0, con: 0, int: 0, wis: 0 },
+    unlockedZones: player.unlockedZones || [],
     lastPlayed: new Date().toISOString()
   };
 
@@ -1706,7 +1708,8 @@ function loadPlayer(playerName) {
       pets: data.pets || [],
       skills: Object.assign({ weaponsmith: 0, enchanter: 0, alchemist: 0 }, data.skills || {}),
       remortTier: data.remortTier || 0,
-      permStatBonuses: Object.assign({ str: 0, dex: 0, con: 0, int: 0, wis: 0 }, data.permStatBonuses || {})
+      permStatBonuses: Object.assign({ str: 0, dex: 0, con: 0, int: 0, wis: 0 }, data.permStatBonuses || {}),
+      unlockedZones: Array.isArray(data.unlockedZones) ? data.unlockedZones : []
     };
 
     return player;
@@ -1772,6 +1775,7 @@ function createItem(itemId) {
     type: template.type,
     slot: template.slot || null,
     levelReq: template.levelReq || 0,
+    tierReq: template.tierReq || 0,
     damageBonus: template.damageBonus || 0,
     armorBonus: template.armorBonus || 0,
     healAmount: template.healAmount || 0,
@@ -1857,7 +1861,17 @@ function getEquippedArmorBonus(player) {
 
 // Check if player can equip an item (meets level requirement)
 function canEquipItem(player, item) {
-  return player.level >= (item.levelReq || 0);
+  if (player.level < (item.levelReq || 0)) return false;
+  // Tier 2.6: tier-gated gear — requires remort tier >= tierReq
+  if ((item.tierReq || 0) > (player.remortTier || 0)) return false;
+  return true;
+}
+
+// Human-readable reason when canEquipItem rejects — used by handleEquip.
+function equipRejectReason(player, item) {
+  if (player.level < (item.levelReq || 0)) return `You need to be level ${item.levelReq} to equip ${item.name}.`;
+  if ((item.tierReq || 0) > (player.remortTier || 0)) return `${item.name} requires remort Tier ${item.tierReq} (you are Tier ${player.remortTier || 0}).`;
+  return null;
 }
 
 // Get equipment slot for an item
@@ -4039,10 +4053,16 @@ function executeMonsterCombatTick(combatId) {
   }
 
   // Player's turn - attack monster
-  const monsterDead = playerAttackMonster(socket, player, currentMonster);
+  let monsterDead = playerAttackMonster(socket, player, currentMonster);
 
   // Broadcast to spectators
   broadcastToRoom(player.currentRoom, `${getDisplayName(player)} strikes ${currentMonster.name}!`, socket);
+
+  // Tier 2.3: pet assists after the player's swing (if monster still alive)
+  if (!monsterDead && typeof petAssistAttack === 'function') {
+    petAssistAttack(socket, player, currentMonster);
+    if (currentMonster.hp <= 0) monsterDead = true;
+  }
 
   if (monsterDead) {
     handleMonsterDeath(socket, player, currentMonster);
@@ -4084,6 +4104,11 @@ function executeMonsterCounterAttack(combatId) {
 
   // Broadcast to spectators
   broadcastToRoom(player.currentRoom, `${currentMonster.name} attacks ${getDisplayName(player)}!`, socket);
+
+  // Tier 2.3: 30% chance the monster also claws the active pet
+  if (typeof monsterAttackPet === 'function') {
+    monsterAttackPet(socket, player, currentMonster);
+  }
 
   if (playerDead) {
     handlePlayerDeath(socket, player);
@@ -5557,9 +5582,11 @@ function handleEquip(socket, player, itemName) {
     return;
   }
 
-  // Check level requirement
+  // Check level / tier requirements
   if (!canEquipItem(player, item)) {
-    socket.write(colorize(`You need to be level ${item.levelReq} to equip ${item.name}.\r\n`, 'red'));
+    const reason = (typeof equipRejectReason === 'function' && equipRejectReason(player, item))
+      || `You cannot equip ${item.name}.`;
+    socket.write(colorize(`${reason}\r\n`, 'red'));
     return;
   }
 
@@ -9751,6 +9778,13 @@ function handleMove(socket, player, direction) {
   const newRoomId = room.exits[normalizedDir];
   const oppositeDir = OPPOSITE_DIRECTIONS[normalizedDir] || normalizedDir;
 
+  // Tier 2.2: zone-lock check — QP-purchased keys open gated rooms
+  if (typeof isZoneUnlocked === 'function' && !isZoneUnlocked(player, newRoomId)) {
+    const lock = ZONE_LOCKS[newRoomId];
+    socket.write(colorize(`The way to ${lock.label} is sealed by a resonant ward. Redeem the matching key at Nomagio's Repository.\r\n`, 'yellow'));
+    return;
+  }
+
   // Broadcast departure to players in old room (unless invisible)
   if (!player.isInvisible) {
     broadcastToRoom(oldRoomId, `${getDisplayName(player)} leaves ${normalizedDir}.`, socket);
@@ -9762,6 +9796,11 @@ function handleMove(socket, player, direction) {
   // Broadcast arrival to players in new room (unless invisible)
   if (!player.isInvisible) {
     broadcastToRoom(newRoomId, `${getDisplayName(player)} arrives from the ${oppositeDir}.`, socket);
+  }
+
+  // Tier 2.3: active pet follows (broadcast only — pet state is owned by player)
+  if (typeof followPet === 'function') {
+    followPet(socket, player, oldRoomId, newRoomId);
   }
 
   // Track rooms explored (unique)
@@ -12139,6 +12178,22 @@ function ensureT2Defaults(player) {
   if (!player.skills) player.skills = { weaponsmith: 0, enchanter: 0, alchemist: 0 };
   if (typeof player.remortTier !== 'number') player.remortTier = 0;
   if (!player.permStatBonuses) player.permStatBonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0 };
+  if (!Array.isArray(player.unlockedZones)) player.unlockedZones = [];
+}
+
+// ---------- 2.2 Zone locks (QP-gated rooms) ----------
+// Rooms keyed here cannot be entered unless the player has redeemed the key.
+// Gating is one-way on entry — leaving a locked room (e.g., if an admin sends
+// you there) is never blocked.
+const ZONE_LOCKS = {
+  room_013: { keyId: 'key_glittering_vault', label: 'The Glittering Vault' },
+  room_162: { keyId: 'key_dripping_vault',   label: 'The Dripping Vault' }
+};
+
+function isZoneUnlocked(player, roomId) {
+  const lock = ZONE_LOCKS[roomId];
+  if (!lock) return true; // not gated
+  return (player.unlockedZones || []).includes(lock.keyId);
 }
 
 // ---------- 2.1 Campaign system ----------
@@ -12301,7 +12356,12 @@ const NOMAGIO_REPOSITORY = {
   aura_resolute:   { kind: 'aura', name: 'Aura: the Resolute',   cost: 300, payload: { suffix: 'the Resolute' } },
   aura_campaigner: { kind: 'aura', name: 'Aura: the Campaigner', cost: 500, payload: { suffix: 'the Campaigner' } },
   egg_loyal:    { kind: 'pet_egg', name: 'Pet Egg: Loyal Spirit',  cost: 1000, payload: { templateId: 'loyal_spirit',  petName: 'Spirit', level: 5 } },
-  egg_singing:  { kind: 'pet_egg', name: 'Pet Egg: Singing Hound', cost: 1500, payload: { templateId: 'singing_hound', petName: 'Hound',  level: 8 } }
+  egg_singing:  { kind: 'pet_egg', name: 'Pet Egg: Singing Hound', cost: 1500, payload: { templateId: 'singing_hound', petName: 'Hound',  level: 8 } },
+  key_glittering_vault: { kind: 'zone_key', name: 'Key: Glittering Vault', cost: 500,  payload: { keyId: 'key_glittering_vault', roomId: 'room_013' } },
+  key_dripping_vault:   { kind: 'zone_key', name: 'Key: Dripping Vault',   cost: 750,  payload: { keyId: 'key_dripping_vault',   roomId: 'room_162' } },
+  // Tier-gated gear — requires player.remortTier >= tierReq on the item to equip.
+  tier1_harmonist_crown: { kind: 'gear', name: 'Crown of the Reborn Harmonist',    cost: 2000, payload: { itemId: 'tier1_harmonist_crown' } },
+  tier3_symphonic_blade: { kind: 'gear', name: 'Symphonic Blade of the Third Loop', cost: 5000, payload: { itemId: 'tier3_symphonic_blade' } }
 };
 
 function handleRedeem(socket, player, args) {
@@ -12370,6 +12430,17 @@ function handleRedeem(socket, player, args) {
     player.questPoints -= entry.cost;
     grantPetFromEgg(socket, player, entry.payload);
     socket.write(colorize(`Egg hatched: ${entry.payload.petName} is now bound to you.\r\n`, 'brightCyan'));
+  } else if (entry.kind === 'zone_key') {
+    if (!Array.isArray(player.unlockedZones)) player.unlockedZones = [];
+    if (player.unlockedZones.includes(entry.payload.keyId)) {
+      socket.write(colorize('You have already unlocked that zone. No refund.\r\n', 'yellow'));
+      return;
+    }
+    player.questPoints -= entry.cost;
+    player.unlockedZones.push(entry.payload.keyId);
+    const lock = ZONE_LOCKS[entry.payload.roomId];
+    const label = lock ? lock.label : entry.payload.roomId;
+    socket.write(colorize(`The way to ${label} is now open to you. Permanent unlock.\r\n`, 'brightGreen'));
   }
   if (typeof unlockAchievement === 'function' && player.campaignsCompleted >= 0) {
     unlockAchievement(socket, player, 'redemption_first');
@@ -12503,6 +12574,11 @@ function handlePetSub(socket, player, args) {
       socket.write(colorize(`You have no pet named "${want}".\r\n`, 'yellow'));
       return;
     }
+    if (pet.downUntil && Date.now() < pet.downUntil) {
+      const wait = Math.ceil((pet.downUntil - Date.now()) / 1000);
+      socket.write(colorize(`${pet.name} is still recovering. ${wait}s until ready.\r\n`, 'yellow'));
+      return;
+    }
     for (const p of player.pets) p.active = false;
     pet.active = true;
     socket.write(colorize(`${pet.name} pads to your side.\r\n`, 'brightCyan'));
@@ -12551,13 +12627,44 @@ function petAssistAttack(socket, player, monster) {
   socket.write(colorize(`${active.name} lunges — hits ${monster.name} for ${dmg}!\r\n`, 'cyan'));
 }
 
+// Tier 2.3: monster has a chance to hit the active pet during its counter-attack.
+// Pets take 50% of the monster's base damage, 30% chance per round. A pet that
+// drops to 0 HP is auto-stabled at 50% maxHp with a 2-minute re-summon lock.
+const PET_DOWN_REVIVE_MS = 120000;
+const PET_HIT_CHANCE = 0.30;
+function monsterAttackPet(socket, player, monster) {
+  if (!player.pets || player.pets.length === 0) return;
+  const active = player.pets.find(p => p.active);
+  if (!active || active.hp <= 0) return;
+  if (!monster || monster.hp <= 0) return;
+  if (Math.random() >= PET_HIT_CHANCE) return;
+  const raw = Math.max(1, Math.floor(monster.str * 0.5) + Math.floor(Math.random() * 4));
+  active.hp -= raw;
+  socket.write(colorize(`${monster.name} rakes your ${active.name} for ${raw} damage! (Pet: ${Math.max(0, active.hp)}/${active.maxHp} HP)\r\n`, 'red'));
+  if (active.hp <= 0) {
+    active.hp = Math.floor(active.maxHp * 0.5);
+    active.active = false;
+    active.stabledAt = Date.now();
+    active.downUntil = Date.now() + PET_DOWN_REVIVE_MS;
+    socket.write(colorize(`${active.name} collapses! They are returned to the stable to recover.\r\n`, 'brightRed'));
+  }
+}
+
+// Tier 2.3: pet follows the player between rooms. Prints departure to old room
+// and arrival to new room, mirroring the player's movement broadcast.
 function followPet(socket, player, fromRoom, toRoom) {
   if (!player.pets || player.pets.length === 0) return;
   const active = player.pets.find(p => p.active);
   if (!active || active.hp <= 0) return;
-  // Pets have no "current room" of their own; they are owned by the player and
-  // simply move with them. Nothing to persist — this hook exists so other
-  // systems (future work) can react to pet movement.
+  if (player.isInvisible) return;
+  try {
+    if (fromRoom && typeof broadcastToRoom === 'function') {
+      broadcastToRoom(fromRoom, colorize(`${active.name} pads after ${getDisplayName(player)}.`, 'cyan'), socket);
+    }
+    if (toRoom && typeof broadcastToRoom === 'function') {
+      broadcastToRoom(toRoom, colorize(`${active.name} arrives at ${getDisplayName(player)}'s side.`, 'cyan'), socket);
+    }
+  } catch (e) { /* defensive */ }
 }
 
 // ---------- 2.4 Crafting ----------
