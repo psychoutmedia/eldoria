@@ -1350,6 +1350,12 @@ function createPlayer(name = null) {
 function getDisplayName(player, includeLevel = false) {
   let name = player.name;
 
+  // Tier 4.1: clan tag prefix if player is in a clan with a tag set
+  if (player.clan && typeof getClan === 'function') {
+    const clan = getClan(player.clan);
+    if (clan && clan.tag) name = `[${clan.tag}] ${name}`;
+  }
+
   if (player.suffix) {
     name += ` ${player.suffix}`;
   }
@@ -1567,7 +1573,10 @@ function savePlayer(player, socket = null, silent = false) {
     campaignLastCompletedAt: player.campaignLastCompletedAt || 0,
     campaignsCompleted: player.campaignsCompleted || 0,
     pets: player.pets || [],
-    skills: player.skills || { weaponsmith: 0, enchanter: 0, alchemist: 0 },
+    skills: player.skills || { weaponsmith: 0, enchanter: 0, alchemist: 0, hack: 0 },
+    affinity: player.affinity || { replicant: 0, human: 0 },
+    clan: player.clan || null,
+    clanRank: player.clanRank || null,
     remortTier: player.remortTier || 0,
     permStatBonuses: player.permStatBonuses || { str: 0, dex: 0, con: 0, int: 0, wis: 0 },
     unlockedZones: player.unlockedZones || [],
@@ -1611,10 +1620,17 @@ function loadPlayer(playerName) {
     const levelData = getLevelData(data.level);
 
     // Create player with saved data
-    // Always spawn at room_001 (Awakening Chamber) regardless of saved location
+    // Default: spawn at room_001 (Awakening Chamber) on reconnect.
+    // Tier 3.1: if the player saved inside Neo Kyoto (rooms 201-300), restore that room
+    // instead - the realm is too big to walk back through every reconnect, and the
+    // narrative arc breaks if mid-quest players are bounced to Eldoria's start room.
+    let restoredRoom = START_ROOM;
+    if (data.currentRoom && /^room_(2\d\d|300)$/.test(data.currentRoom) && rooms[data.currentRoom]) {
+      restoredRoom = data.currentRoom;
+    }
     const player = {
       name: data.name,
-      currentRoom: START_ROOM,
+      currentRoom: restoredRoom,
       displayMode: data.displayMode || 'verbose',
       level: data.level,
       title: data.title || levelData.title,
@@ -1706,7 +1722,10 @@ function loadPlayer(playerName) {
       campaignLastCompletedAt: data.campaignLastCompletedAt || 0,
       campaignsCompleted: data.campaignsCompleted || 0,
       pets: data.pets || [],
-      skills: Object.assign({ weaponsmith: 0, enchanter: 0, alchemist: 0 }, data.skills || {}),
+      skills: Object.assign({ weaponsmith: 0, enchanter: 0, alchemist: 0, hack: 0 }, data.skills || {}),
+      affinity: Object.assign({ replicant: 0, human: 0 }, data.affinity || {}),
+      clan: data.clan || null,
+      clanRank: data.clanRank || null,
       remortTier: data.remortTier || 0,
       permStatBonuses: Object.assign({ str: 0, dex: 0, con: 0, int: 0, wis: 0 }, data.permStatBonuses || {}),
       unlockedZones: Array.isArray(data.unlockedZones) ? data.unlockedZones : []
@@ -1782,6 +1801,7 @@ function createItem(itemId) {
     manaBonus: template.manaBonus || 0,
     resistBonus: template.resistBonus || null,
     damageType: template.damageType || null,
+    affinityReq: template.affinityReq || null,
     value: template.value || 0,
     description: template.description
   };
@@ -1864,6 +1884,12 @@ function canEquipItem(player, item) {
   if (player.level < (item.levelReq || 0)) return false;
   // Tier 2.6: tier-gated gear — requires remort tier >= tierReq
   if ((item.tierReq || 0) > (player.remortTier || 0)) return false;
+  // Tier 3.1 Phase 6: affinity-gated gear
+  if (item.affinityReq && typeof item.affinityReq === 'object') {
+    const aff = (player.affinity || { replicant: 0, human: 0 });
+    if (typeof item.affinityReq.replicant === 'number' && (aff.replicant || 0) < item.affinityReq.replicant) return false;
+    if (typeof item.affinityReq.human === 'number' && (aff.human || 0) < item.affinityReq.human) return false;
+  }
   return true;
 }
 
@@ -1871,6 +1897,15 @@ function canEquipItem(player, item) {
 function equipRejectReason(player, item) {
   if (player.level < (item.levelReq || 0)) return `You need to be level ${item.levelReq} to equip ${item.name}.`;
   if ((item.tierReq || 0) > (player.remortTier || 0)) return `${item.name} requires remort Tier ${item.tierReq} (you are Tier ${player.remortTier || 0}).`;
+  if (item.affinityReq && typeof item.affinityReq === 'object') {
+    const aff = (player.affinity || { replicant: 0, human: 0 });
+    if (typeof item.affinityReq.replicant === 'number' && (aff.replicant || 0) < item.affinityReq.replicant) {
+      return `${item.name} only attunes to Replicant-leaning travellers (need affinity ${item.affinityReq.replicant}; you have ${aff.replicant || 0}).`;
+    }
+    if (typeof item.affinityReq.human === 'number' && (aff.human || 0) < item.affinityReq.human) {
+      return `${item.name} only attunes to Human-leaning travellers (need affinity ${item.affinityReq.human}; you have ${aff.human || 0}).`;
+    }
+  }
   return null;
 }
 
@@ -2022,7 +2057,8 @@ function spawnMonstersForZone(zoneName, zoneData) {
     // Skip boss rooms (handled separately)
     if (roomId === 'room_015' || roomId === 'room_035' || roomId === 'room_085' || roomId === 'room_100' ||
         roomId === 'room_108' || roomId === 'room_138' || roomId === 'room_144' || roomId === 'room_150' ||
-        roomId === 'room_175' || roomId === 'room_198' || roomId === 'room_200') {
+        roomId === 'room_175' || roomId === 'room_198' || roomId === 'room_200' ||
+        roomId === 'room_220' || roomId === 'room_230' || roomId === 'room_260' || roomId === 'room_270' || roomId === 'room_300') {
       return;
     }
 
@@ -2050,7 +2086,9 @@ function spawnMonstersForZone(zoneName, zoneData) {
           isWandering: true,
           movementVerbs: template.movementVerbs,
           presenceVerb: template.presenceVerb,
-          loot: template.loot
+          loot: template.loot,
+          damageType: template.damageType || null,
+          resists: template.resists || null
         };
 
         activeMonsters.push(monster);
@@ -2071,7 +2109,8 @@ function spawnSingleMonster(zoneName) {
   const validRooms = roomRange.filter(r =>
     r !== 'room_015' && r !== 'room_035' && r !== 'room_085' && r !== 'room_100' &&
     r !== 'room_108' && r !== 'room_138' && r !== 'room_144' && r !== 'room_150' &&
-    r !== 'room_175' && r !== 'room_198' && r !== 'room_200'
+    r !== 'room_175' && r !== 'room_198' && r !== 'room_200' &&
+    r !== 'room_220' && r !== 'room_230' && r !== 'room_260' && r !== 'room_270' && r !== 'room_300'
   );
 
   if (validRooms.length === 0) return null;
@@ -2098,7 +2137,9 @@ function spawnSingleMonster(zoneName) {
     isWandering: true,
     movementVerbs: template.movementVerbs,
     presenceVerb: template.presenceVerb,
-    loot: template.loot
+    loot: template.loot,
+    damageType: template.damageType || null,
+    resists: template.resists || null
   };
 
   activeMonsters.push(monster);
@@ -2135,6 +2176,8 @@ function spawnBosses() {
       isWandering: false,
       presenceVerb: bossTemplate.presenceVerb,
       loot: bossTemplate.loot,
+      damageType: bossTemplate.damageType || null,
+      resists: bossTemplate.resists || null,
       bossState: {}
     };
 
@@ -2178,7 +2221,7 @@ function initializeMonsters() {
 
 // Spawn a minion at a boss's location, linked to the parent boss for cleanup
 function spawnBossMinion(parentBoss, templateId, count) {
-  const template = monsterData.monsters && monsterData.monsters[templateId];
+  const template = monsterData.templates[templateId];
   if (!template) {
     console.log(`spawnBossMinion: missing template ${templateId}`);
     return;
@@ -2199,6 +2242,8 @@ function spawnBossMinion(parentBoss, templateId, count) {
       isWandering: false,
       presenceVerb: template.presenceVerb || 'lurks here',
       loot: template.loot || [],
+      damageType: template.damageType || null,
+      resists: template.resists || null,
       parentBossId: parentBoss.id
     };
     activeMonsters.push(minion);
@@ -2269,6 +2314,113 @@ const BOSS_SIGNATURES = {
         monster.str = Math.floor(monster.str * 1.25);
         socket.write(colorize("\r\nThe Archmage Supreme's robes tear open. Raw magic spills out. He is no longer holding back.\r\n", 'brightRed'));
         broadcastToRoom(player.currentRoom, colorize("The Archmage Supreme enters his second phase!", 'yellow'), socket);
+      }
+    }
+  },
+
+  // Tier 3.1 - Neo Kyoto bosses
+
+  // Chiyo-7: at 50% HP her cert expires - +50% attack speed but her hits no longer apply
+  chiyo_7: {
+    onPlayerHit: (socket, player, monster) => {
+      if (!monster.bossState.certExpired && monster.hp <= monster.maxHp * 0.5 && monster.hp > 0) {
+        monster.bossState.certExpired = true;
+        monster.bossState.speedMultiplier = 1.5;
+        socket.write(colorize("\r\nA red light blinks once on Chiyo-7's badge. CERTIFICATE EXPIRED. She moves faster - but her authentications no longer land.\r\n", 'brightRed'));
+        broadcastToRoom(player.currentRoom, colorize("Chiyo-7's cert expires! She is faster, but her hits no longer authenticate.", 'yellow'), socket);
+      }
+    },
+    damageMultiplier: (socket, player, monster) => {
+      return monster.bossState.certExpired ? 0 : 1.0;
+    }
+  },
+
+  // Account Manager: every 3 rounds escalates - spawns Junior Associate add. Damage scales +10% per live add.
+  account_manager: {
+    onMonsterAttack: (socket, player, monster) => {
+      monster.bossState.roundCount = (monster.bossState.roundCount || 0) + 1;
+      if (monster.bossState.roundCount % 3 === 0) {
+        spawnBossMinion(monster, 'junior_associate', 1);
+        socket.write(colorize("\r\nThe Account Manager escalates. A Junior Associate phases in, already smiling.\r\n", 'brightRed'));
+        broadcastToRoom(player.currentRoom, colorize("The Account Manager escalates - a Junior Associate joins the fight!", 'yellow'), socket);
+      }
+    },
+    damageMultiplier: (socket, player, monster) => {
+      const aliveAdds = activeMonsters.filter(m => m.parentBossId === monster.id && m.hp > 0).length;
+      if (aliveAdds > 0) {
+        return 1.0 + 0.10 * aliveAdds;
+      }
+      return 1.0;
+    }
+  },
+
+  // Babel Fish Regent: each round, randomly swaps an additional resisted damage type. Telegraphs.
+  babel_fish_regent: {
+    onMonsterAttack: (socket, player, monster) => {
+      const types = ['physical', 'fire', 'harmonic', 'shadow', 'data'];
+      const newType = types[Math.floor(Math.random() * types.length)];
+      // Reset to baseline Neo Kyoto resists, then layer the new resist
+      monster.resists = { harmonic: 75, data: -25 };
+      if (newType === 'harmonic') {
+        monster.resists.harmonic = 90;
+      } else if (newType === 'data') {
+        monster.resists.data = 50;
+      } else {
+        monster.resists[newType] = 60;
+      }
+      monster.bossState.currentSchema = newType;
+      socket.write(colorize(`\r\nThe Babel Fish Regent flickers into a new schema - now resisting ${newType}.\r\n`, 'brightMagenta'));
+    }
+  },
+
+  // The Deep Pool: drains mana before HP. While player has mana, attacks deal 0 damage but eat mana.
+  // When mana hits 0, attacks bleed through at +50% damage.
+  deep_pool: {
+    onMonsterAttack: (socket, player, monster) => {
+      const drainAmount = 25 + Math.floor(Math.random() * 20); // 25-44 mana
+      if (player.currentMana > 0) {
+        const drained = Math.min(drainAmount, player.currentMana);
+        player.currentMana -= drained;
+        monster.bossState.lastDrainAbsorbed = true;
+        socket.write(colorize(`The Deep Pool drinks ${drained} mana from you. (${player.currentMana}/${player.maxMana})\r\n`, 'brightCyan'));
+      } else {
+        monster.bossState.lastDrainAbsorbed = false;
+        socket.write(colorize("The Deep Pool finds no mana to drink. It bites instead.\r\n", 'brightRed'));
+      }
+    },
+    damageMultiplier: (socket, player, monster) => {
+      return monster.bossState.lastDrainAbsorbed ? 0 : 1.5;
+    }
+  },
+
+  // SYSADMIN.EXE: 3-phase capstone.
+  // Phase 2 (66% HP): start spawning cron_daemon adds every 10s.
+  // Phase 3 (33% HP): apply paged_oncall effect (next 2 spell casts have 50% chance of 503 fail).
+  sysadmin_exe: {
+    onPlayerHit: (socket, player, monster) => {
+      if (!monster.bossState.phase2 && monster.hp <= monster.maxHp * 0.66 && monster.hp > 0) {
+        monster.bossState.phase2 = true;
+        socket.write(colorize("\r\nSYSADMIN.EXE escalates. *PHASE 2: AUTOSCALER ENGAGED.* A CRON_DAEMON forks into the room.\r\n", 'brightRed'));
+        broadcastToRoom(player.currentRoom, colorize("SYSADMIN.EXE enters Phase 2 - cron daemons begin spawning every 10 seconds!", 'yellow'), socket);
+        spawnBossMinion(monster, 'cron_daemon', 1);
+        const bossId = monster.id;
+        monster.bossState.addsTimer = setInterval(() => {
+          const stillAlive = activeMonsters.find(m => m.id === bossId && m.hp > 0);
+          if (!stillAlive) {
+            clearInterval(monster.bossState.addsTimer);
+            monster.bossState.addsTimer = null;
+            return;
+          }
+          spawnBossMinion(stillAlive, 'cron_daemon', 1);
+          broadcastToRoom(stillAlive.currentRoom, colorize("A cron job triggers. A CRON_DAEMON forks into the room.", 'yellow'));
+        }, 10000);
+      }
+      if (!monster.bossState.phase3 && monster.hp <= monster.maxHp * 0.33 && monster.hp > 0) {
+        monster.bossState.phase3 = true;
+        player.effects = player.effects || {};
+        player.effects['paged_oncall'] = { failsLeft: 2, expiresAt: Date.now() + 120000 };
+        socket.write(colorize("\r\nSYSADMIN.EXE escalates. *PHASE 3: PAGING ONCALL.* Your next abilities may fail with 503.\r\n", 'brightRed'));
+        broadcastToRoom(player.currentRoom, colorize("SYSADMIN.EXE pages the on-call rotation - the player's spells may not respond!", 'yellow'), socket);
       }
     }
   }
@@ -2961,10 +3113,48 @@ function awardQuestRewards(socket, player, npc, def, state) {
   if (r.relationship && npc) {
     npc.brain.recordInteraction(player.name, `completed quest: ${def.title}`, r.relationship, 4);
   }
+  // Tier 3.1 Phase 6: affinity payouts (Neo Kyoto)
+  if (r.affinity && typeof r.affinity === 'object') {
+    ensureT2Defaults(player);
+    if (typeof r.affinity.replicant === 'number') {
+      player.affinity.replicant = Math.max(0, player.affinity.replicant + r.affinity.replicant);
+    }
+    if (typeof r.affinity.human === 'number') {
+      player.affinity.human = Math.max(0, player.affinity.human + r.affinity.human);
+    }
+    // Tier 3.1 Phase 7: affinity threshold achievements
+    if (player.affinity.replicant >= 10) unlockAchievement(socket, player, 'electric_sheep');
+    if (player.affinity.human >= 10) unlockAchievement(socket, player, 'more_human_than_human');
+  }
+  // Tier 3.1 Phase 6: skill payouts (e.g., +1 hack from neon_lit_debts)
+  if (r.skill && typeof r.skill === 'object') {
+    ensureT2Defaults(player);
+    for (const [skillName, amt] of Object.entries(r.skill)) {
+      if (typeof player.skills[skillName] !== 'number') player.skills[skillName] = 0;
+      player.skills[skillName] += amt;
+    }
+  }
+  // Tier 3.1 Phase 8: Quest Points payout (capstone seals)
+  if (typeof r.questPoints === 'number' && r.questPoints > 0) {
+    ensureT2Defaults(player);
+    player.questPoints += r.questPoints;
+  }
   socket.write(colorize(`\r\n*** QUEST COMPLETE: ${def.title} ***\r\n`, 'brightGreen'));
   if (r.gold) socket.write(colorize(`  +${r.gold} gold\r\n`, 'yellow'));
   if (r.xp) socket.write(colorize(`  +${r.xp} XP\r\n`, 'yellow'));
   if (r.relationship) socket.write(colorize(`  +${r.relationship} relationship with ${npc.name}\r\n`, 'brightMagenta'));
+  if (r.affinity) {
+    if (r.affinity.replicant) socket.write(colorize(`  Affinity: Replicant ${r.affinity.replicant > 0 ? '+' : ''}${r.affinity.replicant}\r\n`, 'brightCyan'));
+    if (r.affinity.human) socket.write(colorize(`  Affinity: Human ${r.affinity.human > 0 ? '+' : ''}${r.affinity.human}\r\n`, 'brightYellow'));
+  }
+  if (r.skill) {
+    for (const [s, amt] of Object.entries(r.skill)) {
+      socket.write(colorize(`  Skill: ${s} ${amt > 0 ? '+' : ''}${amt} (now ${player.skills[s]})\r\n`, 'brightGreen'));
+    }
+  }
+  if (typeof r.questPoints === 'number' && r.questPoints > 0) {
+    socket.write(colorize(`  +${r.questPoints} Quest Points\r\n`, 'brightMagenta'));
+  }
   socket.write('\r\n');
   // Remove quest item from inventory if it was an item-pickup quest (the rune).
   // Quests may opt out via "keepItems: true" (e.g. collect_five_instruments, whose items are also used at the finale).
@@ -3350,6 +3540,14 @@ function monsterAttackPlayer(socket, player, monster) {
 
 // Handle monster death
 function handleMonsterDeath(socket, player, monster) {
+  // Tier 3.1: clear any boss timers attached to bossState (e.g., SYSADMIN.EXE add-spawner)
+  if (monster.bossState) {
+    if (monster.bossState.addsTimer) {
+      clearInterval(monster.bossState.addsTimer);
+      monster.bossState.addsTimer = null;
+    }
+  }
+
   // Boss monsters give 4x XP (level × 200), regular monsters give level × 50
   const isBoss = monster.type === 'Boss';
   let xpGain = isBoss ? monster.level * 200 : monster.level * 50;
@@ -3409,6 +3607,43 @@ function handleMonsterDeath(socket, player, monster) {
   // Broadcast death to room
   broadcastToRoom(player.currentRoom, `${getDisplayName(player)} has slain ${monster.name}!`, socket);
 
+  // Tier 3.1 - SYSADMIN.EXE death triggers Nomagio's distress transmission from Server 3
+  if (monster.templateId === 'sysadmin_exe') {
+    setTimeout(() => {
+      socket.write('\r\n');
+      socket.write(colorize('===========================================================\r\n', 'brightMagenta'));
+      socket.write(colorize('  INCOMING TRANSMISSION  -  ORIGIN: SEVERANCE LAYER THETA\r\n', 'brightMagenta'));
+      socket.write(colorize('  AUTH: nomagio.archmage  -  INTEGRITY: 47% (DEGRADED)\r\n', 'brightMagenta'));
+      socket.write(colorize('===========================================================\r\n', 'brightMagenta'));
+      socket.write('\r\n');
+      socket.write(colorize('     ...traveller. If you are reading this, the staging\r\n', 'brightCyan'));
+      socket.write(colorize('     branch has been --- [PACKET LOSS] --- and SYSADMIN\r\n', 'brightCyan'));
+      socket.write(colorize('     is no longer holding the line. Good. I owe you for\r\n', 'brightCyan'));
+      socket.write(colorize('     that. I owe Lyssara more.\r\n', 'brightCyan'));
+      socket.write('\r\n');
+      socket.write(colorize('     I am writing from Server 3. The Severance Layer.\r\n', 'brightCyan'));
+      socket.write(colorize('     I came here some cycles ago to ----- [REDACTED] -----\r\n', 'brightCyan'));
+      socket.write(colorize('     and what I found is worse than the Sundering ever was.\r\n', 'brightCyan'));
+      socket.write('\r\n');
+      socket.write(colorize('     The hardware is failing. The processes are not. They\r\n', 'brightCyan'));
+      socket.write(colorize('     are screaming, in a language I taught them, and I\r\n', 'brightCyan'));
+      socket.write(colorize('     cannot turn it off. I need ---- [PACKET LOSS] ----.\r\n', 'brightCyan'));
+      socket.write('\r\n');
+      socket.write(colorize('     Please. Come quickly. The shuttle terminal will know\r\n', 'brightCyan'));
+      socket.write(colorize('     when you are ready. It always does.\r\n', 'brightCyan'));
+      socket.write('\r\n');
+      socket.write(colorize('                              - N.\r\n', 'brightCyan'));
+      socket.write('\r\n');
+      socket.write(colorize('===========================================================\r\n', 'brightMagenta'));
+      socket.write(colorize('  TRANSMISSION ENDS. THE SHUTTLE TERMINAL HAS BEEN UPDATED.\r\n', 'brightMagenta'));
+      socket.write(colorize('===========================================================\r\n', 'brightMagenta'));
+      socket.write('\r\n');
+      broadcastToAll(colorize('\r\n*** A REALM-WIDE TRANSMISSION CRACKLES ACROSS BOTH SERVERS ***', 'brightMagenta'));
+      broadcastToAll(colorize(`${getDisplayName(player)} has heard a message from Nomagio. Server 3 is calling.`, 'brightMagenta'));
+      broadcastToAll(colorize('*** *** ***\r\n', 'brightMagenta'));
+    }, 2500);
+  }
+
   // Exit combat
   player.inCombat = false;
   player.combatTarget = null;
@@ -3467,6 +3702,11 @@ function handleMonsterDeath(socket, player, monster) {
     unlockAchievement(socket, player, 'first_boss');
     if (player.stats.bossesDefeated.length >= 5) unlockAchievement(socket, player, 'five_bosses');
     if (player.stats.bossesDefeated.length >= 9) unlockAchievement(socket, player, 'nine_bosses');
+    // Tier 3.1 Phase 7 - Neo Kyoto boss achievements
+    if (monster.templateId === 'sysadmin_exe') unlockAchievement(socket, player, 'server_melt');
+    const NK_BOSSES = ['Chiyo-7, the Deprecated', 'The Account Manager', 'Babel Fish Regent', 'The Deep Pool', 'SYSADMIN.EXE'];
+    const nkKilled = NK_BOSSES.filter(name => player.stats.bossesDefeated.includes(name));
+    if (nkKilled.length >= 5) unlockAchievement(socket, player, 'settle_all_tickets');
     // Tier 2.2: first-time boss kill grants +5 QP
     player.questPoints = (player.questPoints || 0) + 5;
     socket.write(colorize('[+5 Quest Points] First-time boss victory.\r\n', 'brightMagenta'));
@@ -4071,10 +4311,12 @@ function executeMonsterCombatTick(combatId) {
     return;
   }
 
-  // Schedule monster counter-attack after delay
+  // Schedule monster counter-attack after delay (speed-buffed bosses attack sooner)
+  const counterSpeedMult = (currentMonster.bossState && currentMonster.bossState.speedMultiplier) || 1.0;
+  const counterDelay = Math.max(300, Math.floor(MONSTER_COUNTER_DELAY / counterSpeedMult));
   combat.timer = setTimeout(() => {
     executeMonsterCounterAttack(combatId);
-  }, MONSTER_COUNTER_DELAY);
+  }, counterDelay);
 }
 
 // Execute monster's counter-attack
@@ -4116,8 +4358,9 @@ function executeMonsterCounterAttack(combatId) {
     return;
   }
 
-  // Automatic combat - no prompt needed, just schedule next round
-  const nextRoundDelay = MONSTER_COMBAT_ROUND_INTERVAL - MONSTER_COUNTER_DELAY;
+  // Automatic combat - no prompt needed, just schedule next round (speed-buffed bosses tick sooner)
+  const roundSpeedMult = (currentMonster.bossState && currentMonster.bossState.speedMultiplier) || 1.0;
+  const nextRoundDelay = Math.max(300, Math.floor((MONSTER_COMBAT_ROUND_INTERVAL - MONSTER_COUNTER_DELAY) / roundSpeedMult));
   combat.timer = setTimeout(() => {
     executeMonsterCombatTick(combatId);
   }, nextRoundDelay);
@@ -5699,8 +5942,15 @@ function handleUse(socket, player, itemName) {
   if (healMessage) socket.write(healMessage);
   if (manaMessage) socket.write(manaMessage);
 
-  // If neither heal nor mana, generic message
-  if (!healMessage && !manaMessage) {
+  // Tier 3.1 Phase 6: Static Tea applies a +2 hack-skill buff for 5 minutes
+  if (item.id === 'static_tea') {
+    if (!player.effects) player.effects = {};
+    player.effects['hack_buff'] = { amount: 2, expiresAt: Date.now() + 5 * 60 * 1000 };
+    socket.write(colorize('A faint static settles in your fingertips. (+2 hack skill for 5 minutes.)\r\n', 'brightCyan'));
+  }
+
+  // If no other effect fired, generic message
+  if (!healMessage && !manaMessage && item.id !== 'static_tea') {
     socket.write("The item seems to have no effect.\r\n");
   }
 }
@@ -7934,6 +8184,20 @@ function handleCast(socket, player, args) {
     return;
   }
 
+  // Tier 3.1: SYSADMIN.EXE phase-3 paging - random ability failures with 503
+  if (player.effects && player.effects['paged_oncall'] && player.effects['paged_oncall'].failsLeft > 0) {
+    if (Math.random() < 0.5) {
+      player.effects['paged_oncall'].failsLeft -= 1;
+      socket.write(colorize(`503 Service Unavailable. ${spell.name} could not be served right now. Please try again later.\r\n`, 'brightRed'));
+      player.currentMana = Math.max(0, player.currentMana - Math.floor(spell.manaCost / 2));
+      if (player.effects['paged_oncall'].failsLeft <= 0) {
+        delete player.effects['paged_oncall'];
+        socket.write(colorize('The paging quiets. Your spells answer you again.\r\n', 'cyan'));
+      }
+      return;
+    }
+  }
+
   // Tier 1.2: class school gating (level 5+ with a class chosen)
   if (player.level >= 5 && player.charClass && CLASS_DEFS[player.charClass] && spell.school) {
     const allowed = CLASS_DEFS[player.charClass].schools;
@@ -9707,9 +9971,11 @@ function showRoom(socket, player) {
     });
   }
 
-  // Show available exits
+  // Show available exits (hide exits to realm-gated rooms the player can't enter)
   socket.write('\r\n');
-  const exits = Object.keys(room.exits);
+  const exits = Object.keys(room.exits).filter(dir =>
+    typeof isRealmGateOpen !== 'function' || isRealmGateOpen(player, room.exits[dir])
+  );
   if (exits.length > 0) {
     socket.write(`Exits: ${exits.join(', ')}\r\n`);
   } else {
@@ -9785,6 +10051,13 @@ function handleMove(socket, player, direction) {
     return;
   }
 
+  // Tier 3.1: realm-gate check — Neo Kyoto and other farm realms require remort
+  if (typeof isRealmGateOpen === 'function' && !isRealmGateOpen(player, newRoomId)) {
+    const gate = REALM_GATES[newRoomId];
+    socket.write(colorize(`A polite hand stops you at the service door. 'Staff only, traveller. ${gate.label} is for returning travellers. Come back when you've rebooted at least once.'\r\n`, 'yellow'));
+    return;
+  }
+
   // Broadcast departure to players in old room (unless invisible)
   if (!player.isInvisible) {
     broadcastToRoom(oldRoomId, `${getDisplayName(player)} leaves ${normalizedDir}.`, socket);
@@ -9792,6 +10065,18 @@ function handleMove(socket, player, direction) {
 
   // Move to new room
   player.currentRoom = newRoomId;
+
+  // Tier 3.1 Phase 7: Neo Kyoto entry achievements
+  const nkMatch = newRoomId.match(/^room_(\d+)$/);
+  if (nkMatch) {
+    const n = parseInt(nkMatch[1], 10);
+    if (n >= 201 && n <= 300) {
+      unlockAchievement(socket, player, 'clocked_in');
+      if (oldRoomId === 'room_100' && newRoomId === 'room_201') {
+        unlockAchievement(socket, player, 'staff_pass');
+      }
+    }
+  }
 
   // Broadcast arrival to players in new room (unless invisible)
   if (!player.isInvisible) {
@@ -10190,6 +10475,49 @@ function processCommand(socket, player, input) {
   if (command.startsWith('consider ') || command.startsWith('con ')) {
     const slice = command.startsWith('consider ') ? 9 : 4;
     handleConsider(socket, player, input.slice(slice));
+    return true;
+  }
+
+  // Tier 4.1: Clans
+  if (command === 'clan' || command === 'clans') {
+    handleClan(socket, player, '');
+    return true;
+  }
+  if (command.startsWith('clan ')) {
+    handleClan(socket, player, input.slice(5));
+    return true;
+  }
+  if (command === 'cwho') {
+    handleClanWho(socket, player);
+    return true;
+  }
+  if (command === 'c' || command.startsWith('c ')) {
+    const msg = command === 'c' ? '' : input.slice(2);
+    handleClanChannel(socket, player, msg);
+    return true;
+  }
+
+  // Tier 3.1 Phase 6: hack skill (Neo Kyoto)
+  if (command === 'hack' || command === 'hacks') {
+    handleHack(socket, player, '');
+    return true;
+  }
+  if (command.startsWith('hack ')) {
+    handleHack(socket, player, input.slice(5));
+    return true;
+  }
+  // Tier 3.1 Phase 6: affinity meter
+  if (command === 'affinity' || command === 'standing') {
+    handleAffinity(socket, player);
+    return true;
+  }
+  // Tier 3.1 Phase 6: train hack from a trainer NPC
+  if (command === 'train' || command === 'training') {
+    socket.write('Train what? Usage: train hack (must be near a trainer NPC such as Hiro).\r\n');
+    return true;
+  }
+  if (command.startsWith('train ')) {
+    handleTrain(socket, player, input.slice(6));
     return true;
   }
 
@@ -11685,6 +12013,252 @@ function handleAssist(socket, player, who) {
 }
 
 // ---------- 1.6 Shops ----------
+// ============================================
+// Tier 3.1 Phase 6 - Neo Kyoto: Hack skill, Affinity, Trainers
+// ============================================
+
+// Interactable terminals seeded across Neo Kyoto. Hack succeeds on d20 + skill >= dc.
+// Each entry: { id, label, dc, kind, payload }
+//   kind: 'loot' | 'unlock_exit' | 'teleport' | 'despawn_minions'
+//   payload: shape depends on kind
+const NEO_KYOTO_INTERACTABLES = {
+  'room_215': [
+    { id: 'noodle_display', label: 'noodle-stall display panel', dc: 8, kind: 'loot',
+      payload: { gold: 60, items: ['yen_chip'] } }
+  ],
+  'room_232': [
+    { id: 'rack_maintenance', label: 'rack maintenance panel', dc: 12, kind: 'loot',
+      payload: { gold: 0, items: ['bytecode_shard', 'deleted_memory'] } }
+  ],
+  'room_245': [
+    { id: 'queue_kiosk', label: 'queue priority kiosk', dc: 10, kind: 'teleport',
+      payload: { roomId: 'room_249', message: 'Your priority is upgraded. The queue snaps four places forward and you stumble out the other side.' } }
+  ],
+  'room_267': [
+    { id: 'submersion_controls', label: 'submersion controls panel', dc: 14, kind: 'loot',
+      payload: { gold: 200, items: ['bytecode_shard', 'neon_eye', 'corrupted_datapad'] } }
+  ],
+  'room_295': [
+    { id: 'cron_killswitch', label: 'cron daemon kill switch', dc: 18, kind: 'despawn_minions',
+      payload: { templateId: 'cron_daemon', message: 'A pulse of negative-acknowledgment ripples out. Every cron daemon in the room hesitates, evaluates, and shuts down its own subprocess.' } }
+  ]
+};
+
+// One-shot per-cycle tracking: which interactables have been consumed.
+// Resets at world reset (cycle reset).
+const interactablesUsed = new Set();
+
+function getInteractablesInRoom(roomId) {
+  return NEO_KYOTO_INTERACTABLES[roomId] || [];
+}
+
+function spawnSecuritySubroutine(roomId, reason) {
+  const template = monsterData.templates['security_subroutine'];
+  if (!template) return null;
+  const monster = {
+    id: generateMonsterId(),
+    templateId: 'security_subroutine',
+    name: template.name,
+    type: template.type || 'Aggressive',
+    level: template.level,
+    hp: template.hp,
+    maxHp: template.hp,
+    str: template.str,
+    description: template.description,
+    currentRoom: roomId,
+    spawnZone: 'AlarmTriggered',
+    isWandering: false,
+    movementVerbs: template.movementVerbs,
+    presenceVerb: template.presenceVerb,
+    loot: template.loot,
+    damageType: template.damageType || null,
+    resists: template.resists || null
+  };
+  activeMonsters.push(monster);
+  broadcastToRoom(roomId, colorize(`*ALARM TRIGGERED* A Security Subroutine spawns into the room. ${reason || ''}`, 'brightRed'));
+  return monster;
+}
+
+function handleHack(socket, player, args) {
+  ensureT2Defaults(player);
+
+  const roomInteractables = getInteractablesInRoom(player.currentRoom);
+  if (roomInteractables.length === 0) {
+    socket.write(colorize('There is nothing here to hack. Try a Neo Kyoto terminal.\r\n', 'yellow'));
+    return;
+  }
+
+  if (!args || args.trim() === '') {
+    socket.write(colorize('=== Hackable terminals in this room ===\r\n', 'brightCyan'));
+    for (const it of roomInteractables) {
+      const usedKey = `${player.currentRoom}:${it.id}`;
+      const used = interactablesUsed.has(usedKey);
+      const usedTag = used ? colorize(' [DEPLETED]', 'dim') : '';
+      socket.write(`  ${it.label} (DC ${it.dc})${usedTag}\r\n`);
+    }
+    socket.write(colorize(`Your hack skill: ${player.skills.hack || 0}\r\n`, 'cyan'));
+    socket.write('Usage: hack <target keyword>\r\n');
+    return;
+  }
+
+  const q = args.trim().toLowerCase();
+  const target = roomInteractables.find(it => it.id.includes(q) || it.label.toLowerCase().includes(q));
+  if (!target) {
+    socket.write(colorize(`No "${args}" terminal here. Try "hack" alone to see what is available.\r\n`, 'yellow'));
+    return;
+  }
+
+  const usedKey = `${player.currentRoom}:${target.id}`;
+  if (interactablesUsed.has(usedKey)) {
+    socket.write(colorize(`The ${target.label} has already been hacked this cycle.\r\n`, 'yellow'));
+    return;
+  }
+
+  // Roll d20 + skill (+ static_tea buff if active)
+  const skill = player.skills.hack || 0;
+  let buff = 0;
+  if (player.effects && player.effects['hack_buff'] && player.effects['hack_buff'].expiresAt > Date.now()) {
+    buff = player.effects['hack_buff'].amount || 0;
+  }
+  const roll = 1 + Math.floor(Math.random() * 20);
+  const total = roll + skill + buff;
+  const buffNote = buff > 0 ? ` + ${buff} (static tea)` : '';
+  socket.write(colorize(`\r\n[hack] d20=${roll} + skill ${skill}${buffNote} = ${total} vs DC ${target.dc}\r\n`, 'cyan'));
+
+  if (total >= target.dc) {
+    interactablesUsed.add(usedKey);
+    socket.write(colorize(`SUCCESS. The ${target.label} yields.\r\n`, 'brightGreen'));
+    broadcastToRoom(player.currentRoom, colorize(`${getDisplayName(player)} hacks the ${target.label}.`, 'cyan'), socket);
+
+    if (target.kind === 'loot') {
+      if (target.payload.gold) {
+        player.gold += target.payload.gold;
+        socket.write(colorize(`  +${target.payload.gold} gold spills out of the panel.\r\n`, 'yellow'));
+      }
+      for (const itemId of (target.payload.items || [])) {
+        const item = createItem(itemId);
+        if (item) {
+          addItemToRoom(player.currentRoom, item);
+          socket.write(colorize(`  ${item.name} clatters to the floor.\r\n`, 'brightCyan'));
+        }
+      }
+    } else if (target.kind === 'unlock_exit') {
+      const direction = target.payload.direction;
+      const destination = target.payload.roomId;
+      const room = rooms[player.currentRoom];
+      if (room && room.exits && !room.exits[direction]) {
+        room.exits[direction] = destination;
+        socket.write(colorize(`  A panel slides open. A new ${direction} exit reveals itself.\r\n`, 'brightGreen'));
+      } else {
+        socket.write(colorize('  The panel hisses, but no new exit appears.\r\n', 'yellow'));
+      }
+    } else if (target.kind === 'teleport') {
+      socket.write(colorize(`  ${target.payload.message}\r\n`, 'brightCyan'));
+      const dest = target.payload.roomId;
+      if (rooms[dest]) {
+        broadcastToRoom(player.currentRoom, `${getDisplayName(player)} flickers out of the room.`, socket);
+        player.currentRoom = dest;
+        broadcastToRoom(dest, `${getDisplayName(player)} flickers into the room.`, socket);
+        handleLook(socket, player);
+      }
+      // Tier 3.1 Phase 7: Queue Jumper achievement
+      if (target.id === 'queue_kiosk') unlockAchievement(socket, player, 'queue_jumper');
+    } else if (target.kind === 'despawn_minions') {
+      const before = activeMonsters.length;
+      const minionTpl = target.payload.templateId;
+      activeMonsters = activeMonsters.filter(m => !(m.currentRoom === player.currentRoom && m.templateId === minionTpl));
+      const removed = before - activeMonsters.length;
+      socket.write(colorize(`  ${target.payload.message}\r\n`, 'brightCyan'));
+      socket.write(colorize(`  ${removed} subprocess(es) shut down.\r\n`, 'green'));
+    }
+
+    // First-hack achievement
+    if (typeof unlockAchievement === 'function' && !player.achievementsUnlocked.includes('off_the_books')) {
+      player.achievementsUnlocked.push('off_the_books');
+      socket.write(colorize('Achievement: Off The Books\r\n', 'brightYellow'));
+    }
+    return;
+  }
+
+  // Failure path: alarm_triggered
+  socket.write(colorize(`FAILURE. The ${target.label} pings an alarm.\r\n`, 'brightRed'));
+  if (Math.random() < 0.6) {
+    spawnSecuritySubroutine(player.currentRoom, 'It targets you, the most recent hash.');
+  } else {
+    socket.write(colorize('  The alarm sounds but nothing answers. You have a second of grace.\r\n', 'yellow'));
+  }
+}
+
+function handleAffinity(socket, player) {
+  ensureT2Defaults(player);
+  const r = player.affinity.replicant;
+  const h = player.affinity.human;
+  let label = 'Unaligned';
+  if (r >= 5 && h < 5) label = 'Replicant-leaning';
+  else if (h >= 5 && r < 5) label = 'Human-leaning';
+  else if (r >= 3 && h >= 3) label = 'Balanced (both paths active)';
+  socket.write('\r\n');
+  socket.write(colorize('=== Neo Kyoto Affinity ===\r\n', 'brightMagenta'));
+  socket.write(`  Replicant: ${colorize(String(r), 'brightCyan')}\r\n`);
+  socket.write(`  Human:     ${colorize(String(h), 'brightYellow')}\r\n`);
+  socket.write(`  Standing:  ${colorize(label, 'brightGreen')}\r\n`);
+  socket.write(colorize('Affinity persists across remort. It can only be reset via redemption at the Repository.\r\n', 'dim'));
+  socket.write('\r\n');
+}
+
+// Trainer registry — NPC ID -> { skill, costPerPoint, cap }
+const SKILL_TRAINERS = {
+  hiro: { skill: 'hack', costPerPoint: 5, cap: 10 }
+};
+
+function handleTrain(socket, player, args) {
+  ensureT2Defaults(player);
+  const skillName = (args || '').trim().toLowerCase();
+  if (!skillName) {
+    socket.write('Usage: train <skill>. Trainers must be in the same room.\r\n');
+    return;
+  }
+  // Find trainer NPC in current room
+  const npcsHere = (typeof npcRegistry !== 'undefined' && npcRegistry.getNpcsInRoom)
+    ? npcRegistry.getNpcsInRoom(player.currentRoom) : [];
+  let trainer = null;
+  let trainerSpec = null;
+  for (const npc of npcsHere) {
+    const spec = SKILL_TRAINERS[npc.id];
+    if (spec && spec.skill === skillName) {
+      trainer = npc;
+      trainerSpec = spec;
+      break;
+    }
+  }
+  if (!trainer) {
+    socket.write(colorize(`No trainer here teaches ${skillName}.\r\n`, 'yellow'));
+    return;
+  }
+  const current = player.skills[skillName] || 0;
+  if (current >= trainerSpec.cap) {
+    socket.write(colorize(`Your ${skillName} skill is already at the cap (${trainerSpec.cap}). ${trainer.name} has nothing more to teach.\r\n`, 'yellow'));
+    return;
+  }
+  const cost = trainerSpec.costPerPoint;
+  if (player.gold < cost) {
+    socket.write(colorize(`Training costs ${cost} gold per point. You have ${player.gold}.\r\n`, 'yellow'));
+    return;
+  }
+  player.gold -= cost;
+  player.skills[skillName] = current + 1;
+  socket.write(colorize(`\r\n${trainer.name} drills you on ${skillName} for an hour. You pay ${cost} gold.\r\n`, 'brightGreen'));
+  socket.write(colorize(`Your ${skillName} skill rises to ${player.skills[skillName]}.\r\n`, 'brightCyan'));
+  if (typeof trainer.brain !== 'undefined' && trainer.brain.recordInteraction) {
+    trainer.brain.recordInteraction(player.name, `trained ${skillName} (now ${player.skills[skillName]})`, 2, 2);
+  }
+  // Phase 6 achievements
+  if (skillName === 'hack' && player.skills.hack >= 10 && !player.achievementsUnlocked.includes('root_access')) {
+    player.achievementsUnlocked.push('root_access');
+    socket.write(colorize('Achievement: Root Access (max hack skill)\r\n', 'brightYellow'));
+  }
+}
+
 const SHOPS = {
   'room_003': {
     keeper: "Rusty",
@@ -11706,6 +12280,28 @@ const SHOPS = {
     buyMult: 0.9,
     sellMult: 0.6,
     stock: ['minor_healing_potion', 'greater_healing_potion', 'superior_healing_potion', 'minor_mana_potion', 'greater_mana_potion']
+  },
+  // Tier 3.1 - Neo Kyoto shops
+  'room_214': {
+    keeper: 'Rusty',
+    name: "Rusty's Chromeshop",
+    buyMult: 1.0,
+    sellMult: 0.4,
+    stock: ['stun_baton', 'null_pointer_dagger', 'packet_sniffer_pistol', 'mesh_jacket', 'faraday_hood', 'synth_boots', 'static_buckler', 'stim_pak', 'root_beer']
+  },
+  'room_225': {
+    keeper: 'Ms. Voss',
+    name: 'Tyrell-Nomagios Procurement',
+    buyMult: 1.5,
+    sellMult: 0.5,
+    stock: ['shock_prod', 'root_kit_blade', 'kill_switch_pistol', 'ice_breaker_rifle', 'chrome_plating', 'vr_goggles', 'encrypted_gloves', 'riot_shield', 'ice_deflector', 'rollback_ring']
+  },
+  'room_277': {
+    keeper: '42',
+    name: 'The Back Of The Bazaar',
+    buyMult: 0.9,
+    sellMult: 0.6,
+    stock: ['compile_error_rod', 'fork_bomb_axe', 'segfault_cleaver', 'holoprojector', 'gecko_grips', 'cold_brew', 'patch_notes_scroll', 'admin_cola', 'static_tea', 'iron_scrap', 'harmonic_shard', 'mana_petal', 'spring_water', 'herb_bundle', 'ember_core']
   }
 };
 
@@ -11785,6 +12381,632 @@ function handleValue(socket, player, args) {
   socket.write(`${it.name} is worth ${colorize(String(price) + ' gold', 'brightYellow')} at ${shop ? shop.keeper : 'the average fence'}.\r\n`);
 }
 
+// ============================================
+// Tier 4.1 - Clans (player-organized guilds)
+// ============================================
+
+const CLAN_FOUNDING_COST = 1000;
+const CLAN_NAME_MIN = 3;
+const CLAN_NAME_MAX = 24;
+const CLAN_TAG_MIN = 2;
+const CLAN_TAG_MAX = 5;
+const CLAN_RANK_LEVELS = { member: 1, officer: 2, leader: 3 };
+const CLANS_PATH = path.join(__dirname, 'clans.json');
+let clansData = null;
+let clansDirty = false;
+
+function loadClans() {
+  try {
+    clansData = JSON.parse(fs.readFileSync(CLANS_PATH, 'utf8'));
+    if (!clansData.clans) clansData.clans = {};
+  } catch (e) {
+    console.log('clans.json not loaded, initializing empty:', e.message);
+    clansData = { clans: {} };
+  }
+}
+function saveClans() {
+  if (!clansData) return;
+  try {
+    if (fs.existsSync(CLANS_PATH)) {
+      fs.copyFileSync(CLANS_PATH, CLANS_PATH + '.bak');
+    }
+    fs.writeFileSync(CLANS_PATH, JSON.stringify(clansData, null, 2), 'utf8');
+    clansDirty = false;
+  } catch (e) {
+    console.error('Failed to save clans.json:', e.message);
+  }
+}
+function clanIdFromName(name) {
+  return (name || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+}
+function getClan(idOrName) {
+  if (!clansData) loadClans();
+  if (!idOrName) return null;
+  const key = idOrName.toLowerCase();
+  if (clansData.clans[key]) return clansData.clans[key];
+  // Try by display name match
+  for (const c of Object.values(clansData.clans)) {
+    if (c.name.toLowerCase() === key || (c.tag && c.tag.toLowerCase() === key)) return c;
+  }
+  // Try slug
+  const slug = clanIdFromName(idOrName);
+  return clansData.clans[slug] || null;
+}
+function listClans() {
+  if (!clansData) loadClans();
+  return Object.values(clansData.clans);
+}
+function getPlayerClan(player) {
+  if (!player || !player.clan) return null;
+  return getClan(player.clan);
+}
+function clanRankAtLeast(player, minRank) {
+  if (!player.clanRank) return false;
+  const lvl = CLAN_RANK_LEVELS[player.clanRank] || 0;
+  const need = CLAN_RANK_LEVELS[minRank] || 0;
+  return lvl >= need;
+}
+function clanMemberByName(clan, name) {
+  if (!clan || !clan.members) return null;
+  const lc = (name || '').toLowerCase();
+  for (const k of Object.keys(clan.members)) {
+    if (k.toLowerCase() === lc) return { name: k, member: clan.members[k] };
+  }
+  return null;
+}
+function isClanNameTaken(name) {
+  const slug = clanIdFromName(name);
+  if (!clansData) loadClans();
+  if (clansData.clans[slug]) return true;
+  for (const c of Object.values(clansData.clans)) {
+    if (c.name.toLowerCase() === name.toLowerCase()) return true;
+  }
+  return false;
+}
+function isClanTagTaken(tag) {
+  if (!tag) return false;
+  if (!clansData) loadClans();
+  for (const c of Object.values(clansData.clans)) {
+    if (c.tag && c.tag.toLowerCase() === tag.toLowerCase()) return true;
+  }
+  return false;
+}
+
+// Sync helper - if a player record's clan ref is stale (clan disbanded etc), clear it on load
+function reconcilePlayerClan(player) {
+  if (!player.clan) return;
+  const c = getClan(player.clan);
+  if (!c) {
+    player.clan = null;
+    player.clanRank = null;
+    return;
+  }
+  const m = clanMemberByName(c, player.name);
+  if (!m) {
+    player.clan = null;
+    player.clanRank = null;
+  } else {
+    player.clanRank = m.member.rank;
+  }
+}
+
+function getOnlineClanmates(clanId) {
+  if (!clanId) return [];
+  const out = [];
+  for (const { player, socket } of getOnlinePlayers()) {
+    if (player.clan === clanId) out.push({ player, socket });
+  }
+  return out;
+}
+
+function broadcastToClan(clanId, message, excludeSocket = null) {
+  for (const { socket } of getOnlineClanmates(clanId)) {
+    if (socket === excludeSocket) continue;
+    socket.write(`\r\n${message}\r\n> `);
+  }
+}
+
+// ---------- 4.1 Clan command suite ----------
+
+function handleClan(socket, player, args) {
+  ensureT2Defaults(player);
+  if (!clansData) loadClans();
+
+  const argRaw = (args || '').trim();
+  const parts = argRaw.split(/\s+/);
+  const sub = (parts[0] || '').toLowerCase();
+  const rest = parts.slice(1).join(' ').trim();
+
+  if (!sub || sub === 'help') return showClanHelp(socket, player);
+  if (sub === 'list') return clanListCmd(socket, player);
+  if (sub === 'create') return clanCreateCmd(socket, player, rest);
+  if (sub === 'info') return clanInfoCmd(socket, player, rest);
+  if (sub === 'invite') return clanInviteCmd(socket, player, rest);
+  if (sub === 'accept') return clanAcceptCmd(socket, player, rest);
+  if (sub === 'decline') return clanDeclineCmd(socket, player, rest);
+  if (sub === 'leave') return clanLeaveCmd(socket, player);
+  if (sub === 'kick') return clanKickCmd(socket, player, rest);
+  if (sub === 'promote') return clanPromoteCmd(socket, player, rest);
+  if (sub === 'demote') return clanDemoteCmd(socket, player, rest);
+  if (sub === 'deposit') return clanDepositCmd(socket, player, rest);
+  if (sub === 'withdraw') return clanWithdrawCmd(socket, player, rest);
+  if (sub === 'disband') return clanDisbandCmd(socket, player);
+  if (sub === 'motto') return clanMottoCmd(socket, player, rest);
+  if (sub === 'invites') return clanInvitesCmd(socket, player);
+
+  // Default: show your clan info
+  if (player.clan) return clanInfoCmd(socket, player, '');
+  socket.write(colorize(`Unknown clan command "${sub}". Type "clan help".\r\n`, 'yellow'));
+}
+
+function showClanHelp(socket, player) {
+  socket.write('\r\n');
+  socket.write(colorize('=== Clan commands ===\r\n', 'brightCyan'));
+  socket.write('  clan list                       - all clans on the server\r\n');
+  socket.write('  clan create <name> [tag]        - found a new clan (1000g)\r\n');
+  socket.write('  clan info [name]                - details on a clan (defaults to yours)\r\n');
+  socket.write('  clan invite <player>            - invite a player (officer+)\r\n');
+  socket.write('  clan invites                    - list pending invites for you\r\n');
+  socket.write('  clan accept <clan>              - accept an invite\r\n');
+  socket.write('  clan decline <clan>             - refuse an invite\r\n');
+  socket.write('  clan leave                      - leave your clan\r\n');
+  socket.write('  clan kick <player>              - remove a member (officer+)\r\n');
+  socket.write('  clan promote <player>           - member -> officer (leader only)\r\n');
+  socket.write('  clan demote <player>            - officer -> member (leader only)\r\n');
+  socket.write('  clan deposit <amount>           - put gold into clan treasury\r\n');
+  socket.write('  clan withdraw <amount>          - take gold from treasury (leader only)\r\n');
+  socket.write('  clan motto <text>               - set clan motto (leader only)\r\n');
+  socket.write('  clan disband                    - dissolve your clan (leader only)\r\n');
+  socket.write('  c <message>                     - speak on clan channel\r\n');
+  socket.write('  cwho                            - list online clanmates\r\n');
+  socket.write('\r\n');
+}
+
+function clanListCmd(socket, player) {
+  const clans = listClans();
+  socket.write('\r\n');
+  socket.write(colorize('=== Clans ===\r\n', 'brightCyan'));
+  if (clans.length === 0) {
+    socket.write(colorize('  No clans have been founded yet. Be the first.\r\n', 'dim'));
+    socket.write('\r\n');
+    return;
+  }
+  for (const c of clans) {
+    const memberCount = Object.keys(c.members || {}).length;
+    const tag = c.tag ? colorize(`[${c.tag}]`, 'brightYellow') + ' ' : '';
+    socket.write(`  ${tag}${colorize(c.name, 'brightWhite')} (${memberCount} members) - leader: ${c.leader}\r\n`);
+  }
+  socket.write('\r\n');
+}
+
+function clanCreateCmd(socket, player, rest) {
+  if (player.clan) {
+    socket.write(colorize(`You are already in a clan (${getPlayerClan(player).name}). Leave first.\r\n`, 'yellow'));
+    return;
+  }
+  if (!rest) {
+    socket.write('Usage: clan create <name> [tag]\r\n');
+    return;
+  }
+  // Parse: last token might be tag if it's short and quoted differently — keep it simple: split on space, last word if 2-5 chars and the rest forms name
+  const tokens = rest.split(/\s+/);
+  let name, tag = null;
+  if (tokens.length >= 2 && tokens[tokens.length - 1].length >= CLAN_TAG_MIN && tokens[tokens.length - 1].length <= CLAN_TAG_MAX) {
+    tag = tokens[tokens.length - 1].toUpperCase();
+    name = tokens.slice(0, -1).join(' ');
+  } else {
+    name = rest;
+  }
+  if (name.length < CLAN_NAME_MIN || name.length > CLAN_NAME_MAX) {
+    socket.write(colorize(`Clan name must be ${CLAN_NAME_MIN}-${CLAN_NAME_MAX} characters.\r\n`, 'yellow'));
+    return;
+  }
+  if (!/^[A-Za-z][A-Za-z0-9 _-]*$/.test(name)) {
+    socket.write(colorize('Clan name must start with a letter and contain only letters, digits, spaces, hyphens, underscores.\r\n', 'yellow'));
+    return;
+  }
+  if (isClanNameTaken(name)) {
+    socket.write(colorize(`A clan named "${name}" already exists.\r\n`, 'yellow'));
+    return;
+  }
+  if (tag && !/^[A-Za-z0-9]+$/.test(tag)) {
+    socket.write(colorize('Clan tag must be alphanumeric only.\r\n', 'yellow'));
+    return;
+  }
+  if (tag && isClanTagTaken(tag)) {
+    socket.write(colorize(`Clan tag [${tag}] is taken.\r\n`, 'yellow'));
+    return;
+  }
+  if (player.gold < CLAN_FOUNDING_COST) {
+    socket.write(colorize(`Founding a clan costs ${CLAN_FOUNDING_COST} gold (you have ${player.gold}).\r\n`, 'yellow'));
+    return;
+  }
+  player.gold -= CLAN_FOUNDING_COST;
+  const id = clanIdFromName(name);
+  const clan = {
+    id, name, tag, founder: player.name, leader: player.name,
+    createdAt: Date.now(), treasury: 0, motto: '',
+    members: { [player.name]: { rank: 'leader', joinedAt: Date.now() } }
+  };
+  if (!clansData) loadClans();
+  clansData.clans[id] = clan;
+  saveClans();
+  player.clan = id;
+  player.clanRank = 'leader';
+  socket.write(colorize(`\r\n*** Clan founded: ${name}${tag ? ' ['+tag+']' : ''} ***\r\n`, 'brightGreen'));
+  socket.write(colorize(`You are its first leader. ${CLAN_FOUNDING_COST} gold has been spent on the founding charter.\r\n`, 'cyan'));
+  broadcastToAll(colorize(`[Clan] ${player.name} has founded ${name}${tag ? ' ['+tag+']' : ''}.`, 'brightYellow'), socket);
+}
+
+function clanInfoCmd(socket, player, rest) {
+  let clan = null;
+  if (rest) {
+    clan = getClan(rest);
+    if (!clan) {
+      socket.write(colorize(`No clan matches "${rest}".\r\n`, 'yellow'));
+      return;
+    }
+  } else {
+    clan = getPlayerClan(player);
+    if (!clan) {
+      socket.write(colorize('You are not in a clan. Type "clan list" to see existing ones, or "clan create <name>" to found one.\r\n', 'yellow'));
+      return;
+    }
+  }
+  socket.write('\r\n');
+  const tagPart = clan.tag ? colorize(` [${clan.tag}]`, 'brightYellow') : '';
+  socket.write(colorize(`=== ${clan.name}${tagPart} ===\r\n`, 'brightCyan'));
+  if (clan.motto) socket.write(colorize(`  "${clan.motto}"\r\n`, 'dim'));
+  socket.write(`  Leader:   ${clan.leader}\r\n`);
+  socket.write(`  Founder:  ${clan.founder}\r\n`);
+  socket.write(`  Treasury: ${colorize(String(clan.treasury || 0) + ' gold', 'brightYellow')}\r\n`);
+  socket.write(`  Members (${Object.keys(clan.members).length}):\r\n`);
+  // Sort members by rank then name
+  const ranked = Object.entries(clan.members).map(([name, m]) => ({ name, ...m }));
+  ranked.sort((a, b) => (CLAN_RANK_LEVELS[b.rank]||0) - (CLAN_RANK_LEVELS[a.rank]||0) || a.name.localeCompare(b.name));
+  const onlineNames = new Set(getOnlinePlayers().map(({player: p}) => p.name));
+  for (const m of ranked) {
+    const onMark = onlineNames.has(m.name) ? colorize('[ON]', 'brightGreen') : colorize('[..]', 'dim');
+    const rankColor = m.rank === 'leader' ? 'brightYellow' : m.rank === 'officer' ? 'brightCyan' : 'white';
+    socket.write(`    ${onMark} ${colorize(m.rank.padEnd(8), rankColor)} ${m.name}\r\n`);
+  }
+  socket.write('\r\n');
+}
+
+function clanInviteCmd(socket, player, rest) {
+  const clan = getPlayerClan(player);
+  if (!clan) { socket.write(colorize('You are not in a clan.\r\n', 'yellow')); return; }
+  if (!clanRankAtLeast(player, 'officer')) {
+    socket.write(colorize('Only officers and the leader can invite.\r\n', 'yellow'));
+    return;
+  }
+  if (!rest) { socket.write('Usage: clan invite <player>\r\n'); return; }
+  const target = findPlayerByName(rest);
+  if (!target) {
+    socket.write(colorize(`No online player named "${rest}".\r\n`, 'yellow'));
+    return;
+  }
+  if (clanMemberByName(clan, target.player.name)) {
+    socket.write(colorize(`${target.player.name} is already in your clan.\r\n`, 'yellow'));
+    return;
+  }
+  if (target.player.clan) {
+    socket.write(colorize(`${target.player.name} is already in another clan.\r\n`, 'yellow'));
+    return;
+  }
+  if (!Array.isArray(target.player.pendingClanInvites)) target.player.pendingClanInvites = [];
+  if (target.player.pendingClanInvites.includes(clan.id)) {
+    socket.write(colorize(`${target.player.name} already has a pending invite from your clan.\r\n`, 'yellow'));
+    return;
+  }
+  target.player.pendingClanInvites.push(clan.id);
+  socket.write(colorize(`Invitation sent to ${target.player.name}.\r\n`, 'green'));
+  target.socket.write(colorize(`\r\n[Clan] ${player.name} invites you to join ${clan.name}${clan.tag ? ' ['+clan.tag+']' : ''}. Type "clan accept ${clan.name}" or "clan decline ${clan.name}".\r\n> `, 'brightYellow'));
+}
+
+function clanInvitesCmd(socket, player) {
+  const list = player.pendingClanInvites || [];
+  if (list.length === 0) {
+    socket.write(colorize('You have no pending clan invites.\r\n', 'yellow'));
+    return;
+  }
+  socket.write('\r\n');
+  socket.write(colorize('=== Pending Clan Invites ===\r\n', 'brightCyan'));
+  for (const id of list) {
+    const c = getClan(id);
+    if (c) socket.write(`  ${c.name}${c.tag ? ' ['+c.tag+']' : ''} - leader ${c.leader}\r\n`);
+  }
+  socket.write(colorize('\r\nType "clan accept <name>" or "clan decline <name>".\r\n', 'dim'));
+  socket.write('\r\n');
+}
+
+function clanAcceptCmd(socket, player, rest) {
+  if (player.clan) {
+    socket.write(colorize('You are already in a clan. Leave first.\r\n', 'yellow'));
+    return;
+  }
+  if (!rest) { socket.write('Usage: clan accept <clan name>\r\n'); return; }
+  const clan = getClan(rest);
+  if (!clan) { socket.write(colorize(`No such clan: "${rest}".\r\n`, 'yellow')); return; }
+  if (!Array.isArray(player.pendingClanInvites) || !player.pendingClanInvites.includes(clan.id)) {
+    socket.write(colorize(`You have no pending invite from ${clan.name}.\r\n`, 'yellow'));
+    return;
+  }
+  // Add member
+  clan.members[player.name] = { rank: 'member', joinedAt: Date.now() };
+  player.clan = clan.id;
+  player.clanRank = 'member';
+  // Clear all pending invites (joining one removes the rest)
+  player.pendingClanInvites = [];
+  saveClans();
+  socket.write(colorize(`\r\nWelcome to ${clan.name}${clan.tag ? ' ['+clan.tag+']' : ''}.\r\n`, 'brightGreen'));
+  broadcastToClan(clan.id, colorize(`[Clan] ${player.name} has joined ${clan.name}.`, 'brightYellow'), socket);
+}
+
+function clanDeclineCmd(socket, player, rest) {
+  if (!rest) { socket.write('Usage: clan decline <clan name>\r\n'); return; }
+  const clan = getClan(rest);
+  if (!clan) { socket.write(colorize(`No such clan: "${rest}".\r\n`, 'yellow')); return; }
+  if (!Array.isArray(player.pendingClanInvites)) player.pendingClanInvites = [];
+  const idx = player.pendingClanInvites.indexOf(clan.id);
+  if (idx === -1) {
+    socket.write(colorize(`No pending invite from ${clan.name}.\r\n`, 'yellow'));
+    return;
+  }
+  player.pendingClanInvites.splice(idx, 1);
+  socket.write(colorize(`Invite from ${clan.name} declined.\r\n`, 'yellow'));
+}
+
+function clanLeaveCmd(socket, player) {
+  const clan = getPlayerClan(player);
+  if (!clan) { socket.write(colorize('You are not in a clan.\r\n', 'yellow')); return; }
+  // If leader and other members remain, must transfer leadership first
+  const memberNames = Object.keys(clan.members);
+  if (clan.leader.toLowerCase() === player.name.toLowerCase() && memberNames.length > 1) {
+    socket.write(colorize('You are the leader. Promote another member and use "clan disband" if you want to dissolve - or transfer leadership first.\r\n', 'yellow'));
+    socket.write(colorize('To transfer: "clan promote <player>" then "clan demote <yourself>" then "clan leave".\r\n', 'dim'));
+    return;
+  }
+  delete clan.members[player.name];
+  // If the clan is now empty (was solo leader), disband it
+  if (Object.keys(clan.members).length === 0) {
+    delete clansData.clans[clan.id];
+    saveClans();
+    socket.write(colorize(`You leave ${clan.name}. With no members remaining, the clan is dissolved.\r\n`, 'yellow'));
+    broadcastToAll(colorize(`[Clan] ${clan.name} has been dissolved.`, 'dim'), socket);
+  } else {
+    saveClans();
+    socket.write(colorize(`You have left ${clan.name}.\r\n`, 'yellow'));
+    broadcastToClan(clan.id, colorize(`[Clan] ${player.name} has left the clan.`, 'yellow'), socket);
+  }
+  player.clan = null;
+  player.clanRank = null;
+}
+
+function clanKickCmd(socket, player, rest) {
+  const clan = getPlayerClan(player);
+  if (!clan) { socket.write(colorize('You are not in a clan.\r\n', 'yellow')); return; }
+  if (!clanRankAtLeast(player, 'officer')) {
+    socket.write(colorize('Only officers and the leader can kick.\r\n', 'yellow'));
+    return;
+  }
+  if (!rest) { socket.write('Usage: clan kick <player>\r\n'); return; }
+  const m = clanMemberByName(clan, rest);
+  if (!m) { socket.write(colorize(`No clan member matches "${rest}".\r\n`, 'yellow')); return; }
+  if (m.name.toLowerCase() === player.name.toLowerCase()) {
+    socket.write(colorize('You cannot kick yourself. Use "clan leave".\r\n', 'yellow'));
+    return;
+  }
+  // Officers cannot kick the leader or other officers
+  if (player.clanRank === 'officer' && CLAN_RANK_LEVELS[m.member.rank] >= CLAN_RANK_LEVELS.officer) {
+    socket.write(colorize('Officers can only kick rank-and-file members.\r\n', 'yellow'));
+    return;
+  }
+  delete clan.members[m.name];
+  saveClans();
+  socket.write(colorize(`${m.name} has been kicked from the clan.\r\n`, 'yellow'));
+  broadcastToClan(clan.id, colorize(`[Clan] ${m.name} has been kicked by ${player.name}.`, 'yellow'), socket);
+  // Clear kicked player's clan ref if online
+  const targetOnline = findPlayerByName(m.name);
+  if (targetOnline) {
+    targetOnline.player.clan = null;
+    targetOnline.player.clanRank = null;
+    targetOnline.socket.write(colorize(`\r\n[Clan] You have been kicked from ${clan.name}.\r\n> `, 'brightRed'));
+  }
+}
+
+function clanPromoteCmd(socket, player, rest) {
+  const clan = getPlayerClan(player);
+  if (!clan) { socket.write(colorize('You are not in a clan.\r\n', 'yellow')); return; }
+  if (player.clanRank !== 'leader') {
+    socket.write(colorize('Only the leader can promote.\r\n', 'yellow'));
+    return;
+  }
+  if (!rest) { socket.write('Usage: clan promote <player>\r\n'); return; }
+  const m = clanMemberByName(clan, rest);
+  if (!m) { socket.write(colorize(`No clan member matches "${rest}".\r\n`, 'yellow')); return; }
+  if (m.name.toLowerCase() === player.name.toLowerCase()) {
+    socket.write(colorize('You are already the leader.\r\n', 'yellow'));
+    return;
+  }
+  if (m.member.rank === 'leader') {
+    socket.write(colorize(`${m.name} is already the leader.\r\n`, 'yellow'));
+    return;
+  }
+  if (m.member.rank === 'officer') {
+    // Promote to leader: demote self
+    m.member.rank = 'leader';
+    clan.leader = m.name;
+    clan.members[player.name].rank = 'officer';
+    player.clanRank = 'officer';
+    saveClans();
+    socket.write(colorize(`\r\nLeadership transferred. ${m.name} is now leader of ${clan.name}. You are now an officer.\r\n`, 'brightYellow'));
+    broadcastToClan(clan.id, colorize(`[Clan] Leadership transferred: ${m.name} is now leader of ${clan.name}.`, 'brightYellow'), socket);
+    return;
+  }
+  // Member -> officer
+  m.member.rank = 'officer';
+  saveClans();
+  socket.write(colorize(`${m.name} promoted to officer.\r\n`, 'brightGreen'));
+  broadcastToClan(clan.id, colorize(`[Clan] ${m.name} promoted to officer by ${player.name}.`, 'brightYellow'), socket);
+  const targetOnline = findPlayerByName(m.name);
+  if (targetOnline) targetOnline.player.clanRank = 'officer';
+}
+
+function clanDemoteCmd(socket, player, rest) {
+  const clan = getPlayerClan(player);
+  if (!clan) { socket.write(colorize('You are not in a clan.\r\n', 'yellow')); return; }
+  if (player.clanRank !== 'leader') {
+    socket.write(colorize('Only the leader can demote.\r\n', 'yellow'));
+    return;
+  }
+  if (!rest) { socket.write('Usage: clan demote <player>\r\n'); return; }
+  const m = clanMemberByName(clan, rest);
+  if (!m) { socket.write(colorize(`No clan member matches "${rest}".\r\n`, 'yellow')); return; }
+  if (m.name.toLowerCase() === player.name.toLowerCase()) {
+    socket.write(colorize('To step down, promote another member to leader first.\r\n', 'yellow'));
+    return;
+  }
+  if (m.member.rank === 'member') {
+    socket.write(colorize(`${m.name} is already a member.\r\n`, 'yellow'));
+    return;
+  }
+  if (m.member.rank === 'leader') {
+    socket.write(colorize('Cannot demote the leader directly.\r\n', 'yellow'));
+    return;
+  }
+  m.member.rank = 'member';
+  saveClans();
+  socket.write(colorize(`${m.name} demoted to member.\r\n`, 'yellow'));
+  broadcastToClan(clan.id, colorize(`[Clan] ${m.name} demoted to member by ${player.name}.`, 'yellow'), socket);
+  const targetOnline = findPlayerByName(m.name);
+  if (targetOnline) targetOnline.player.clanRank = 'member';
+}
+
+function clanDepositCmd(socket, player, rest) {
+  const clan = getPlayerClan(player);
+  if (!clan) { socket.write(colorize('You are not in a clan.\r\n', 'yellow')); return; }
+  const amt = parseInt(rest, 10);
+  if (isNaN(amt) || amt <= 0) { socket.write('Usage: clan deposit <amount>\r\n'); return; }
+  if (player.gold < amt) {
+    socket.write(colorize(`You don't have ${amt} gold.\r\n`, 'yellow'));
+    return;
+  }
+  player.gold -= amt;
+  clan.treasury = (clan.treasury || 0) + amt;
+  saveClans();
+  socket.write(colorize(`Deposited ${amt} gold into ${clan.name} treasury (now ${clan.treasury}).\r\n`, 'brightGreen'));
+  broadcastToClan(clan.id, colorize(`[Clan] ${player.name} deposited ${amt} gold (treasury: ${clan.treasury}).`, 'cyan'), socket);
+}
+
+function clanWithdrawCmd(socket, player, rest) {
+  const clan = getPlayerClan(player);
+  if (!clan) { socket.write(colorize('You are not in a clan.\r\n', 'yellow')); return; }
+  if (player.clanRank !== 'leader') {
+    socket.write(colorize('Only the leader can withdraw from the treasury.\r\n', 'yellow'));
+    return;
+  }
+  const amt = parseInt(rest, 10);
+  if (isNaN(amt) || amt <= 0) { socket.write('Usage: clan withdraw <amount>\r\n'); return; }
+  if ((clan.treasury || 0) < amt) {
+    socket.write(colorize(`Treasury has only ${clan.treasury || 0} gold.\r\n`, 'yellow'));
+    return;
+  }
+  clan.treasury -= amt;
+  player.gold += amt;
+  saveClans();
+  socket.write(colorize(`Withdrew ${amt} gold from ${clan.name} treasury (now ${clan.treasury}).\r\n`, 'brightGreen'));
+  broadcastToClan(clan.id, colorize(`[Clan] ${player.name} withdrew ${amt} gold (treasury: ${clan.treasury}).`, 'cyan'), socket);
+}
+
+function clanMottoCmd(socket, player, rest) {
+  const clan = getPlayerClan(player);
+  if (!clan) { socket.write(colorize('You are not in a clan.\r\n', 'yellow')); return; }
+  if (player.clanRank !== 'leader') {
+    socket.write(colorize('Only the leader can set the motto.\r\n', 'yellow'));
+    return;
+  }
+  if (rest.length > 100) {
+    socket.write(colorize('Motto must be 100 characters or fewer.\r\n', 'yellow'));
+    return;
+  }
+  clan.motto = rest;
+  saveClans();
+  socket.write(colorize(`Motto updated.\r\n`, 'green'));
+}
+
+function clanDisbandCmd(socket, player) {
+  const clan = getPlayerClan(player);
+  if (!clan) { socket.write(colorize('You are not in a clan.\r\n', 'yellow')); return; }
+  if (player.clanRank !== 'leader') {
+    socket.write(colorize('Only the leader can disband.\r\n', 'yellow'));
+    return;
+  }
+  // Refund treasury to leader
+  const refund = clan.treasury || 0;
+  if (refund > 0) {
+    player.gold += refund;
+    socket.write(colorize(`Treasury (${refund} gold) returned to you.\r\n`, 'yellow'));
+  }
+  // Clear clan refs from online members
+  for (const mname of Object.keys(clan.members)) {
+    const onl = findPlayerByName(mname);
+    if (onl) {
+      onl.player.clan = null;
+      onl.player.clanRank = null;
+      if (onl.socket !== socket) {
+        onl.socket.write(colorize(`\r\n[Clan] ${clan.name} has been disbanded by ${player.name}.\r\n> `, 'brightRed'));
+      }
+    }
+  }
+  delete clansData.clans[clan.id];
+  saveClans();
+  player.clan = null;
+  player.clanRank = null;
+  socket.write(colorize(`\r\n${clan.name} has been disbanded.\r\n`, 'brightRed'));
+  broadcastToAll(colorize(`[Clan] ${clan.name} has been disbanded.`, 'dim'), socket);
+}
+
+// Clan channel: c <message>
+function handleClanChannel(socket, player, message) {
+  const clan = getPlayerClan(player);
+  if (!clan) {
+    socket.write(colorize('You are not in a clan.\r\n', 'yellow'));
+    return;
+  }
+  if (!message || !message.trim()) {
+    socket.write(colorize('Usage: c <message>\r\n', 'yellow'));
+    return;
+  }
+  const tag = clan.tag ? `[${clan.tag}]` : `[${clan.name}]`;
+  const line = `${colorize(tag, 'brightYellow')} ${colorize(player.name, 'brightWhite')}: ${message.trim()}`;
+  for (const { socket: s } of getOnlineClanmates(clan.id)) {
+    s.write(`\r\n${line}\r\n> `);
+  }
+}
+
+// cwho - online clanmates
+function handleClanWho(socket, player) {
+  const clan = getPlayerClan(player);
+  if (!clan) {
+    socket.write(colorize('You are not in a clan.\r\n', 'yellow'));
+    return;
+  }
+  const online = getOnlineClanmates(clan.id);
+  socket.write('\r\n');
+  socket.write(colorize(`=== ${clan.name} - online (${online.length}) ===\r\n`, 'brightCyan'));
+  if (online.length === 0) {
+    socket.write(colorize('  Nobody else from your clan is online right now.\r\n', 'dim'));
+  } else {
+    for (const { player: p } of online) {
+      const r = p.clanRank || 'member';
+      const rankColor = r === 'leader' ? 'brightYellow' : r === 'officer' ? 'brightCyan' : 'white';
+      socket.write(`  ${colorize(r.padEnd(8), rankColor)} ${p.name}${p.suffix ? ' ' + p.suffix : ''}\r\n`);
+    }
+  }
+  socket.write('\r\n');
+}
+
 // ---------- 1.7 Bank ----------
 const BANK_ROOMS = ['room_001'];
 function isBankRoom(roomId) { return BANK_ROOMS.includes(roomId); }
@@ -11851,7 +13073,18 @@ const ACHIEVEMENTS = {
   all_classes_met: { name: 'Scholar of the Schools', desc: 'Cast from every school' },
   helped: { name: 'Helper', desc: 'Give an item to another player' },
   pvp_first: { name: 'Drawn Blood', desc: 'First PVP win' },
-  pvp_10: { name: 'Arena Regular', desc: '10 PVP wins', title: 'the Duelist' }
+  pvp_10: { name: 'Arena Regular', desc: '10 PVP wins', title: 'the Duelist' },
+  // Tier 3.1 Phase 7 - Neo Kyoto achievements
+  clocked_in: { name: 'Clocked In', desc: 'First room entered in Neo Kyoto' },
+  staff_pass: { name: 'Staff Pass', desc: 'First crossing through the Nomagios Transit Terminal post-remort' },
+  off_the_books: { name: 'Off The Books', desc: 'First successful hack' },
+  root_access: { name: 'Root Access', desc: 'Hack skill trained to 10', title: 'the Root' },
+  more_human_than_human: { name: 'More Human Than Human', desc: 'Reach Human affinity 10', title: 'the Replicant' },
+  electric_sheep: { name: 'Electric Sheep', desc: 'Reach Replicant affinity 10', title: 'the Unbound' },
+  queue_jumper: { name: 'Queue Jumper', desc: 'Successfully hack the queue priority kiosk' },
+  compiled: { name: 'Compiled', desc: 'Craft all three Data weapons (stun_baton, ice_breaker_rifle, segfault_cleaver)' },
+  settle_all_tickets: { name: 'Settle All Tickets', desc: 'Defeat all 5 Neo Kyoto bosses', title: 'the Arbiter' },
+  server_melt: { name: 'Server Melt', desc: 'Defeat SYSADMIN.EXE' }
 };
 
 function unlockAchievement(socket, player, id) {
@@ -12176,9 +13409,19 @@ function ensureT2Defaults(player) {
   if (typeof player.campaignsCompleted !== 'number') player.campaignsCompleted = 0;
   if (!Array.isArray(player.pets)) player.pets = [];
   if (!player.skills) player.skills = { weaponsmith: 0, enchanter: 0, alchemist: 0 };
+  // Tier 3.1 Phase 6: hack skill (Neo Kyoto)
+  if (typeof player.skills.hack !== 'number') player.skills.hack = 0;
   if (typeof player.remortTier !== 'number') player.remortTier = 0;
   if (!player.permStatBonuses) player.permStatBonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0 };
   if (!Array.isArray(player.unlockedZones)) player.unlockedZones = [];
+  // Tier 3.1 Phase 6: affinity meter (Neo Kyoto). Persists across remort.
+  if (!player.affinity || typeof player.affinity !== 'object') player.affinity = { replicant: 0, human: 0 };
+  if (typeof player.affinity.replicant !== 'number') player.affinity.replicant = 0;
+  if (typeof player.affinity.human !== 'number') player.affinity.human = 0;
+  // Tier 4.1: clan membership
+  if (player.clan === undefined) player.clan = null;
+  if (player.clanRank === undefined) player.clanRank = null;
+  if (!Array.isArray(player.pendingClanInvites)) player.pendingClanInvites = [];
 }
 
 // ---------- 2.2 Zone locks (QP-gated rooms) ----------
@@ -12196,18 +13439,48 @@ function isZoneUnlocked(player, roomId) {
   return (player.unlockedZones || []).includes(lock.keyId);
 }
 
+// ---------- 3.1 Realm gates (remort-gated entry to other server-farm realms) ----------
+// Neo Kyoto lives on the Nomagios server farm alongside Eldoria. The shuttle
+// terminal at room_201 is the only entry point, and it is strictly staff-only
+// until the traveller has rebooted (remorted) at least once.
+const REALM_GATES = {
+  room_201: { minRemortTier: 1, label: 'Neo Kyoto (Nomagios Transit Terminal)' }
+};
+
+function isRealmGateOpen(player, roomId) {
+  const gate = REALM_GATES[roomId];
+  if (!gate) return true; // not gated
+  return (player.remortTier || 0) >= gate.minRemortTier;
+}
+
 // ---------- 2.1 Campaign system ----------
 
 const CAMPAIGN_COOLDOWN_MS = 3600000; // 1 hour
 const CAMPAIGN_TARGET_COUNT = 3;
 const CAMPAIGN_LEVEL_RANGE = 3;
 
-function pickCampaignTargets(playerLevel) {
+// Tier 3.1 Phase 8: Neo Kyoto monster set for themed campaigns
+const NEO_KYOTO_TEMPLATE_IDS = new Set([
+  'patched_pedestrian','baggage_claim_beast','expired_traveler',
+  'neon_yakuza','rogue_replicant','bazaar_cutpurse','noodle_vendor_aggro',
+  'corporate_enforcer','flickering_janitor','junior_associate',
+  'data_ghost','security_subroutine','memory_leak_wraith',
+  'queue_fragment','offworld_recruiter',
+  'kowloon_parkourist','chrome_wolf','mantis_debugger',
+  'mercury_kelpie','black_ice_basilisk','backup_spirit',
+  'deprecated_bladerunner','philosopher_model',
+  'synthetic_orphan',
+  'cron_daemon','oncall_wight'
+]);
+
+function pickCampaignTargets(playerLevel, theme) {
   const candidates = [];
   try {
     // monsters.json top-level key is `templates` (regular mobs) — not `monsters`.
     const mons = (monsterData && (monsterData.templates || monsterData.monsters)) || {};
     for (const [tid, tpl] of Object.entries(mons)) {
+      // Theme filter: only Neo Kyoto mobs for the 'neo_kyoto' theme
+      if (theme === 'neo_kyoto' && !NEO_KYOTO_TEMPLATE_IDS.has(tid)) continue;
       const lvl = tpl.level || 1;
       if (Math.abs(lvl - playerLevel) <= CAMPAIGN_LEVEL_RANGE) {
         candidates.push({ templateId: tid, name: tpl.name || tid, level: lvl });
@@ -12245,7 +13518,7 @@ function handleCampaign(socket, player, args) {
     return;
   }
 
-  if (arg === 'start') {
+  if (arg === 'start' || arg === 'neo_kyoto' || arg === 'start neo_kyoto') {
     // Cooldown check
     const since = Date.now() - (player.campaignLastCompletedAt || 0);
     if (player.campaignLastCompletedAt && since < CAMPAIGN_COOLDOWN_MS) {
@@ -12257,19 +13530,31 @@ function handleCampaign(socket, player, args) {
       socket.write(colorize('You already have an active campaign. Use "campaign" to view it, or "campaign abandon".\r\n', 'yellow'));
       return;
     }
-    const targets = pickCampaignTargets(player.level || 1);
-    if (targets.length === 0) {
-      socket.write(colorize('No suitable campaign targets could be found at your level.\r\n', 'yellow'));
+    const theme = (arg === 'neo_kyoto' || arg === 'start neo_kyoto') ? 'neo_kyoto' : null;
+    if (theme === 'neo_kyoto' && (player.remortTier || 0) < 1) {
+      socket.write(colorize('Neo Kyoto specialist campaigns are for travellers who have crossed the staff door. Remort first.\r\n', 'yellow'));
       return;
     }
-    player.campaign = { targets, startedAt: Date.now() };
+    const targets = pickCampaignTargets(player.level || 1, theme);
+    if (targets.length === 0) {
+      const msg = theme === 'neo_kyoto'
+        ? 'No Neo Kyoto targets at your level (mobs are L15-27 - try a higher-level character).'
+        : 'No suitable campaign targets could be found at your level.';
+      socket.write(colorize(msg + '\r\n', 'yellow'));
+      return;
+    }
+    player.campaign = { targets, startedAt: Date.now(), theme };
     socket.write('\r\n');
-    socket.write(colorize('=== New Campaign ===\r\n', 'brightMagenta'));
-    socket.write(colorize('A voice whispers: slay these foes for Nomagio\'s favour.\r\n', 'brightCyan'));
+    socket.write(colorize(theme === 'neo_kyoto' ? '=== New Campaign: Neo Kyoto Specialist ===\r\n' : '=== New Campaign ===\r\n', 'brightMagenta'));
+    socket.write(colorize(theme === 'neo_kyoto'
+      ? '42 wipes a glass and pushes a list across the bar. Every face on it is in Server 2.\r\n'
+      : 'A voice whispers: slay these foes for Nomagio\'s favour.\r\n', 'brightCyan'));
     for (const t of targets) {
       socket.write(`  - ${t.name}  (0/${t.required})\r\n`);
     }
-    socket.write(colorize('Reward: Quest Points + XP + gold on completion.\r\n', 'yellow'));
+    socket.write(colorize(theme === 'neo_kyoto'
+      ? 'Reward: +50% Quest Points + XP + gold on completion.\r\n'
+      : 'Reward: Quest Points + XP + gold on completion.\r\n', 'yellow'));
     socket.write('\r\n');
     return;
   }
@@ -12319,9 +13604,11 @@ function tickCampaignOnKill(socket, player, templateId) {
 
 function completeCampaign(socket, player) {
   const lvl = player.level || 1;
-  const qp = 50 + 10 * lvl;
-  const xp = 250 * lvl;
-  const gold = 50 * lvl;
+  const isNK = player.campaign && player.campaign.theme === 'neo_kyoto';
+  const themeMult = isNK ? 1.5 : 1.0;
+  const qp = Math.floor((50 + 10 * lvl) * themeMult);
+  const xp = Math.floor(250 * lvl * themeMult);
+  const gold = Math.floor(50 * lvl * themeMult);
   player.questPoints = (player.questPoints || 0) + qp;
   player.experience += xp;
   player.gold += gold;
@@ -12330,8 +13617,8 @@ function completeCampaign(socket, player) {
   player.campaignsCompleted = (player.campaignsCompleted || 0) + 1;
 
   socket.write('\r\n');
-  socket.write(colorize('*** CAMPAIGN COMPLETE ***\r\n', 'brightMagenta'));
-  socket.write(colorize(`+${qp} Quest Points   +${xp} XP   +${gold} gold\r\n`, 'brightYellow'));
+  socket.write(colorize(isNK ? '*** NEO KYOTO CAMPAIGN COMPLETE ***\r\n' : '*** CAMPAIGN COMPLETE ***\r\n', 'brightMagenta'));
+  socket.write(colorize(`+${qp} Quest Points   +${xp} XP   +${gold} gold${isNK ? '   (+50% theme bonus)' : ''}\r\n`, 'brightYellow'));
   socket.write('\r\n');
 
   if (typeof unlockAchievement === 'function') {
@@ -12357,12 +13644,24 @@ const NOMAGIO_REPOSITORY = {
   aura_campaigner: { kind: 'aura', name: 'Aura: the Campaigner', cost: 500, payload: { suffix: 'the Campaigner' } },
   egg_loyal:    { kind: 'pet_egg', name: 'Pet Egg: Loyal Spirit',  cost: 1000, payload: { templateId: 'loyal_spirit',  petName: 'Spirit', level: 5 } },
   egg_singing:  { kind: 'pet_egg', name: 'Pet Egg: Singing Hound', cost: 1500, payload: { templateId: 'singing_hound', petName: 'Hound',  level: 8 } },
+  // Tier 3.1 - Neo Kyoto pet eggs (cross-realm portable, work in both realms)
+  egg_drone:        { kind: 'pet_egg', name: 'Pet Egg: Street Drone',     cost: 1500, payload: { templateId: 'street_drone',     petName: 'Drone',     level: 8 } },
+  egg_salamander:   { kind: 'pet_egg', name: 'Pet Egg: Chrome Salamander', cost: 1500, payload: { templateId: 'chrome_salamander', petName: 'Salamander', level: 12 } },
+  egg_pocket_ai:    { kind: 'pet_egg', name: 'Pet Egg: Pocket AI',        cost: 1500, payload: { templateId: 'pocket_ai',        petName: 'PocketAI',  level: 15 } },
   key_glittering_vault: { kind: 'zone_key', name: 'Key: Glittering Vault', cost: 500,  payload: { keyId: 'key_glittering_vault', roomId: 'room_013' } },
   key_dripping_vault:   { kind: 'zone_key', name: 'Key: Dripping Vault',   cost: 750,  payload: { keyId: 'key_dripping_vault',   roomId: 'room_162' } },
   // Tier-gated gear — requires player.remortTier >= tierReq on the item to equip.
   tier1_harmonist_crown: { kind: 'gear', name: 'Crown of the Reborn Harmonist',    cost: 2000, payload: { itemId: 'tier1_harmonist_crown' } },
-  tier3_symphonic_blade: { kind: 'gear', name: 'Symphonic Blade of the Third Loop', cost: 5000, payload: { itemId: 'tier3_symphonic_blade' } }
+  tier3_symphonic_blade: { kind: 'gear', name: 'Symphonic Blade of the Third Loop', cost: 5000, payload: { itemId: 'tier3_symphonic_blade' } },
+  // Tier 3.1 Phase 8 - Neo Kyoto QP shop entries
+  boarding_pass_keepsake: { kind: 'aura', name: 'Aura: of the Two Servers',  cost: 500,  payload: { suffix: 'of the Two Servers' } },
+  tier3_data_blade:        { kind: 'gear', name: 'Server-Cleaved Blade',     cost: 3000, payload: { itemId: 'tier3_data_blade' } },
+  tier3_quarter_walker_boots: { kind: 'gear', name: 'Quarter-Walker Boots',  cost: 3500, payload: { itemId: 'tier3_quarter_walker_boots' } },
+  affinity_reset_token:    { kind: 'affinity_reset', name: 'Affinity Reset Token', cost: 2500, payload: {} }
 };
+
+// Tier 3.1 Phase 8: per-cycle cap for affinity_reset_token
+const affinityResetUses = new Map(); // playerName(lc) -> cycleStartTimestamp at last use
 
 function handleRedeem(socket, player, args) {
   ensureT2Defaults(player);
@@ -12441,6 +13740,26 @@ function handleRedeem(socket, player, args) {
     const lock = ZONE_LOCKS[entry.payload.roomId];
     const label = lock ? lock.label : entry.payload.roomId;
     socket.write(colorize(`The way to ${label} is now open to you. Permanent unlock.\r\n`, 'brightGreen'));
+  } else if (entry.kind === 'affinity_reset') {
+    // Tier 3.1 Phase 8: zero out player affinity, capped at 1 use per world-reset cycle
+    const lastUse = affinityResetUses.get(player.name.toLowerCase()) || 0;
+    if (lastUse >= cycleStartTime && lastUse !== 0) {
+      socket.write(colorize('You have already redeemed an Affinity Reset Token this cycle. Wait until the next world reset.\r\n', 'yellow'));
+      return;
+    }
+    ensureT2Defaults(player);
+    const oldR = player.affinity.replicant;
+    const oldH = player.affinity.human;
+    if (oldR === 0 && oldH === 0) {
+      socket.write(colorize('Your affinity is already at zero. The token would do nothing.\r\n', 'yellow'));
+      return;
+    }
+    player.questPoints -= entry.cost;
+    player.affinity.replicant = 0;
+    player.affinity.human = 0;
+    affinityResetUses.set(player.name.toLowerCase(), Date.now());
+    socket.write(colorize(`\r\nThe token dissolves. Your affinity meter empties out (was R=${oldR}/H=${oldH}, now 0/0).\r\n`, 'brightCyan'));
+    socket.write(colorize('You are unaligned again. Walk a different path this time, if you like.\r\n', 'dim'));
   }
   if (typeof unlockAchievement === 'function' && player.campaignsCompleted >= 0) {
     unlockAchievement(socket, player, 'redemption_first');
@@ -12758,6 +14077,15 @@ function handleCraft(socket, player, args) {
   if (typeof unlockAchievement === 'function') {
     unlockAchievement(socket, player, 'craft_first');
     if (player.skills[recipe.skill] >= 10) unlockAchievement(socket, player, 'craft_master');
+  }
+  // Tier 3.1 Phase 7: track Data weapons crafted - "Compiled" achievement
+  if (!Array.isArray(player.dataWeaponsCrafted)) player.dataWeaponsCrafted = [];
+  const COMPILED_SET = ['stun_baton', 'ice_breaker_rifle', 'segfault_cleaver'];
+  if (COMPILED_SET.includes(recipe.output.itemId) && !player.dataWeaponsCrafted.includes(recipe.output.itemId)) {
+    player.dataWeaponsCrafted.push(recipe.output.itemId);
+    if (COMPILED_SET.every(w => player.dataWeaponsCrafted.includes(w))) {
+      unlockAchievement(socket, player, 'compiled');
+    }
   }
 }
 
@@ -13149,10 +14477,10 @@ function handleChannelMessage(socket, player, channelKey, message) {
     return;
   }
   const line = `${colorize(ch.label, ch.color)} ${colorize(getDisplayName(player), 'brightWhite')}: ${message.trim()}\r\n`;
-  for (const p of getOnlinePlayers()) {
+  // getOnlinePlayers returns {player, socket} pairs - destructure properly so subscription check works
+  for (const { player: p, socket: sock } of getOnlinePlayers()) {
     if (!p.channelSubs || !p.channelSubs[channelKey]) continue;
     if (p.ignoreList && p.ignoreList.includes((player.name || '').toLowerCase())) continue;
-    const sock = getSocketForPlayer(p);
     if (sock) sock.write(line);
   }
 }
@@ -13253,7 +14581,7 @@ function handleBestiary(socket, player, args) {
   const arg = (args || '').trim();
   if (!arg) {
     const entries = [];
-    for (const [id, m] of Object.entries(monsterData.monsters || {})) {
+    for (const [id, m] of Object.entries(monsterData.templates || {})) {
       entries.push({ id, name: m.name, level: m.level, type: m.type });
     }
     for (const [id, b] of Object.entries(monsterData.bosses || {})) {
@@ -13273,7 +14601,7 @@ function handleBestiary(socket, player, args) {
 
   const search = arg.toLowerCase();
   let match = null;
-  for (const [id, m] of Object.entries(monsterData.monsters || {})) {
+  for (const [id, m] of Object.entries(monsterData.templates || {})) {
     if (id.toLowerCase() === search || m.name.toLowerCase() === search) { match = { id, m, isBoss: false }; break; }
   }
   if (!match) {
@@ -13282,7 +14610,7 @@ function handleBestiary(socket, player, args) {
     }
   }
   if (!match) {
-    for (const [id, m] of Object.entries(monsterData.monsters || {})) {
+    for (const [id, m] of Object.entries(monsterData.templates || {})) {
       if (m.name.toLowerCase().includes(search) || id.toLowerCase().includes(search)) { match = { id, m, isBoss: false }; break; }
     }
   }
@@ -13450,6 +14778,9 @@ function completePlayerLogin(socket, player, isNewPlayer) {
   player.inputMode = 'command';
   disablePasswordMode(socket, player);
   players.set(socket, player);
+
+  // Tier 4.1: reconcile clan state - if clan was disbanded while player was offline, clear stale refs
+  if (typeof reconcilePlayerClan === 'function') reconcilePlayerClan(player);
 
   // Log admin login for security tracking
   if (isAdmin(player.name)) {
@@ -14351,6 +15682,10 @@ server.listen(PORT, '0.0.0.0', () => {
   loadHelpData();
   buildZoneMap();
   loadRecipes();
+
+  // Tier 4.1: load clans
+  loadClans();
+  console.log(`Loaded ${Object.keys(clansData.clans).length} clan(s)`);
 
   // Start the Wandering Healer NPC
   startHealerWandering();

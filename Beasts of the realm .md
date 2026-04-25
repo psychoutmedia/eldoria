@@ -1,6 +1,8 @@
 # The Shattered Realms MUD - Bestiary & Monster Guide
 
-This document provides full details on the 118+ wandering monsters and legendary bosses that inhabit the Shattered Realms. From the ethereal wisps of the starting chambers to the supreme guardians of the Archmage Sanctum, every creature is detailed here.
+This document provides full details on the wandering monsters and legendary bosses that inhabit the Shattered Realms. From the ethereal wisps of the starting chambers to the supreme guardians of the Archmage Sanctum, every creature is detailed here.
+
+> **For Server 2 (Neo Kyoto, rooms 201-300):** see the companion file **`Beasts of Neo Kyoto.md`**, which catalogs the 26 Neo Kyoto monsters and 5 Tier 3.1 bosses with their realm-specific resist profiles, damage types, and signature mechanics.
 
 ## 🧠 Monster AI & Wandering Behavior
 

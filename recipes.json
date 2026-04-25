@@ -68,6 +68,75 @@
         { "itemId": "phoenix_feather", "count": 1 }
       ],
       "output": { "itemId": "greater_healing_brew" }
+    },
+    "stun_baton": {
+      "skill": "weaponsmith",
+      "reqLevel": 16,
+      "inputs": [
+        { "itemId": "iron_scrap", "count": 2 },
+        { "itemId": "bytecode_shard", "count": 1 }
+      ],
+      "output": { "itemId": "stun_baton" }
+    },
+    "ice_breaker_rifle": {
+      "skill": "weaponsmith",
+      "reqLevel": 25,
+      "inputs": [
+        { "itemId": "iron_scrap", "count": 3 },
+        { "itemId": "neon_eye", "count": 2 },
+        { "itemId": "ember_core", "count": 1 }
+      ],
+      "output": { "itemId": "ice_breaker_rifle" }
+    },
+    "segfault_cleaver": {
+      "skill": "weaponsmith",
+      "reqLevel": 26,
+      "inputs": [
+        { "itemId": "iron_scrap", "count": 4 },
+        { "itemId": "bytecode_shard", "count": 2 },
+        { "itemId": "neon_eye", "count": 1 }
+      ],
+      "output": { "itemId": "segfault_cleaver" }
+    },
+    "data_ward_amulet": {
+      "skill": "enchanter",
+      "reqLevel": 20,
+      "inputs": [
+        { "itemId": "traveler_amulet", "count": 1 },
+        { "itemId": "bytecode_shard", "count": 2 },
+        { "itemId": "deleted_memory", "count": 1 }
+      ],
+      "output": { "itemId": "data_ward_amulet" }
+    },
+    "replicant_vow_ring": {
+      "skill": "enchanter",
+      "reqLevel": 22,
+      "inputs": [
+        { "itemId": "silver_band", "count": 1 },
+        { "itemId": "orphan_locket", "count": 1 },
+        { "itemId": "dream_of_sheep", "count": 1 }
+      ],
+      "output": { "itemId": "replicant_vow_ring" }
+    },
+    "stim_pak": {
+      "skill": "alchemist",
+      "reqLevel": 16,
+      "inputs": [
+        { "itemId": "herb_bundle", "count": 2 },
+        { "itemId": "spring_water", "count": 1 },
+        { "itemId": "ember_core", "count": 1 }
+      ],
+      "output": { "itemId": "stim_pak" }
+    },
+    "static_tea": {
+      "skill": "alchemist",
+      "reqLevel": 18,
+      "inputs": [
+        { "itemId": "mana_petal", "count": 1 },
+        { "itemId": "spring_water", "count": 1 },
+        { "itemId": "harmonic_shard", "count": 1 }
+      ],
+      "output": { "itemId": "static_tea" }
     }
   }
 }

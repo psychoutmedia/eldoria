@@ -1,13 +1,13 @@
 {
-  "name": "Testadmin",
-  "level": 15,
-  "experience": 12500,
-  "title": "Immortal Wizard",
+  "name": "Tiertwo",
+  "level": 1,
+  "experience": 0,
+  "title": "Novice Seeker",
   "suffix": "",
-  "currentHP": 562,
-  "maxHP": 562,
-  "currentMana": 168,
-  "maxMana": 168,
+  "currentHP": 50,
+  "maxHP": 50,
+  "currentMana": 15,
+  "maxMana": 15,
   "currentRoom": "room_001",
   "displayMode": "verbose",
   "inventory": [
@@ -74,38 +74,6 @@
       "damageType": null,
       "value": 15,
       "description": "A small red potion that restores 30 HP when consumed."
-    },
-    {
-      "id": "tuning_fork",
-      "name": "Initiate's Tuning Fork",
-      "type": "weapon",
-      "slot": null,
-      "levelReq": 15,
-      "tierReq": 0,
-      "damageBonus": 8,
-      "armorBonus": 0,
-      "healAmount": 0,
-      "manaBonus": 0,
-      "resistBonus": null,
-      "damageType": "harmonic",
-      "value": 0,
-      "description": "A small silver fork that hums a single pure note when struck. Weak as a weapon, but it cuts through illusion where steel cannot."
-    },
-    {
-      "id": "minor_healing_potion",
-      "name": "Minor Healing Potion",
-      "type": "consumable",
-      "slot": null,
-      "levelReq": 0,
-      "tierReq": 0,
-      "damageBonus": 0,
-      "armorBonus": 0,
-      "healAmount": 30,
-      "manaBonus": 0,
-      "resistBonus": null,
-      "damageType": null,
-      "value": 15,
-      "description": "A small red potion that restores 30 HP when consumed."
     }
   ],
   "equipped": {
@@ -118,7 +86,7 @@
     "feet": null,
     "finger": null
   },
-  "gold": 4935,
+  "gold": 50,
   "stats": {
     "monstersKilled": 0,
     "deaths": 0,
@@ -128,7 +96,7 @@
     "roomsExplored": [
       "room_001"
     ],
-    "itemsCollected": 1,
+    "itemsCollected": 0,
     "pvpKills": 0,
     "pvpDeaths": 0,
     "storyFlags": {
@@ -153,36 +121,24 @@
     "trade": true
   },
   "abilities": {
-    "str": 11,
+    "str": 10,
     "dex": 10,
     "con": 10,
     "int": 10,
     "wis": 10
   },
-  "charClass": "warder",
+  "charClass": null,
   "affects": [],
-  "practicePoints": 69,
+  "practicePoints": 0,
   "practiceRecord": {},
   "spellProficiencies": {},
-  "achievementsUnlocked": [
-    "class_chosen"
-  ],
+  "achievementsUnlocked": [],
   "activeTitle": null,
-  "shopsVisited": [
-    "room_003"
-  ],
+  "shopsVisited": [],
   "schoolsCast": [],
-  "bank": 50,
-  "bankUses": 2,
-  "mail": [
-    {
-      "from": "Testadmin",
-      "subject": "tiertest",
-      "body": "self-delivery check",
-      "read": false,
-      "sent": 1777019841857
-    }
-  ],
+  "bank": 0,
+  "bankUses": 0,
+  "mail": [],
   "questPoints": 0,
   "campaign": null,
   "campaignLastCompletedAt": 0,
@@ -202,5 +158,5 @@
     "wis": 0
   },
   "unlockedZones": [],
-  "lastPlayed": "2026-04-24T08:37:23.278Z"
+  "lastPlayed": "2026-04-24T08:36:35.491Z"
 }

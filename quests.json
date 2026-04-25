@@ -122,5 +122,157 @@
       }
     ],
     "rewards": { "gold": 2000, "xp": 5000, "relationship": 50, "suffix": "the Symphonist" }
+  },
+
+  "welcome_to_the_farm": {
+    "id": "welcome_to_the_farm",
+    "title": "Welcome to the Farm",
+    "giver": "terminal_officer_koma",
+    "description": "Terminal Officer Koma needs your arrival processed properly. Walk the orientation circuit - baggage reclamation, language acquisition, and the customs gate - and return for your stamp.",
+    "hint": "Visit room_202 (Baggage Reclamation), room_205 (Language Acquisition Booth), and room_210 (the inner concourse). Then return to Koma at room_201.",
+    "objectives": [
+      {
+        "id": "visit_orientation",
+        "type": "visit_rooms",
+        "targetIds": ["room_202", "room_205", "room_210"],
+        "count": 3,
+        "description": "Complete the Neo Kyoto orientation circuit"
+      }
+    ],
+    "rewards": { "gold": 200, "xp": 250, "relationship": 15 }
+  },
+
+  "neon_lit_debts": {
+    "id": "neon_lit_debts",
+    "title": "Neon-Lit Debts",
+    "giver": "hiro",
+    "description": "Hiro is short on rent and shorter on patience. The Neon Soi cutpurses lifted a stash that wasn't theirs to lift; recover it the only way they understand. Bring back five blades.",
+    "hint": "Bazaar Cutpurses spawn in Neon Soi (rooms 211-220) and Midnight Market (rooms 271-280).",
+    "objectives": [
+      {
+        "id": "kill_cutpurses",
+        "type": "monster_kill",
+        "targetId": "bazaar_cutpurse",
+        "count": 5,
+        "description": "Defeat 5 Bazaar Cutpurses"
+      }
+    ],
+    "rewards": { "gold": 350, "xp": 400, "relationship": 20, "skill": { "hack": 1 } }
+  },
+
+  "performance_review": {
+    "id": "performance_review",
+    "title": "Performance Review",
+    "giver": "ms_takamura",
+    "description": "Ms. Takamura needs three Escalation Tokens recovered from corporate personnel for an audit she has been trying to close for eight years. Walk into the Spires, take the tokens, leave nothing of yourself behind on a sign-in sheet.",
+    "hint": "Escalation Tokens drop from Corporate Enforcers and Junior Associates in the Corporate Spires (rooms 221-230). Queue Fragments in the Waitlist also carry them, occasionally.",
+    "objectives": [
+      {
+        "id": "recover_escalation_tokens",
+        "type": "item_pickup",
+        "targetId": "escalation_token",
+        "count": 3,
+        "description": "Recover 3 Escalation Tokens"
+      }
+    ],
+    "rewards": { "gold": 600, "xp": 600, "relationship": 25, "affinity": { "human": 3 } }
+  },
+
+  "the_cold_aisle": {
+    "id": "the_cold_aisle",
+    "title": "The Cold Aisle",
+    "giver": "barkeep_42",
+    "description": "42 says there's a memory drifting in The Stack with the right name on it - somebody's last log entry, never archived, never deleted. Recover one Deleted Memory canister and bring it to the back of the bar. They have a bottle to open.",
+    "hint": "Deleted Memory drops from Data Ghosts, Mantis Debuggers, and Backup Spirits across The Stack (231-240) and the Chrome Sea (261-270). While you're in The Stack, watch the rooms - some travellers leave things behind that aren't meant to be left.",
+    "objectives": [
+      {
+        "id": "recover_deleted_memory",
+        "type": "item_pickup",
+        "targetId": "deleted_memory",
+        "count": 1,
+        "description": "Recover a Deleted Memory canister"
+      }
+    ],
+    "questItems": [
+      {
+        "id": "apprentice_tuning_fork",
+        "name": "Apprentice's Tuning Fork",
+        "room": "room_237",
+        "description": "An older, heavier tuning fork than the Initiate's, fashioned from raw silver and engraved at the base with two letters: 'L.P.' Lying on the floor of an empty server aisle as if its owner had set it down for a moment and then been called away."
+      }
+    ],
+    "rewards": { "gold": 800, "xp": 800, "relationship": 30 }
+  },
+
+  "dreams_of_sheep": {
+    "id": "dreams_of_sheep",
+    "title": "Dreams of Sheep",
+    "giver": "wren",
+    "description": "Wren and the philosopher-models of the Replicant Quarter have all been having the same dream. Walk the Quarter for them - the orphanage, the philosophers' garden, the place where the dream is loudest - and bring back what you remember.",
+    "hint": "Visit room_281 (the orphanage), room_285 (the philosophers' garden), and room_288 (the dreaming corridor). Wren is in room_283 and will be waiting.",
+    "objectives": [
+      {
+        "id": "walk_the_quarter",
+        "type": "visit_rooms",
+        "targetIds": ["room_281", "room_285", "room_288"],
+        "count": 3,
+        "description": "Walk the three sites of the Quarter's shared dream"
+      }
+    ],
+    "rewards": { "gold": 700, "xp": 750, "relationship": 25, "affinity": { "replicant": 3 } }
+  },
+
+  "orphans_in_the_machine": {
+    "id": "orphans_in_the_machine",
+    "title": "Orphans in the Machine",
+    "giver": "wren",
+    "description": "The synthetic orphans have a guardian whom Wren has not been able to reach for some time: the Mother of Orphans, in the deepest chamber of the Quarter. Visit her chamber and survive the audience. Wren will know what to give you when you return.",
+    "hint": "Mother of Orphans waits in room_290 at the end of the Replicant Quarter corridor. Combat is not required - the visit alone will do.",
+    "objectives": [
+      {
+        "id": "visit_mother",
+        "type": "visit_rooms",
+        "targetIds": ["room_290"],
+        "count": 1,
+        "description": "Walk into the Mother of Orphans' chamber and walk out alive"
+      }
+    ],
+    "rewards": { "gold": 1000, "xp": 1200, "relationship": 35, "affinity": { "replicant": 2 } }
+  },
+
+  "babel_fish_problem": {
+    "id": "babel_fish_problem",
+    "title": "The Babel Fish Problem",
+    "giver": "barkeep_42",
+    "description": "42 has a theory about why the messages out of the Stack have all been wrong for years. They suspect a translator gone feral somewhere up in Kowloon-42. Find it and prove the theory the only way Neo Kyoto accepts proof - by bringing back the crown.",
+    "hint": "The Babel Fish Regent occupies the spire-top of Kowloon-42 (room_260). Bring a multi-damage-type kit; the Regent rotates its resists each round.",
+    "objectives": [
+      {
+        "id": "kill_babel_fish",
+        "type": "monster_kill",
+        "targetId": "babel_fish_regent",
+        "count": 1,
+        "description": "Defeat the Babel Fish Regent and recover the Crown"
+      }
+    ],
+    "rewards": { "gold": 1500, "xp": 2000, "relationship": 40 }
+  },
+
+  "paging_oncall": {
+    "id": "paging_oncall",
+    "title": "Paging Oncall",
+    "giver": "barkeep_42",
+    "description": "Everything that has happened in Neo Kyoto - the disappearances, the mistranslations, the eight-year-open audit, the dream the philosophers all share - leads to the Heat Death Datacentre. SYSADMIN.EXE has been running this realm in Nomagio's absence and does not intend to stop. Page the on-call rotation. Then page it again, harder.",
+    "hint": "SYSADMIN.EXE waits at the realm's terminus (room_300). Bring a group, Data weapons, and mana potions. Watch your spell pool in phase 3 - the system will start denying your requests with a 503.",
+    "objectives": [
+      {
+        "id": "kill_sysadmin",
+        "type": "monster_kill",
+        "targetId": "sysadmin_exe",
+        "count": 1,
+        "description": "Defeat SYSADMIN.EXE in the Heat Death Datacentre"
+      }
+    ],
+    "rewards": { "gold": 5000, "xp": 8000, "relationship": 50, "suffix": "the Arbiter", "questPoints": 250 }
   }
 }

@@ -300,6 +300,111 @@
       "summary": "Turn individual channels on or off.",
       "body": "Type a channel name with no message to toggle:\r\n  newbie\r\n  ooc\r\n  gossip\r\n  trade\r\n\r\nThis is also visible via the 'channels' command.",
       "seeAlso": ["channels"]
+    },
+    "neo_kyoto": {
+      "title": "Neo Kyoto",
+      "category": "Neo Kyoto",
+      "summary": "The second realm. A staging environment that got out of hand.",
+      "body": "Neo Kyoto is the post-remort realm: rooms 201-300, 10 zones, 5 named bosses, dense cyberpunk infrastructure run by Nomagio's automation in his absence. Entry requires remort tier 1 or higher.\r\n\r\nGet in via the Nomagios Transit Terminal: walk to room_100 (The Perfect Sanctum) and go up. Terminal Officer Koma stamps you in. Walking Neo Kyoto without remorting is not possible - the staff door does not appear until you've rebooted at least once.\r\n\r\nKey systems unique to Neo Kyoto: the Hack skill, Replicant/Human Affinity, the Data damage type, and the questline known as the Echo of Lyssara.",
+      "seeAlso": ["shuttle", "hack", "affinity", "data_damage"]
+    },
+    "shuttle": {
+      "title": "shuttle",
+      "category": "Neo Kyoto",
+      "summary": "The Nomagios Transit Terminal between Eldoria and Neo Kyoto.",
+      "body": "Two-way passage between Server 1 (Eldoria) and Server 2 (Neo Kyoto):\r\n\r\n  room_100 (Eldoria, Perfect Sanctum) -- up --> room_201 (Neo Kyoto, Arrivals)\r\n  room_201 -- down --> room_100\r\n\r\nThe Eldoria-side door is invisible to players with remortTier 0. After your first remort, it becomes visible and traversable. Pets, gear, and gold all carry across. Quest state is per-realm but persists across crossings.",
+      "seeAlso": ["neo_kyoto", "remort"]
+    },
+    "hack": {
+      "title": "hack",
+      "category": "Neo Kyoto",
+      "summary": "Hack a Neo Kyoto terminal with skill + d20 vs DC.",
+      "body": "Usage: hack                  list hackable terminals in this room\r\n       hack <keyword>        attempt to hack the matching terminal\r\n\r\nMechanic: roll = 1d20 + player.skills.hack + buffs (Static Tea grants +2 for 5 min). If roll >= terminal DC, success.\r\n\r\nFailure rolls 60% to spawn a Security Subroutine into your room.\r\n\r\nTerminals are one-shot per cycle. Five terminals are seeded across Neo Kyoto: rooms 215, 232, 245, 267, 295 (DCs 8, 12, 10, 14, 18).\r\n\r\nTrain hack at Hiro in room_213, Neon Soi: 5g per point, capped at 10. The 'train hack' command works only when you're in his room.",
+      "seeAlso": ["affinity", "static_tea", "train"]
+    },
+    "affinity": {
+      "title": "affinity / standing",
+      "category": "Neo Kyoto",
+      "summary": "Replicant / Human meter that gates dialogue and gear.",
+      "body": "Usage: affinity\r\n       standing\r\n\r\nNeo Kyoto tracks two non-negative integers: Replicant and Human. Quests grant deltas on turn-in:\r\n\r\n  performance_review        -> Human +3\r\n  dreams_of_sheep           -> Replicant +3\r\n  orphans_in_the_machine    -> Replicant +2\r\n\r\nStanding label:\r\n  R >= 5 and H < 5    -> Replicant-leaning\r\n  H >= 5 and R < 5    -> Human-leaning\r\n  Both >= 3           -> Balanced (both paths active)\r\n  else                -> Unaligned\r\n\r\nAffinity persists across remort. The Replicant Vow Ring requires Replicant 5 to equip.",
+      "seeAlso": ["neo_kyoto", "hack", "remort"]
+    },
+    "data_damage": {
+      "title": "Data damage type",
+      "category": "Neo Kyoto",
+      "summary": "The sixth damage type, native to Neo Kyoto.",
+      "body": "Damage types: physical, fire, harmonic, shadow, cold, data.\r\n\r\nNeo Kyoto monsters and bosses inherit a realm-wide resist profile: harmonic 75% resist, data 25% vulnerability (-25). Your Eldoria tuning forks land at quarter efficiency here. Data weapons land at 125%.\r\n\r\nData weapon shop runs: Rusty's Chromeshop (room_214), Tyrell-Nomagios Procurement (room_225), and the Back Of The Bazaar (room_277). Craftable Data weapons: stun_baton (L16), ice_breaker_rifle (L25), segfault_cleaver (L26). Crafting all three earns the 'Compiled' achievement.\r\n\r\nEldoria mobs are not vulnerable to Data, so it is not a free cross-realm upgrade. Pack a Data weapon and a non-Data sidearm.",
+      "seeAlso": ["neo_kyoto", "shops"]
+    },
+    "chiyo_7": {
+      "title": "Chiyo-7, the Deprecated",
+      "category": "Neo Kyoto",
+      "summary": "Boss of Neon Soi (room_220).",
+      "body": "Level 18, 1300 HP, 60 STR. Physical damage. Standard Neo Kyoto resists.\r\n\r\nSignature: at 50% HP her cert expires. Combat rounds tick at 1.5x speed for the rest of the fight, but her hits deal 0 damage. The challenge is the first half. Drops Chiyo-7's Expired Cert.",
+      "seeAlso": ["neo_kyoto", "babel_fish_regent", "settle_all_tickets"]
+    },
+    "account_manager": {
+      "title": "The Account Manager",
+      "category": "Neo Kyoto",
+      "summary": "Boss of Corporate Spires (room_230).",
+      "body": "Level 20, 1600 HP, 70 STR. Physical damage. Standard Neo Kyoto resists.\r\n\r\nSignature: every 3 rounds escalates - spawns a Junior Associate add. Her damage scales +10% per live add. Kill adds first; she compounds otherwise. Drops Managerial Letter of Recommendation.",
+      "seeAlso": ["neo_kyoto", "chiyo_7", "settle_all_tickets"]
+    },
+    "babel_fish_regent": {
+      "title": "Babel Fish Regent",
+      "category": "Neo Kyoto",
+      "summary": "Boss of Kowloon-42 (room_260).",
+      "body": "Level 24, 2200 HP, 90 STR. Data damage type. Resists rotate every round.\r\n\r\nSignature: each round flips an additional resisted damage type at random and announces it. Bring a multi-type kit - a Data primary plus a physical or harmonic sidearm covers most flips. Drops Babel Fish Crown.",
+      "seeAlso": ["neo_kyoto", "data_damage", "deep_pool"]
+    },
+    "deep_pool": {
+      "title": "The Deep Pool",
+      "category": "Neo Kyoto",
+      "summary": "Boss of Chrome Sea (room_270).",
+      "body": "Level 26, 2500 HP, 95 STR. Data damage type. Standard Neo Kyoto resists.\r\n\r\nSignature: drains 25-44 mana per swing instead of dealing HP damage. Once your mana hits zero, attacks bleed through at +50% damage. Stockpile Static Tea, Patch Notes Scroll, Admin Cola before engaging. Drops Deep-Pool Pearl.",
+      "seeAlso": ["neo_kyoto", "static_tea", "sysadmin_exe"]
+    },
+    "sysadmin_exe": {
+      "title": "SYSADMIN.EXE",
+      "category": "Neo Kyoto",
+      "summary": "Realm capstone (room_300). Three-phase fight.",
+      "body": "Level 30, 3500 HP, 120 STR. Data damage type. Standard Neo Kyoto resists.\r\n\r\nPhase 1 (100->66% HP): stock combat.\r\nPhase 2 (66->33% HP): autoscaler engages. Spawns a cron_daemon add immediately and another every 10 seconds.\r\nPhase 3 (<33% HP): pages oncall. Your next 2 spell casts have a 50% chance of failing with a 503 error.\r\n\r\nGroup play strongly recommended. On death, Nomagio's distress transmission from Server 3 plays. Drops SYSADMIN.EXE's Root Key.",
+      "seeAlso": ["neo_kyoto", "deep_pool", "server_melt"]
+    },
+    "neon_soi": {
+      "title": "Neon Soi",
+      "category": "Neo Kyoto",
+      "summary": "Low-town zone (rooms 211-220). Street-level threat tier.",
+      "body": "Rain-slicked alleys, noodle stalls, replicant buskers, street hackers. Spawn rate 70%. Mobs: neon_yakuza, rogue_replicant, bazaar_cutpurse, noodle_vendor_aggro. Boss at room_220 (Chiyo-7).\r\n\r\nKey NPCs: Hiro (room_213, hack-skill trainer). Shop: Rusty's Chromeshop (room_214).",
+      "seeAlso": ["chiyo_7", "hack"]
+    },
+    "the_stack": {
+      "title": "The Stack",
+      "category": "Neo Kyoto",
+      "summary": "Server-core zone (rooms 231-240). Hack skill shines here.",
+      "body": "Literal datacentre interior. Humming coolant aisles, blinking racks. Spawn rate 75%. Mobs: data_ghost, security_subroutine, memory_leak_wraith. No zone boss - mid-realm hub.\r\n\r\nHack terminal: rack maintenance panel in room_232 (DC 12), drops Bytecode Shard + Deleted Memory.\r\n\r\nEaster egg: the Apprentice's Tuning Fork (signed L.P.) lies on the floor of room_237. The Echo of Lyssara wanders this room, asking for it.",
+      "seeAlso": ["hack", "lyssara"]
+    },
+    "replicant_quarter": {
+      "title": "Replicant Quarter",
+      "category": "Neo Kyoto",
+      "summary": "Sanctuary zone (rooms 281-290). Affinity choices peak here.",
+      "body": "Quiet philosophical district. Spawn rate 60%. Mostly passive mobs: synthetic_orphan, philosopher_model, rogue_replicant. Combat encounter at room_290 (Mother of Orphans, dialogue-resolvable at Replicant 5+).\r\n\r\nKey NPC: Wren (room_283), philosopher-model. The largest sharded fragment of Lyssara's consciousness, though Wren does not yet know it.",
+      "seeAlso": ["affinity", "lyssara", "neo_kyoto"]
+    },
+    "midnight_market": {
+      "title": "Midnight Market",
+      "category": "Neo Kyoto",
+      "summary": "Bazaar / shop hub (rooms 271-280).",
+      "body": "Grey-market and black-market stalls. Spawn rate 55%. Mobs: deprecated_bladerunner, philosopher_model, bazaar_cutpurse.\r\n\r\nKey NPC: Barkeep 42 (room_273). Owns three quests: the_cold_aisle, babel_fish_problem, paging_oncall (the realm capstone). Shop: The Back Of The Bazaar (room_277) - best sell-back rate (0.6x) and the only single-source for crafting reagents.",
+      "seeAlso": ["paging_oncall", "shops"]
+    },
+    "lyssara": {
+      "title": "The Echo of Lyssara",
+      "category": "Neo Kyoto",
+      "summary": "Spectral easter-egg encounter in The Stack (room_237).",
+      "body": "Lyssara the Patient was an Eldoria archmage and predecessor to Thessarian on the seat of Logic. Eight years before the player arrives, she crossed the staging-environment shuttle to debug what she believed to be a memory leak. SYSADMIN.EXE killed her to prevent the fix; her consciousness sharded into the Replicant Quarter's philosopher-models. What walks room_237 is the half-rendered echo: the part of her that was working the problem when she died.\r\n\r\nShe does not know she is dead. She speaks in present tense. She is asking for her tuning fork.",
+      "seeAlso": ["the_stack", "replicant_quarter", "paging_oncall"]
     }
   }
 }

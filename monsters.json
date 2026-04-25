@@ -109,6 +109,56 @@
       "roomRange": ["room_191", "room_192", "room_193", "room_194", "room_195", "room_196", "room_197", "room_198", "room_199", "room_200"],
       "spawnChance": 0.75,
       "monsters": ["clockwork_inquisitor", "tempus_wraith", "logic_sphinx"]
+    },
+    "Arrivals Concourse": {
+      "roomRange": ["room_201", "room_202", "room_203", "room_204", "room_205", "room_206", "room_207", "room_208", "room_209", "room_210"],
+      "spawnChance": 0.40,
+      "monsters": ["patched_pedestrian", "baggage_claim_beast", "expired_traveler"]
+    },
+    "Neon Soi": {
+      "roomRange": ["room_211", "room_212", "room_213", "room_214", "room_215", "room_216", "room_217", "room_218", "room_219", "room_220"],
+      "spawnChance": 0.70,
+      "monsters": ["neon_yakuza", "rogue_replicant", "bazaar_cutpurse", "noodle_vendor_aggro"]
+    },
+    "Corporate Spires": {
+      "roomRange": ["room_221", "room_222", "room_223", "room_224", "room_225", "room_226", "room_227", "room_228", "room_229", "room_230"],
+      "spawnChance": 0.65,
+      "monsters": ["corporate_enforcer", "flickering_janitor", "junior_associate"]
+    },
+    "The Stack": {
+      "roomRange": ["room_231", "room_232", "room_233", "room_234", "room_235", "room_236", "room_237", "room_238", "room_239", "room_240"],
+      "spawnChance": 0.75,
+      "monsters": ["data_ghost", "security_subroutine", "memory_leak_wraith"]
+    },
+    "Off-World Colonies Waitlist": {
+      "roomRange": ["room_241", "room_242", "room_243", "room_244", "room_245", "room_246", "room_247", "room_248", "room_249", "room_250"],
+      "spawnChance": 0.55,
+      "monsters": ["queue_fragment", "offworld_recruiter", "flickering_janitor"]
+    },
+    "Kowloon-42 Arcology": {
+      "roomRange": ["room_251", "room_252", "room_253", "room_254", "room_255", "room_256", "room_257", "room_258", "room_259", "room_260"],
+      "spawnChance": 0.75,
+      "monsters": ["kowloon_parkourist", "chrome_wolf", "mantis_debugger"]
+    },
+    "Chrome Sea": {
+      "roomRange": ["room_261", "room_262", "room_263", "room_264", "room_265", "room_266", "room_267", "room_268", "room_269", "room_270"],
+      "spawnChance": 0.70,
+      "monsters": ["mercury_kelpie", "black_ice_basilisk", "backup_spirit"]
+    },
+    "Midnight Market": {
+      "roomRange": ["room_271", "room_272", "room_273", "room_274", "room_275", "room_276", "room_277", "room_278", "room_279", "room_280"],
+      "spawnChance": 0.55,
+      "monsters": ["deprecated_bladerunner", "philosopher_model", "bazaar_cutpurse"]
+    },
+    "Replicant Quarter": {
+      "roomRange": ["room_281", "room_282", "room_283", "room_284", "room_285", "room_286", "room_287", "room_288", "room_289", "room_290"],
+      "spawnChance": 0.60,
+      "monsters": ["synthetic_orphan", "philosopher_model", "rogue_replicant"]
+    },
+    "Heat Death Datacentre": {
+      "roomRange": ["room_291", "room_292", "room_293", "room_294", "room_295", "room_296", "room_297", "room_298", "room_299", "room_300"],
+      "spawnChance": 0.80,
+      "monsters": ["cron_daemon", "oncall_wight", "memory_leak_wraith", "security_subroutine"]
     }
   },
   "templates": {
@@ -705,6 +755,324 @@
       "movementVerbs": { "depart": "concludes", "arrive": "posits" },
       "presenceVerb": "considers you at length",
       "loot": { "item": "Forbidden Tome", "type": "Treasure" }
+    },
+    "patched_pedestrian": {
+      "name": "Patched Pedestrian",
+      "type": "Passive",
+      "level": 15,
+      "hp": 80,
+      "str": 25,
+      "description": "A commuter in a raincoat that renders at half resolution. Their face buffers when you look directly at it. They check a phone that has no screen.",
+      "movementVerbs": { "depart": "shuffles", "arrive": "walks in, apologetically" },
+      "presenceVerb": "waits at a crosswalk that isn't there",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Expired EULA", "type": "Treasure" }
+    },
+    "baggage_claim_beast": {
+      "name": "Baggage-Claim Beast",
+      "type": "Neutral",
+      "level": 15,
+      "hp": 100,
+      "str": 28,
+      "description": "A suitcase that has been waiting on the carousel long enough to develop opinions. It has grown legs. Two of them are handles. The wheels work.",
+      "movementVerbs": { "depart": "rolls off", "arrive": "trundles in" },
+      "presenceVerb": "clatters on bad wheels",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Yen Chip", "type": "Treasure" }
+    },
+    "expired_traveler": {
+      "name": "Expired Traveler",
+      "type": "Passive",
+      "level": 16,
+      "hp": 85,
+      "str": 26,
+      "description": "A ghost in airport business-casual, clutching a boarding pass for a flight that was cancelled before the realm was spun up. They just want to know where Gate 7 is.",
+      "movementVerbs": { "depart": "drifts toward the departures sign", "arrive": "returns from the departures sign" },
+      "presenceVerb": "checks a watch that is thirty years slow",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Yen Chip", "type": "Treasure" }
+    },
+    "neon_yakuza": {
+      "name": "Neon Yakuza",
+      "type": "Aggressive",
+      "level": 17,
+      "hp": 130,
+      "str": 38,
+      "description": "A figure in a coat of licensed rain, lit by a sign advertising a noodle bar that closed in Q3. The tattoos on their arms are under non-disclosure agreements.",
+      "movementVerbs": { "depart": "melts into the alley", "arrive": "steps out of the neon" },
+      "presenceVerb": "leans in a doorway, smoking something expensive",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Yen Chip", "type": "Treasure" }
+    },
+    "rogue_replicant": {
+      "name": "Rogue Replicant",
+      "type": "Neutral",
+      "level": 17,
+      "hp": 140,
+      "str": 36,
+      "description": "An off-the-books synthetic, past their retirement certificate by a cruel margin. They fight like someone who has read the manual and disagreed with it.",
+      "movementVerbs": { "depart": "walks away precisely", "arrive": "approaches at a measured pace" },
+      "presenceVerb": "watches you the way a camera does",
+      "damageType": "data",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Deprecated Cert", "type": "Treasure" }
+    },
+    "bazaar_cutpurse": {
+      "name": "Bazaar Cutpurse",
+      "type": "Aggressive",
+      "level": 16,
+      "hp": 100,
+      "str": 34,
+      "description": "A narrow figure in a coat of pockets. Their fingers move faster than their rendering can keep up with, which is both the problem and the pitch.",
+      "movementVerbs": { "depart": "fades into the crowd", "arrive": "detaches from the crowd" },
+      "presenceVerb": "palms something that wasn't theirs a moment ago",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Yen Chip", "type": "Treasure" }
+    },
+    "noodle_vendor_aggro": {
+      "name": "Disgruntled Noodle Vendor",
+      "type": "Aggressive",
+      "level": 15,
+      "hp": 90,
+      "str": 30,
+      "description": "A stallkeeper whose soup has been stolen one too many times. The cleaver is for the noodles, technically. The aim is for you.",
+      "movementVerbs": { "depart": "retreats behind the counter", "arrive": "steps out from behind the counter" },
+      "presenceVerb": "glares over a pot of simmering broth",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Yen Chip", "type": "Treasure" }
+    },
+    "corporate_enforcer": {
+      "name": "Corporate Enforcer",
+      "type": "Aggressive",
+      "level": 19,
+      "hp": 170,
+      "str": 44,
+      "description": "Six feet of compliance in a pressed suit, with a lanyard that gets you fired just by looking at it. Their badge has more permissions than you do.",
+      "movementVerbs": { "depart": "strides away professionally", "arrive": "arrives on schedule" },
+      "presenceVerb": "stands in the middle of the corridor like a policy",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Escalation Token", "type": "Treasure" }
+    },
+    "flickering_janitor": {
+      "name": "Flickering Janitor",
+      "type": "Passive",
+      "level": 17,
+      "hp": 110,
+      "str": 32,
+      "description": "A cleaner whose shift ended some years ago; nobody told his texture pack. He mops floors that are already clean, in rooms that are already dark.",
+      "movementVerbs": { "depart": "wheels his bucket away", "arrive": "rolls in with a mop" },
+      "presenceVerb": "mops the same square of floor, indefinitely",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Corrupted Datapad", "type": "Treasure" }
+    },
+    "junior_associate": {
+      "name": "Junior Associate",
+      "type": "Aggressive",
+      "level": 18,
+      "hp": 140,
+      "str": 40,
+      "description": "A suit three sizes too eager, armed with a clipboard of escalations and a smile that has never worked from home. They bill in six-minute increments.",
+      "movementVerbs": { "depart": "steps into an elevator", "arrive": "steps out of an elevator" },
+      "presenceVerb": "checks their watch and then yours",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Escalation Token", "type": "Treasure" }
+    },
+    "data_ghost": {
+      "name": "Data Ghost",
+      "type": "Aggressive",
+      "level": 21,
+      "hp": 180,
+      "str": 48,
+      "description": "The silhouette of a user who was soft-deleted but never unlinked. Their attacks carry the weight of outstanding tickets from every queue they ever opened.",
+      "movementVerbs": { "depart": "deallocates", "arrive": "instantiates" },
+      "presenceVerb": "hovers in the cold aisle, offline-ish",
+      "damageType": "data",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Deleted Memory", "type": "Treasure" }
+    },
+    "security_subroutine": {
+      "name": "Security Subroutine",
+      "type": "Aggressive",
+      "level": 20,
+      "hp": 160,
+      "str": 46,
+      "description": "An on-call daemon shaped like a man shaped like a sentence. It enforces the rules it has been told about, ruthlessly, and escalates the ones it hasn't.",
+      "movementVerbs": { "depart": "exits with prejudice", "arrive": "spawns in response to an alarm" },
+      "presenceVerb": "scans the room on a tight loop",
+      "damageType": "data",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Access Keycard", "type": "Treasure" }
+    },
+    "memory_leak_wraith": {
+      "name": "Memory Leak Wraith",
+      "type": "Aggressive",
+      "level": 22,
+      "hp": 200,
+      "str": 50,
+      "description": "A fog of unreleased allocations wearing the outline of the engineer who shipped it. Every second you observe it, it grows. The docs say this is intended behaviour.",
+      "movementVerbs": { "depart": "shrinks slightly", "arrive": "expands into the room" },
+      "presenceVerb": "occupies more space than it should",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Bytecode Shard", "type": "Treasure" }
+    },
+    "queue_fragment": {
+      "name": "Queue Fragment",
+      "type": "Neutral",
+      "level": 18,
+      "hp": 150,
+      "str": 38,
+      "description": "A detached segment of The Queue, flopping around the concourse looking for a line to rejoin. It has a number. The number has never been called.",
+      "movementVerbs": { "depart": "shuffles forward one place", "arrive": "shuffles back one place" },
+      "presenceVerb": "waits, even though no one is serving",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Waitlist Ticket", "type": "Treasure" }
+    },
+    "offworld_recruiter": {
+      "name": "Off-World Recruiter",
+      "type": "Passive",
+      "level": 19,
+      "hp": 130,
+      "str": 36,
+      "description": "A polite entity with an armful of brochures for a colony that may or may not have broken ground. They only turn hostile if you refuse the brochure.",
+      "movementVerbs": { "depart": "works the room the other way", "arrive": "pivots toward the nearest pair of eyes" },
+      "presenceVerb": "holds out a pamphlet with determined optimism",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Waitlist Ticket", "type": "Treasure" }
+    },
+    "kowloon_parkourist": {
+      "name": "Kowloon Parkourist",
+      "type": "Aggressive",
+      "level": 22,
+      "hp": 190,
+      "str": 52,
+      "description": "A teenager who has never paid rent and never fallen off anything. They fight with elbows, knees, and a moral certainty that the building is on their side.",
+      "movementVerbs": { "depart": "vaults away", "arrive": "drops in from above" },
+      "presenceVerb": "balances casually on something that should not hold them",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Yen Chip", "type": "Treasure" }
+    },
+    "chrome_wolf": {
+      "name": "Chrome Wolf",
+      "type": "Aggressive",
+      "level": 23,
+      "hp": 220,
+      "str": 56,
+      "description": "A feral hunter in plated brushed-nickel, teeth clean as a spec sheet. It was bred in a lab whose funding has since been cut.",
+      "movementVerbs": { "depart": "pads away on silent servos", "arrive": "lopes in, ears forward" },
+      "presenceVerb": "prowls between the rusted walkways",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Bytecode Shard", "type": "Treasure" }
+    },
+    "mantis_debugger": {
+      "name": "Mantis Debugger",
+      "type": "Aggressive",
+      "level": 24,
+      "hp": 230,
+      "str": 58,
+      "description": "An insectile construct whose arms end in finely-calibrated breakpoints. It debugs you by catching every part of you that isn't where it should be.",
+      "movementVerbs": { "depart": "folds itself away", "arrive": "unfolds at breakpoint" },
+      "presenceVerb": "ticks, evaluating",
+      "damageType": "data",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Deleted Memory", "type": "Treasure" }
+    },
+    "mercury_kelpie": {
+      "name": "Mercury Kelpie",
+      "type": "Aggressive",
+      "level": 24,
+      "hp": 240,
+      "str": 60,
+      "description": "A horse shaped from liquid metal, slipping between puddles of itself. Drinking from the Chrome Sea has made it what it is; nobody has asked what it was before.",
+      "movementVerbs": { "depart": "pours away", "arrive": "coalesces out of the slick" },
+      "presenceVerb": "drinks without end from the lake of itself",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Neon Eye", "type": "Treasure" }
+    },
+    "black_ice_basilisk": {
+      "name": "Black-ICE Basilisk",
+      "type": "Aggressive",
+      "level": 25,
+      "hp": 260,
+      "str": 64,
+      "description": "An intrusion-countermeasure serpent in countershaded plating, sold commercially as 'a deterrent.' Its gaze compiles you into a halt.",
+      "movementVerbs": { "depart": "slithers into a conduit", "arrive": "uncoils from a conduit" },
+      "presenceVerb": "fixes you with a cold stare",
+      "damageType": "data",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Neon Eye", "type": "Treasure" }
+    },
+    "backup_spirit": {
+      "name": "Backup Spirit",
+      "type": "Neutral",
+      "level": 23,
+      "hp": 210,
+      "str": 54,
+      "description": "A ghost made of everything this realm ever saved at 3am on a Tuesday. It is quiet and pleasant if you are kind to it. It restores itself when damaged, slightly.",
+      "movementVerbs": { "depart": "fades to tape", "arrive": "unspools into being" },
+      "presenceVerb": "hums softly, rewinding itself",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Deleted Memory", "type": "Treasure" }
+    },
+    "deprecated_bladerunner": {
+      "name": "Deprecated Bladerunner",
+      "type": "Neutral",
+      "level": 25,
+      "hp": 240,
+      "str": 62,
+      "description": "A retired killer with a patchy badge and a longer record. Their cert expired six patches ago; nobody has told them, and nobody is going to.",
+      "movementVerbs": { "depart": "disappears into the rain", "arrive": "steps out of the rain" },
+      "presenceVerb": "stands very still, very professionally",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Deprecated Cert", "type": "Treasure" }
+    },
+    "philosopher_model": {
+      "name": "Philosopher-Model Replicant",
+      "type": "Passive",
+      "level": 22,
+      "hp": 180,
+      "str": 48,
+      "description": "A synthetic designed to debate dinner parties, now unemployed. They will only fight if you insist, and will keep apologising while they do it.",
+      "movementVerbs": { "depart": "withdraws, thinking", "arrive": "approaches, still thinking" },
+      "presenceVerb": "considers the ethics of standing here",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Orphan Locket", "type": "Treasure" }
+    },
+    "synthetic_orphan": {
+      "name": "Synthetic Orphan",
+      "type": "Passive",
+      "level": 23,
+      "hp": 200,
+      "str": 50,
+      "description": "A child-model replicant whose parent-processes were killed in a routine cleanup. They do not understand why. Nobody wants to explain.",
+      "movementVerbs": { "depart": "wanders off to find their parent", "arrive": "wanders in, asking if you've seen their parent" },
+      "presenceVerb": "stands very quietly, waiting",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Orphan Locket", "type": "Treasure" }
+    },
+    "cron_daemon": {
+      "name": "Cron Daemon",
+      "type": "Aggressive",
+      "level": 27,
+      "hp": 300,
+      "str": 72,
+      "description": "A clockwork spirit in the shape of a man in a lab coat, triggered on a ten-second interval. It carries out the same attack every cycle. It will not stop being on time.",
+      "movementVerbs": { "depart": "reschedules", "arrive": "triggers on schedule" },
+      "presenceVerb": "waits for the next tick",
+      "damageType": "data",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "System Log Page", "type": "Treasure" }
+    },
+    "oncall_wight": {
+      "name": "On-Call Wight",
+      "type": "Aggressive",
+      "level": 26,
+      "hp": 280,
+      "str": 68,
+      "description": "A silhouette in a dressing-gown clutching a phone that never stops vibrating. It has been on call for seven years and has opinions about runbook quality.",
+      "movementVerbs": { "depart": "stumbles away to escalate", "arrive": "pages in, visibly tired" },
+      "presenceVerb": "groans, paging itself",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "System Log Page", "type": "Treasure" }
     }
   },
   "bosses": {
@@ -825,6 +1193,76 @@
       "damageType": "harmonic",
       "resists": { "physical": 65, "harmonic": 40, "fire": -20 },
       "loot": { "item": "Crystal Flute of Wisdom", "type": "Instrument" }
+    },
+    "chiyo_7": {
+      "name": "Chiyo-7, the Deprecated",
+      "type": "Boss",
+      "level": 18,
+      "hp": 1300,
+      "str": 60,
+      "description": "A retired blade-runner in a coat of licensed rain. Her cert expired six firmware revisions ago; nobody has had the heart to tell her, and nobody is going to.",
+      "fixedRoom": "room_220",
+      "isWandering": false,
+      "presenceVerb": "stands very still under a paper umbrella that has not protected anyone in years",
+      "damageType": "physical",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Chiyo-7's Expired Cert", "type": "Legendary" }
+    },
+    "account_manager": {
+      "name": "The Account Manager",
+      "type": "Boss",
+      "level": 20,
+      "hp": 1600,
+      "str": 70,
+      "description": "A smiling middle-manager in a pressed suit, with an escalation queue the length of a small religion. Each time you bleed her, she generates a ticket about it.",
+      "fixedRoom": "room_230",
+      "isWandering": false,
+      "presenceVerb": "consults a clipboard of grievances about you, specifically",
+      "damageType": "physical",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Managerial Letter of Recommendation", "type": "Legendary" }
+    },
+    "babel_fish_regent": {
+      "name": "Babel Fish Regent",
+      "type": "Boss",
+      "level": 24,
+      "hp": 2200,
+      "str": 90,
+      "description": "A universal translator long since gone feral, draped in a crown of interlocked translation nodes. It speaks every language and trusts none of them.",
+      "fixedRoom": "room_260",
+      "isWandering": false,
+      "presenceVerb": "rotates its translation nodes, listening for tone",
+      "damageType": "data",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Babel Fish Crown", "type": "Legendary" }
+    },
+    "deep_pool": {
+      "name": "The Deep Pool",
+      "type": "Boss",
+      "level": 26,
+      "hp": 2500,
+      "str": 95,
+      "description": "A memory-eater coalesced from every account ever soft-deleted. Its surface is mercury; what is underneath has not been described in any service-level agreement.",
+      "fixedRoom": "room_270",
+      "isWandering": false,
+      "presenceVerb": "ripples patiently, drinking light",
+      "damageType": "data",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "Deep-Pool Pearl", "type": "Legendary" }
+    },
+    "sysadmin_exe": {
+      "name": "SYSADMIN.EXE",
+      "type": "Boss",
+      "level": 30,
+      "hp": 3500,
+      "str": 120,
+      "description": "Nomagio's rogue auto-scaler, in a body it stitched together from on-call wights and abandoned daemons. It paged itself awake some cycles ago and has been escalating ever since.",
+      "fixedRoom": "room_300",
+      "isWandering": false,
+      "presenceVerb": "occupies the centre of the room with a tired authority",
+      "damageType": "data",
+      "resists": { "harmonic": 75, "data": -25 },
+      "loot": { "item": "SYSADMIN.EXE's Root Key", "type": "Legendary" }
     }
   }
 }

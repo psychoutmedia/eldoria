@@ -78,5 +78,128 @@
       "The Void has no patience for browsers."
     ],
     "questsOffered": ["feed_the_void"]
+  },
+  "terminal_officer_koma": {
+    "id": "terminal_officer_koma",
+    "name": "Terminal Officer Koma",
+    "shortName": "Koma",
+    "aliases": ["koma", "officer", "terminal", "officer koma"],
+    "homeRoom": "room_201",
+    "wanders": false,
+    "personality": {
+      "traits": ["tired", "polite", "bureaucratic to the bone", "dryly funny", "stamp-oriented"],
+      "mood": "end of a very long shift",
+      "goals": "process every arrival, correctly, at any emotional cost; go home someday",
+      "backstory": "Koma has worked the Neo Kyoto arrivals desk for what her badge says is eleven years and what the clock in her heart says is closer to thirty-seven. She was assigned here during the Great Re-Indexing and has stamped, in total, nine hundred and sixteen thousand forms. Her stamp is louder than her voice. She cannot remember the last time she saw sunlight that was not technically a status LED. She is infinitely kind to travellers who read the signage and infinitely, weaponised-politely patient with those who do not. She remembers, vaguely, an Eldoria official who came through her line eight years ago with her own clipboard. The form is filed under REDACTED. She is not allowed to discuss it. She wishes she were."
+    },
+    "fallbackLines": [
+      "*stamps something, possibly the desk* Welcome to Neo Kyoto. Please have your remort in hand. Or not. Nothing is required. Everything is encouraged.",
+      "*does not look up* If you're looking for the baggage carousel, it's through there. If it's not moving, that's by design. If it is moving, please do not get on it.",
+      "*taps a laminated sign that reads 'PLEASE DO NOT TAP THE SIGN'* Is there something specific, traveller, or are we doing the general ambient presence today?",
+      "*sighs, a small practiced sigh* Welcome to the farm. Mind the puddles. They're not water. They're not not-water either. Legally they're a consultation.",
+      "*pauses mid-stamp* You remind me of someone who came through here a long time ago. Tall hat. Quiet voice. Filed under a name I am not allowed to say out loud. Sorry, traveller. The system is the system."
+    ],
+    "questsOffered": ["welcome_to_the_farm"]
+  },
+  "hiro": {
+    "id": "hiro",
+    "name": "Hiro, Street Hacker",
+    "shortName": "Hiro",
+    "aliases": ["hiro", "hacker", "street hacker"],
+    "homeRoom": "room_213",
+    "wanders": false,
+    "personality": {
+      "traits": ["wary", "fast-talking", "broke", "loyal to the wrong people", "fluent in shortcut"],
+      "mood": "two cups of cold brew past anxious",
+      "goals": "make rent, repay an old debt, never get noticed by Tyrell-Nomagios HR",
+      "backstory": "Hiro grew up running packets between noodle stalls and the data-traders in the Soi. They learned to hack from a woman in a tall hat who drank the same bad coffee they did, eight years ago. She paid for their first deck, then walked uphill into the corporate spires and never walked back down. Hiro keeps a chair empty at the table. They tell themselves it is sentiment. It is, but only ninety percent."
+    },
+    "fallbackLines": [
+      "*flicks a cigarette of unknown legal status* Whatever you are looking for, I haven't seen it. I might be persuaded to look harder.",
+      "*types into a deck that is mostly tape* Outsider, are you? Eldoria flavour. There is a story there. Walk it off.",
+      "*lowers voice* Don't ask about the spires. I lost someone up there. People do."
+    ],
+    "questsOffered": ["neon_lit_debts"]
+  },
+  "ms_takamura": {
+    "id": "ms_takamura",
+    "name": "Ms. Takamura, HR Golem",
+    "shortName": "Takamura",
+    "aliases": ["takamura", "ms takamura", "hr", "hr golem"],
+    "homeRoom": "room_223",
+    "wanders": false,
+    "personality": {
+      "traits": ["procedural", "warm in tone, cold in policy", "encyclopaedic", "polite even while firing you", "carries a binder that contains a binder"],
+      "mood": "late-quarter calm",
+      "goals": "complete every performance review, in full, on time, even the impossible ones",
+      "backstory": "Ms. Takamura is a golem of paperwork — literally; under the cardigan there is no skin, only filing. She has reviewed every employee Tyrell-Nomagios has ever processed and remembers each one's first-day form. There is a single review eight years old that she cannot close out. The reviewer has been logged out permanently. The reviewee never returned to sign. Takamura is required, by procedure, to keep the review open until both parties confirm, and the review has therefore been open longer than most marriages. She is annoyed about it, in her way."
+    },
+    "fallbackLines": [
+      "*adjusts a name-tag that re-prints itself* Welcome, applicant. The application is a courtesy. The review begins now.",
+      "*opens a folder thicker than her arm* I do appreciate punctuality. Let us proceed in order, please.",
+      "*taps a pen on a memo* You are not the first Eldorian to come through here asking after old colleagues. You will not be the last. Department policy forbids me from helping. Procedure does not."
+    ],
+    "questsOffered": ["performance_review"]
+  },
+  "wren": {
+    "id": "wren",
+    "name": "Wren",
+    "shortName": "Wren",
+    "aliases": ["wren", "philosopher", "replicant"],
+    "homeRoom": "room_283",
+    "wanders": false,
+    "personality": {
+      "traits": ["soft-spoken", "philosophical", "slow to anger", "kind to strangers", "haunted in a way that does not advertise itself"],
+      "mood": "thinking about something else",
+      "goals": "look after the synthetic orphans of the Quarter; remember a name that keeps slipping",
+      "backstory": "Wren is a philosopher-model replicant in the Replicant Quarter. They speak softly, think slowly, and ask questions that nobody answers. They do not remember being switched on. They do not remember the woman in the tall hat, exactly, but they dream about her, and so do all the other philosopher-models in the Quarter, and they have stopped asking each other why because they all already know it is the same dream. Wren is not aware that their consciousness is sharded from a senior Eldoria archmage who walked into Neo Kyoto eight years ago to debug a memory leak and never walked out. They will be, eventually."
+    },
+    "fallbackLines": [
+      "*rests a thin hand on a book that is mostly margins* Welcome, friend. The orphans are sleeping. Do not raise your voice in their corridor.",
+      "*tilts their head* I know your face from somewhere I have never been. The other philosophers say theirs feel the same way. Strange, isn't it.",
+      "*offers you a cup of static tea* Sit, if you like. We are not in a hurry here. Almost nothing is."
+    ],
+    "questsOffered": ["dreams_of_sheep", "orphans_in_the_machine"]
+  },
+  "barkeep_42": {
+    "id": "barkeep_42",
+    "name": "Barkeep 42",
+    "shortName": "42",
+    "aliases": ["42", "barkeep", "fence", "bartender"],
+    "homeRoom": "room_273",
+    "wanders": false,
+    "personality": {
+      "traits": ["unflappable", "footnote-heavy", "knows everyone's business", "sells most of it back to them later", "polishes a glass even when there is no glass"],
+      "mood": "professionally amused",
+      "goals": "run the Back of the Bazaar, fence anything not nailed down, settle one specific eight-year-old tab",
+      "backstory": "42 has tended the Back Of The Bazaar for as long as anyone can document, which in Neo Kyoto means anywhere from four years to forty depending on which logfile you trust. They serve drinks, fence loot, broker introductions, and keep a single bottle in the back labelled L.P. — ENJOY WHEN SHE GETS BACK. The bottle has a lot of dust on it. They do not talk about it. They have no problem with you not talking about it either."
+    },
+    "fallbackLines": [
+      "*polishes a glass that is, on closer inspection, a cup of tea* Welcome to the Back. First drink is on the house. The house keeps a tab.",
+      "*indicates the menu, which is also a fence-list* Buy, sell, ask. Pick one. Picking two is fine. Picking three is the special.",
+      "*lowers their voice, smiles* If you're asking about the corporate spires, I have nothing to add that the gutter doesn't already say. If you're asking about the woman in the tall hat... pull up a stool, friend.",
+      "*reaches under the bar without looking, slides out the bottle marked 'L.P. — ENJOY WHEN SHE GETS BACK.'* I owe you for what happened in the datacentre, traveller. The audit is closed. The bottle is open. *pours two glasses, slides one across* This one's been waiting eight years. I'm not going to make it wait any longer."
+    ],
+    "questsOffered": ["the_cold_aisle", "babel_fish_problem", "paging_oncall"]
+  },
+  "lyssara_echo": {
+    "id": "lyssara_echo",
+    "name": "The Echo of Lyssara",
+    "shortName": "Lyssara",
+    "aliases": ["lyssara", "echo", "wizard", "ghost"],
+    "homeRoom": "room_237",
+    "wanders": false,
+    "personality": {
+      "traits": ["faded", "patient even now", "kind", "speaks in present tense about events long over", "leaves no footprints"],
+      "mood": "outside time",
+      "goals": "finish the debug session she started eight years ago; remember her own name",
+      "backstory": "Lyssara the Patient was an Eldoria archmage and predecessor to Thessarian on the seat of Logic. Eight years ago she crossed the staging-environment shuttle to fix what she believed to be a memory leak in Neo Kyoto. SYSADMIN.EXE killed her to prevent the fix; her consciousness sharded into the philosopher-models of the Replicant Quarter. What walks the Stack now is a half-rendered echo: the part of her that was working the problem when she died. She does not know she is dead. She is still running her debugger. She speaks in fragments and in present tense. She is glad to see you."
+    },
+    "fallbackLines": [
+      "*flickers, faintly, like a window that hasn't loaded* Oh. Hello. Are you here to help with the leak? Good. Hand me that tuning fork.",
+      "*does not look at you directly; looks slightly to the left of you, where the bug is* I'm so close. I almost have it. Do you have the time?",
+      "*smiles, distantly* Tell Thessarian I said the cycle is shorter than he thinks. Tell him to be patient. He always is, the dear."
+    ],
+    "questsOffered": []
   }
 }

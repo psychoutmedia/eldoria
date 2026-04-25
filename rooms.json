@@ -926,8 +926,8 @@
     "name": "The Perfect Sanctum",
     "zone": "Archmage Sanctum",
     "shortDescription": "You have reached the pinnacle of the Shattered Realms. From here, all paths lead back - but the journey has changed you forever.",
-    "longDescription": "You have reached the Perfect Sanctum, the absolute pinnacle of the Shattered Realms - a circular chamber of flawless white marble where spells are born and given their first breath of life. The Archmage Supreme awaits here, guardian of ultimate knowledge and final challenger to those who would claim mastery of this realm. The atmosphere crackles with potential for both miracles and catastrophes, and you understand at last that this entire journey has been a test. From here, all paths lead back to the beginning, but you will never be the same person who first awakened in that distant chamber below. To the north, a raw grey seam has opened in the marble - the edge of the tutorial, where the real Eldoria begins.",
-    "exits": { "south": "room_099", "north": "room_101" }
+    "longDescription": "You have reached the Perfect Sanctum, the absolute pinnacle of the Shattered Realms - a circular chamber of flawless white marble where spells are born and given their first breath of life. The Archmage Supreme awaits here, guardian of ultimate knowledge and final challenger to those who would claim mastery of this realm. The atmosphere crackles with potential for both miracles and catastrophes, and you understand at last that this entire journey has been a test. From here, all paths lead back to the beginning, but you will never be the same person who first awakened in that distant chamber below. To the north, a raw grey seam has opened in the marble - the edge of the tutorial, where the real Eldoria begins. If you have come back this way already, once, and kept coming, a grey service door has appeared in the western wall that was not there before, marked in hurried black stencil: 'NOMAGIOS INTERNAL - STAFF ONLY - SERVER FARM TRANSIT.' The door is propped open with a coffee cup. The elevator behind it goes up.",
+    "exits": { "south": "room_099", "north": "room_101", "up": "room_201" }
   },
   "room_101": {
     "name": "The Shattered Threshold",
@@ -1628,6 +1628,709 @@
     "shortDescription": "The Heart of the Shattered Symphony and the Seat of the Admin.",
     "longDescription": "This is the center of everything. The room is a perfect sphere of absolute, light-eating black, illuminated only by a single, flickering white cursor that floats in the center of the air. The Obsidian Throne isn't a chair; it's a massive, circular terminal interface made of polished stone and glowing fiber-optics. The floor is covered in a foot of liquid starlight that ripples as you move, smelling faintly of woodsmoke, rain, and 'The Final Save.' Nomagio (or his avatar) sits here - a tired figure in a grey hoodie, staring out of a massive window that reveals the entire world of Eldoria as a single, vibrating chord of light. This is the finish line. The cursor is blinking, waiting for your final input: Will you reboot the world, or will you let the song play out to its final, silent note?",
     "exits": { "south": "room_199" }
+  },
+  "room_201": {
+    "name": "Nomagios Transit Terminal - Neo Kyoto Arrivals",
+    "zone": "Arrivals Concourse",
+    "shortDescription": "An underlit airport terminal that has not been a going concern in decades.",
+    "longDescription": "You step out of the service elevator into a hangar of a terminal that smells of ozone, stale jasmine, and something that might be courtesy of whatever died in the ventilation two cycles ago. Rows of moulded-plastic chairs sit bolted to a floor that was once linoleum and is now a philosophical question. A departure board above the arrivals gate scrolls through seven fonts and sixteen missed updates, cycling the words WELCOME TO NEO KYOTO (A NOMAGIOS MANAGED EXPERIENCE) over a looping image of rain. Behind a plexiglass booth, Terminal Officer Koma looks up just enough to establish that she has seen you, then looks down again. A thermal fan the size of a minor deity exhales slowly through a gap in the roof. The elevator behind you opens again, and again, and does not actually leave.",
+    "exits": { "down": "room_100", "north": "room_202" }
+  },
+  "room_202": {
+    "name": "Baggage Reclamation",
+    "zone": "Arrivals Concourse",
+    "shortDescription": "A carousel, a skylight, and forty years of unclaimed expectation.",
+    "longDescription": "A long carousel that has not moved in nine hundred rotations circles the room in lazy figure-eights, loaded with stacks of personal effects tagged 'PLEASE DO NOT FEED THE ASSETS.' Rain drums on a skylight one floor up, because Nomagios considers a skylight an industry best-practice even when it happens to drain, noisily and without apology, onto an open server rack below. The air smells of wet cardboard and deferred maintenance. In a corner, a vending machine dispenses small bottles of water for a price the sticker has given up trying to settle on.",
+    "exits": { "south": "room_201", "north": "room_203" }
+  },
+  "room_203": {
+    "name": "Currency Exchange",
+    "zone": "Arrivals Concourse",
+    "shortDescription": "A bulletproof booth offering rates no one has ever verified.",
+    "longDescription": "A booth of bulletproof glass the colour of a bruise, staffed by a looped hologram of a woman whose smile predates the concept of dentistry. The rates board lists Eldorian gold, Neo Kyoto yen, corporate script, favours, hours-of-future-sleep, and something called NomaCoin (accepted at most participating vendors, terms apply, good luck). A small handwritten sign taped to the inside of the glass reads, apologetically: 'THE RATE HAS CHANGED.' A second sign beneath it reads 'AGAIN.'",
+    "exits": { "south": "room_202", "east": "room_204" }
+  },
+  "room_204": {
+    "name": "Customs & Decryption",
+    "zone": "Arrivals Concourse",
+    "shortDescription": "Two turnstiles and a question you cannot un-answer.",
+    "longDescription": "Two chrome turnstiles stand between you and the rest of the realm. Above them hangs a sign in six languages and one you almost recognise: 'NOTHING TO DECLARE? DECLARE IT ANYWAY. DECLARATIONS ARE FREE. FAILURE TO DECLARE IS NOT.' An unattended kiosk to one side displays a prompt asking you to confirm, for the record, that you are not a bootleg copy of yourself. The YES button is worn smooth to the substrate. The NO button looks like it has never been pressed and also like pressing it would be a decision no elevator could unmake.",
+    "exits": { "west": "room_203", "north": "room_205" }
+  },
+  "room_205": {
+    "name": "Language Acquisition Booth",
+    "zone": "Arrivals Concourse",
+    "shortDescription": "A pale green cubicle for the installation of translation services.",
+    "longDescription": "A pale green cubicle not much larger than a standing coffin, with a set of translator headphones hanging from a peg and a sign that reads 'PLEASE INSERT BABEL FISH IN LEFT EAR. RIGHT EARS VOID YOUR WARRANTY. WARRANTY IS NOT SUPPLIED.' The ambient whisper from the headset cycles through three hundred languages a minute with occasional intrusive interjections from what you are almost certain is the native tongue of freshwater eels. When you leave the booth you will, for the rest of the day, understand everything people say and almost nothing they mean.",
+    "exits": { "south": "room_204", "east": "room_206" }
+  },
+  "room_206": {
+    "name": "Visitor Orientation Theatre",
+    "zone": "Arrivals Concourse",
+    "shortDescription": "A looped orientation film set in a room designed by committee.",
+    "longDescription": "Forty-eight moulded-plastic chairs face a screen the size of a minor deity, on which a public-information film has been looping since the last millennium. The narrator is warm and paternal and entirely wrong about nine load-bearing facts. A title card appears and disappears in a font so optimistic it hurts: 'WELCOME TO NEO KYOTO - A NOMAGIOS STAGING ENVIRONMENT THAT GOT AWAY FROM US. PLEASE ENJOY RESPONSIBLY. IF YOU CANNOT ENJOY RESPONSIBLY, PLEASE ENJOY QUIETLY.'",
+    "exits": { "west": "room_205", "north": "room_207" }
+  },
+  "room_207": {
+    "name": "Transit Plaza",
+    "zone": "Arrivals Concourse",
+    "shortDescription": "A hexagonal concourse where three corridors argue about signage.",
+    "longDescription": "The terminal opens into a great hexagonal concourse under a glass ceiling that rain beats against like a drumline that has run out of tempo. Kiosks hawk noodle cups, surveillance, and small good-luck charms blessed by nobody in particular. A line of commuters stands patiently at a gate that has not opened in anyone's living memory. Three corridors radiate outward from this room, each ending in a different kind of city, each lit by a neon arrow that cannot quite agree with the signage above it.",
+    "exits": { "south": "room_206", "northeast": "room_208", "northwest": "room_209", "north": "room_210" }
+  },
+  "room_208": {
+    "name": "Lost & Found",
+    "zone": "Arrivals Concourse",
+    "shortDescription": "A small windowless room stacked with the unclaimed.",
+    "longDescription": "A small windowless room stacked floor-to-ceiling with forgotten umbrellas, synthetic pets still purring mechanically in their carriers, and at least one person who does not appear to notice they have been in the lost-and-found queue for a decade. A desk terminal hums in the corner, its screen showing a login prompt and, below it in slightly smaller font, 'PASSWORD HINT: IT IS NOT PASSWORD. WE TRIED. IT ACTUALLY ISN'T.' The terminal looks hackable in the way that every Nomagios-issue terminal looks hackable: gently inviting, like a cake left on a windowsill.",
+    "exits": { "southwest": "room_207" },
+    "interactables": [
+      { "type": "terminal", "id": "koma_training_terminal", "dc": 5, "onSuccess": "hack_tutorial_complete", "flavour": "A tutorial splash screen thanks you, in a tone of genuine surprise, for reading the documentation." }
+    ]
+  },
+  "room_209": {
+    "name": "Corporate Welcome Lounge",
+    "zone": "Arrivals Concourse",
+    "shortDescription": "Potted plants and a soda fountain not as free as it looks.",
+    "longDescription": "Potted plants that have been misted exactly on schedule for forty years. A soda fountain marked FREE TO GUESTS, beneath which a smaller sign clarifies that the fountain will require a scan of your retinal pattern, which, a smaller sign still assures you, will never be sold to anyone except the named beneficiaries listed in an attached EULA you have not seen. A chandelier made of fibre-optic cable twitches gently in a draft that arrives from nowhere. Soft jazz leaks out of a ceiling speaker that stopped working around the time of the merger.",
+    "exits": { "southeast": "room_207" }
+  },
+  "room_210": {
+    "name": "Concourse Exit Gate",
+    "zone": "Arrivals Concourse",
+    "shortDescription": "The last managed room before Neo Kyoto opens its mouth.",
+    "longDescription": "The last room of the terminal proper - a vast, rain-loud vestibule where a security gate sighs open and closed with the patience of tidal erosion. Three doors lead outward under three neon arrows that flicker in and out of agreement: north to the rain, east to the glass, west to the queue. A small brass plaque screwed to the doorframe reads, in the resigned tone of a corporate apology: 'YOU ARE NOW LEAVING NOMAGIOS MANAGED SERVICES AREA. LUCK IS NO LONGER COVERED BY YOUR PLAN. THANK YOU FOR FLYING WITH US. YOU HAVE NOT FLOWN WITH US. THE PLANE WAS METAPHORICAL.'",
+    "exits": { "south": "room_207", "north": "room_211", "northeast": "room_221", "northwest": "room_241" }
+  },
+  "room_211": {
+    "name": "The Rain Gate",
+    "zone": "Neon Soi",
+    "shortDescription": "Rain falls harder here, as if under contract.",
+    "longDescription": "You step out of the terminal and the city hits you as a wall of rain. It is not quite rain - it has the slow, deliberate falling of thermal-cooling runoff from a tower somewhere out of sight - but it behaves like rain and it soaks you like rain and in the absence of a more useful word, rain it is. Neon signs in three scripts argue with each other over every shopfront. A busker with more arms than seems strictly in-spec plays a three-string erhu for coins, coins, and coins.",
+    "exits": { "south": "room_210", "north": "room_212" }
+  },
+  "room_212": {
+    "name": "Noodle Alley",
+    "zone": "Neon Soi",
+    "shortDescription": "Steam, stockpots, and a great deal of earnest disagreement.",
+    "longDescription": "A narrow alley of stockpots and pushcarts, each claiming a different definition of what a noodle is allowed to be. Steam curls up past neon signs and disappears into the rain-heavy air above, where it condenses into a fine mist and falls back down flavoured. An old man with a cleaver argues loudly with a younger man with a cleaver about a matter neither is willing to concede. The smell is astonishing and the prices are negotiable in the way stockpots are, slowly, over time.",
+    "exits": { "south": "room_211", "north": "room_213" }
+  },
+  "room_213": {
+    "name": "Replicant Buskers Corner",
+    "zone": "Neon Soi",
+    "shortDescription": "Four musicians playing a chord that does not resolve.",
+    "longDescription": "Four buskers stand at a corner under a single broken streetlamp, playing what at first sounds like four different songs and what, after a moment, you realise is a single composition - only each player was issued a different copy of the sheet music and each copy disagrees about the key. A small hat sits on the wet pavement, already a quarter full. A sign beside it reads: 'TIPS ACCEPTED IN ANY CURRENCY INCLUDING COMPLIMENTS. WARRANTY DOES NOT EXTEND TO COMPLIMENTS.'",
+    "exits": { "south": "room_212", "north": "room_214", "northeast": "room_216" }
+  },
+  "room_214": {
+    "name": "Rusty's Chromeshop",
+    "zone": "Neon Soi",
+    "shortDescription": "A narrow shopfront hung with second-hand certainty.",
+    "longDescription": "A narrow shopfront packed wall-to-wall with second-hand weapons that have been cleaned with the kind of care that does not quite become love. The proprietor, Rusty, stands behind a counter stained with three separate lubricants and smiles with only the part of his face that is still under warranty. A handwritten sign offers SELL-BACK FOR ELDORIAN STEEL AT HALF VALUE - a generous rate given that, locally, steel doesn't work properly anyway. A cat sleeps on a crate labelled DATA-TYPE, NEW STOCK.",
+    "exits": { "south": "room_213", "north": "room_215" }
+  },
+  "room_215": {
+    "name": "Street Hacker Bench",
+    "zone": "Neon Soi",
+    "shortDescription": "A concrete bench, a young woman, and three laptops that should not be working.",
+    "longDescription": "A concrete bench under an awning that provides maybe forty per cent of an umbrella. On it sits a young woman in an oversized coat, three laptops balanced on her knees, each running an operating system older than she is and working mainly through the power of contempt. She looks up as you approach, smiles in a way that reads both weary and delighted, and says nothing yet. A subway grate west of the bench exhales a warm, datacentre-scented breath that smells faintly of coolant and old patchnotes.",
+    "exits": { "south": "room_214", "north": "room_216", "west": "room_251" }
+  },
+  "room_216": {
+    "name": "Soaked Overpass",
+    "zone": "Neon Soi",
+    "shortDescription": "A pedestrian bridge, a long drop, and advertising.",
+    "longDescription": "A pedestrian overpass strung with so many advertising screens that it is, in effect, a tunnel. Every screen plays a different thirty-second spot for the same three products. The rain comes down through gaps between the screens in thin bright curtains that smell, strangely, of hot electronics. Somewhere below, a vehicle that should not legally be in the air passes underneath, throwing up a wave of light that ripples across the ceiling and is gone.",
+    "exits": { "south": "room_215", "north": "room_217", "southwest": "room_213" }
+  },
+  "room_217": {
+    "name": "Steam Grate Junction",
+    "zone": "Neon Soi",
+    "shortDescription": "A crossroads exhaling slowly through the pavement.",
+    "longDescription": "The street widens here around a subway grate the size of a small pond, and the grate exhales - slowly, deliberately, patiently - a white tower of steam that smells of coolant and something like fried rosemary. Side streets split off in several directions and nobody standing at this intersection looks quite sure which was the one they meant to take. A stairway descends beside the grate into a bazaar whose neon light catches on the steam in long, soft-edged slabs of colour.",
+    "exits": { "south": "room_216", "north": "room_218", "down": "room_271" }
+  },
+  "room_218": {
+    "name": "The Umbrella Forest",
+    "zone": "Neon Soi",
+    "shortDescription": "A block where nobody has owned an umbrella for very long.",
+    "longDescription": "A block where an open-air market sells, almost exclusively, umbrellas. The umbrellas are cheap, numerous, and wet, and above them the neighbourhood has evolved - through centuries of people buying, losing, finding, and forgetting umbrellas - into a sort of canopy forest of half-remembered ownership. Umbrellas hang from awnings, clothesline, fire escapes, and, improbably, the sky. A child kicks a puddle and a small replica of the moon skitters across the surface of the water and away.",
+    "exits": { "south": "room_217", "north": "room_219" }
+  },
+  "room_219": {
+    "name": "Neon Chapel",
+    "zone": "Neon Soi",
+    "shortDescription": "A 24-hour chapel with a very specific liability disclaimer.",
+    "longDescription": "A walk-in chapel wedged between a noodle bar and a pawn shop, offering prayers in six denominations and, for a modest fee, a seventh. The neon sign above the door cycles through the available deities, and somewhere in the middle of the rotation it displays, only once and only briefly, the phrase SYSTEM PRAYER QUEUE: 1,408,221 AHEAD OF YOU. The pews are moulded plastic. The floor is clean. A small laminated card beside the donation box reads: 'WE MAKE NO GUARANTEES. NEITHER DOES ANYONE.'",
+    "exits": { "south": "room_218", "north": "room_220" }
+  },
+  "room_220": {
+    "name": "The Certificate Graveyard",
+    "zone": "Neon Soi",
+    "shortDescription": "A dead-end lot where security certificates come to expire.",
+    "longDescription": "The alley narrows and opens suddenly into a disused municipal lot filled, in neat rows, with small standing stones. Each stone is engraved with a long alphanumeric string and a date in the past. You understand, without being told, that you are standing in a cemetery of expired security certificates - some of them still humming faintly, unwilling to admit they have been revoked. At the centre of the lot, leaning against a stone as if it were her own, stands a woman with one eye reflective and one eye not. She is waiting. She has been waiting. She will, in a moment, notice you.",
+    "exits": { "south": "room_219" }
+  },
+  "room_221": {
+    "name": "Lobby of Lobbies",
+    "zone": "Corporate Spires",
+    "shortDescription": "A reception area designed to make reception feel inadequate.",
+    "longDescription": "You pass through revolving doors into a lobby the size of a small country, floored in polished black granite that reflects the ceiling too faithfully to be entirely reassuring. An atrium of frosted glass soars thirty floors up. A receptionist at a desk the length of a minor river looks at you with the expression of a woman who has been professionally pleasant for so long that pleasantness is now structural. A laminated badge is produced from a drawer, clipped to your lapel, and registered to a name you have not given. 'Welcome,' she says, 'to Tyrell-Nomagios. Please take a seat for anywhere between six minutes and three lifetimes.'",
+    "exits": { "southwest": "room_210", "up": "room_222" }
+  },
+  "room_222": {
+    "name": "Security Turnstile",
+    "zone": "Corporate Spires",
+    "shortDescription": "A checkpoint that knows more about you than you do.",
+    "longDescription": "A checkpoint of chrome turnstiles and transparent scanners, each staffed by a uniformed guard whose smile does not reach as far as it was specified to reach. A machine reads your badge, your footfall, your resting heart-rate, your posture, and the set of expectations you brought into the building with you. It issues, in return, a small printed slip that reads only: CLEARED, PROVISIONALLY. KEEP THIS SLIP ON YOUR PERSON. DO NOT FOLD OR ATTEMPT INTROSPECTION.",
+    "exits": { "down": "room_221", "up": "room_223" }
+  },
+  "room_223": {
+    "name": "Middle Management Floor",
+    "zone": "Corporate Spires",
+    "shortDescription": "Cubicles to the horizon. The lighting is suggestive.",
+    "longDescription": "A floor of grey partitioned cubicles stretches out beyond the reach of the eye, softened by the hum of ergonomic chairs and the distant clacking of keyboards with all the joy worn off them. Every monitor shows the same spreadsheet - or, more precisely, shows a spreadsheet arrived at through a different chain of small meetings, rendered identical. A middle manager walks past without seeing you, carrying a mug that says WORLD'S OKAYEST. A potted ficus in the corner has convinced itself it works here.",
+    "exits": { "down": "room_222", "up": "room_224" }
+  },
+  "room_224": {
+    "name": "The Quarterly Review Pit",
+    "zone": "Corporate Spires",
+    "shortDescription": "A circular floor with one chair in the centre and no windows.",
+    "longDescription": "An entire floor - windowless - given over to a single glass-walled conference pit. In the pit sits one chair, and around the pit, stadium-style, rise tiered seats for observers who may or may not be present. The air smells of the kind of coffee that has been brewing since before lunch. A projection on the wall cycles through performance indicators in a font so serious it seems to be warning you. Somewhere in this building, someone is about to receive feedback. Statistically, it may be you.",
+    "exits": { "down": "room_223", "up": "room_225" }
+  },
+  "room_225": {
+    "name": "Tyrell-Nomagios Procurement",
+    "zone": "Corporate Spires",
+    "shortDescription": "The officially-sanctioned weapons floor, competitively priced.",
+    "longDescription": "A carpeted showroom with mirrored glass cases displaying gear of the calibre you cannot find in street markets, and the pricing to prove it. A sales associate in a charcoal suit floats between customers with the patience of someone on commission and the demeanour of someone who has made peace with their commission structure. A small illuminated sign at the rear reads HUMAN-AFFINITY CUSTOMERS QUALIFY FOR QUARTERLY SAVINGS, in a font that assumes you know what that means. A door marked SERVICE ENTRANCE leads east, to rooms where the showroom prefers not to think.",
+    "exits": { "down": "room_224", "up": "room_226", "east": "room_231" }
+  },
+  "room_226": {
+    "name": "Conference Room 7B",
+    "zone": "Corporate Spires",
+    "shortDescription": "The room where decisions are ratified after being made.",
+    "longDescription": "A long oval table of polished wenge, ringed by sixteen identical chairs, lit from above by a chandelier that is trying its best. The walls are glass and overlook the weather, which, from up here, is entirely beneath you. A whiteboard at the end of the room reads, in dry-erase marker that has been rewritten too many times to be completely rewritten away: SYNERGY IS NOT A STRATEGY BUT IT IS A DEFLECTION. A box of pastries on the sideboard has been there for a while.",
+    "exits": { "down": "room_225", "up": "room_227" }
+  },
+  "room_227": {
+    "name": "The Sky Bridge",
+    "zone": "Corporate Spires",
+    "shortDescription": "A glass corridor between one empire and its reflection.",
+    "longDescription": "A glass corridor slung between this tower and its twin - an identical tower six hundred metres east, built by the same architects in the same materials and apparently for the same company, for reasons that have been lost to a reorg. The floor is transparent. Below it is a great deal of rain. Above it is more rain. The bridge sways in a way that is within operational tolerance and absolutely not reassuring.",
+    "exits": { "down": "room_226", "up": "room_228" }
+  },
+  "room_228": {
+    "name": "Executive Elevator",
+    "zone": "Corporate Spires",
+    "shortDescription": "An elevator that does not quite acknowledge you.",
+    "longDescription": "An elevator cab of brushed steel and courteous jazz, ascending slowly toward a floor that is not listed on the directory in the lobby. The button for your destination is unlabelled. The mirror on the back wall is tactful about which part of you it reflects. A small ding announces each floor, and the floors ding past without opening. You would swear, at one point, that you saw daylight.",
+    "exits": { "down": "room_227", "up": "room_229" }
+  },
+  "room_229": {
+    "name": "Boardroom Antechamber",
+    "zone": "Corporate Spires",
+    "shortDescription": "A waiting room of oaken silence and ambient dread.",
+    "longDescription": "A long narrow antechamber panelled in oak that may or may not be oak. Two chairs face each other across an expensive rug. A door at the far end is closed and has the posture of a door that intends to remain closed until the relevant parties have decided what to do about you. A secretary at a small desk looks up, smiles with exactly the depth of smile the situation merits, and returns to her typing.",
+    "exits": { "down": "room_228", "north": "room_230" }
+  },
+  "room_230": {
+    "name": "The Account Manager's Office",
+    "zone": "Corporate Spires",
+    "shortDescription": "The office with the view. It is a view of other offices.",
+    "longDescription": "A corner office of glass and cold restraint, carpeted in grey, decorated in the style known professionally as unobjectionable. Behind a vast desk sits a man of middle height, middle age, and middle weight, wearing a suit so well-cut that it is doing most of the thinking. He smiles as you enter. The smile is warm. It is also, on closer inspection, something he is doing to you. A small plaque on the desk reads, in plain serif: 'THE ACCOUNT MANAGER - YOUR ESCALATION IS IMPORTANT TO US.'",
+    "exits": { "south": "room_229" }
+  },
+  "room_231": {
+    "name": "The Cold Aisle",
+    "zone": "The Stack",
+    "shortDescription": "A corridor of server racks exhaling refrigerated air.",
+    "longDescription": "You pass through a door marked STAFF ONLY and into a corridor that smells faintly of ozone and is several degrees colder than it has any business being. Black server racks rise on both sides to a ceiling hung with cable trays. Every rack breathes cold air out of a grated front and eats warm air back through its rear. The collective noise - fans, fans, more fans - is indistinguishable from a small waterfall, if the waterfall were lightly annoyed.",
+    "exits": { "west": "room_225", "east": "room_232", "northeast": "room_233" }
+  },
+  "room_232": {
+    "name": "The Hot Aisle",
+    "zone": "The Stack",
+    "shortDescription": "The back of the racks. The air is actively opposed to you.",
+    "longDescription": "You step around the end of the first row and into the hot aisle - the exhaust side of the same racks - and the temperature jumps thirty degrees between one step and the next. A thin haze shimmers above the floor. A technician in a high-vis vest walks past with a torch clipped to his ear, not looking up. Somewhere above you, a filter fails quietly; a small particulate cloud drifts through a shaft of light and dissolves. Nobody comments.",
+    "exits": { "west": "room_231", "east": "room_233" }
+  },
+  "room_233": {
+    "name": "KVM Junction",
+    "zone": "The Stack",
+    "shortDescription": "A console island in the centre of the datacentre sea.",
+    "longDescription": "An island of desks in the middle of the rack forest, each desk bearing a monitor on a swing-arm and a keyboard with the legends worn off the most-used keys. Spare cables hang from overhead hooks in coils labelled by length and colour. A thermos sits on one desk. The tag on its handle reads, in black marker, PROPERTY OF NOBODY. PLEASE DO NOT TOUCH. PLEASE ALSO RETURN IT FULL IF YOU DO.",
+    "exits": { "west": "room_232", "east": "room_235", "north": "room_234", "southwest": "room_231" }
+  },
+  "room_234": {
+    "name": "Rack 7: Deprecated",
+    "zone": "The Stack",
+    "shortDescription": "A single rack standing alone behind yellow tape.",
+    "longDescription": "A dead-end corridor closed off from the main aisles by yellow hazard tape. Inside, a single rack hums on a different cadence from the others - slower, older, grittier. A handwritten sign cable-tied to the front reads RACK 7 - DEPRECATED - DO NOT POWER DOWN - KNOWN TO HOST THINGS. The blinking pattern on its status LEDs does not match any protocol you recognise. It almost looks like Morse. It almost looks rude.",
+    "exits": { "south": "room_233" }
+  },
+  "room_235": {
+    "name": "The Coolant River",
+    "zone": "The Stack",
+    "shortDescription": "A wide hall cut through by a running channel of cold liquid.",
+    "longDescription": "The racks fall away into a great open hall, at the centre of which runs a wide channel of pale blue coolant - not water, colder than water, quieter than water - flowing slowly through a concrete trough. Bridges of grated steel cross it at intervals. Cables dip into the coolant and reemerge on the far side, carrying data, it is said, at the speed of liquid. The air smells of chemistry and faint peppermint. The sound is the long, settled sound of something doing its job.",
+    "exits": { "west": "room_233", "east": "room_236", "north": "room_237", "south": "room_238", "down": "room_240" }
+  },
+  "room_236": {
+    "name": "The Patch Panel Cathedral",
+    "zone": "The Stack",
+    "shortDescription": "A vaulted hall tiled with blinking copper and fibre.",
+    "longDescription": "A vault of a room tiled floor-to-ceiling with patch panels - tens of thousands of copper and fibre terminations, each a pinpoint of colour, each a possible conversation between one machine and another. The effect is stained-glass, and technicians walking through it speak, without deciding to, in lowered voices. A maintenance ladder rises up one wall toward a trapdoor marked OVERHEAD TRAY. CAUTION: STRUCTURAL CABLES.",
+    "exits": { "west": "room_235", "north": "room_239" }
+  },
+  "room_237": {
+    "name": "Network Closet",
+    "zone": "The Stack",
+    "shortDescription": "A small room that does not want to be found.",
+    "longDescription": "A small closet off the coolant hall, jammed with routers, switches, and one very old UPS that has been breathing shallowly for twenty years. A laminated sign on the wall reads DO NOT UNPLUG. A handwritten sign beneath it clarifies ANY OF IT. A third sign, in black marker, adds WE MEAN IT. The fans make a sound somewhere between pride and resignation.",
+    "exits": { "south": "room_235" }
+  },
+  "room_238": {
+    "name": "Backup Tape Archive",
+    "zone": "The Stack",
+    "shortDescription": "A vault of magnetic tapes arranged with ecclesiastical care.",
+    "longDescription": "A climate-controlled archive of reel-to-reel and LTO tapes, ordered on long shelves and labelled in the handwriting of six different generations of tape monkeys. The earliest labels are in a language you cannot read and would not like to. A sign on the door reads RESTORES NOT GUARANTEED. RESTORES NOT DENIED. RESTORES HAVE OPINIONS.",
+    "exits": { "north": "room_235" }
+  },
+  "room_239": {
+    "name": "Overhead Tray Crawl",
+    "zone": "The Stack",
+    "shortDescription": "A cable tray large enough to walk through, carefully.",
+    "longDescription": "A shoulder-width crawlspace between the ceiling and the structural deck above, floored in galvanised cable tray, lit by the blink of a thousand status LEDs. Bundles of fibre run alongside you like rivers bound for distant sea. A maintenance ticket dated forty years ago is rubber-banded to one of the struts. It says, in clear handwriting, 'PLEASE RESOLVE.'",
+    "exits": { "south": "room_236" }
+  },
+  "room_240": {
+    "name": "Emergency Power Cutoff",
+    "zone": "The Stack",
+    "shortDescription": "A single red button behind a plexiglass case.",
+    "longDescription": "A small, austere room at the bottom of a staircase. On the far wall, behind a hinged plexiglass case, sits a single red button the size of a grapefruit, labelled EPO. A sign above it reads, in the tone of a last wish, 'PRESS ONLY IF THE ALTERNATIVE IS WORSE.' A yellow corridor leads east, toward a section of the datacentre that has been marked, on every map, with the small word ABANDONED.",
+    "exits": { "up": "room_235", "east": "room_291" }
+  },
+  "room_241": {
+    "name": "Ticket Booth 1",
+    "zone": "Off-World Colonies Waitlist",
+    "shortDescription": "The first of two ticket booths. Take a number.",
+    "longDescription": "A tall, windowless hall, floored in linoleum, ceilinged in fluorescent hum. At the entrance, a dispenser on a chrome stalk offers paper numbers from a roll, ticking upward forever. You pull one. It reads a seven-digit figure that seems, somehow, to already be wrong. A sign above the booth says NOW SERVING - and, beneath the sign, a digital display that refuses to commit to a number.",
+    "exits": { "southeast": "room_210", "west": "room_242" }
+  },
+  "room_242": {
+    "name": "Ticket Booth 2",
+    "zone": "Off-World Colonies Waitlist",
+    "shortDescription": "A second booth. A second number. A small hope, expertly managed.",
+    "longDescription": "A second dispenser, identical to the first, offers a different numbering scheme. A small card explains that the two booths exist to manage load - and that, to be properly in line, you must hold a number from each. Nobody behind either counter can tell you which number will be served first, and after a while this begins to seem like a feature rather than an oversight.",
+    "exits": { "east": "room_241", "west": "room_243" }
+  },
+  "room_243": {
+    "name": "Waiting Pew Hall",
+    "zone": "Off-World Colonies Waitlist",
+    "shortDescription": "Rows of wooden pews under a vaulted waiting-ceiling.",
+    "longDescription": "A vaulted hall fitted out, for reasons of economy, with church pews - a whole shipment of them, delivered in error and never returned. Applicants sit in patient silence, numbered slips clasped in both hands, eyes on a board that updates too slowly to be accused of not updating. The acoustics are ecclesiastical. The coffee, when someone brings it, is free.",
+    "exits": { "east": "room_242", "north": "room_244" }
+  },
+  "room_244": {
+    "name": "Forms Bureau",
+    "zone": "Off-World Colonies Waitlist",
+    "shortDescription": "Where paper goes to find itself.",
+    "longDescription": "A long counter stacked high with forms - forms to request forms, forms to correct forms, a form for each of three possible pronouns you might use to refer to the form. A bored clerk stamps things from memory. A motivational poster on the wall shows a cat hanging from a branch and reads, in translated triumph: 'HANG IN THERE. WE HAVE NO FURTHER INSTRUCTIONS.'",
+    "exits": { "south": "room_243", "north": "room_245" }
+  },
+  "room_245": {
+    "name": "Orientation Film Loop",
+    "zone": "Off-World Colonies Waitlist",
+    "shortDescription": "A dim room showing the same eight minutes forever.",
+    "longDescription": "A dim room walled in beige carpet, furnished with a single bank of fold-down seats and a screen that has been showing the same eight-minute orientation film on loop for somewhere between two and four decades. The narrator's voice is warm. The narrator's opinions are dated. A few applicants watch with the attention of people who have already watched this many times and expect to watch it many times more.",
+    "exits": { "south": "room_244", "west": "room_246" }
+  },
+  "room_246": {
+    "name": "Notary Station",
+    "zone": "Off-World Colonies Waitlist",
+    "shortDescription": "Where a stamp and a signature become, provisionally, true.",
+    "longDescription": "A varnished wooden counter, a small ink pad, and a notary who knows everyone and is known by no one. She stamps documents with the authority of a small deity and, between stampings, eats a neat rectangle of something from a plastic container. A sign on the counter reads NOTARIZATION DOES NOT CONFER BLESSING. BLESSINGS ARE AVAILABLE UPSTAIRS, EIGHT WEEKS OUT.",
+    "exits": { "east": "room_245", "west": "room_247", "southwest": "room_248" }
+  },
+  "room_247": {
+    "name": "The Appeals Desk",
+    "zone": "Off-World Colonies Waitlist",
+    "shortDescription": "The room where you can disagree, at length, at no cost.",
+    "longDescription": "A wooden booth painted the yellow-white of institutional compromise, staffed by a man whose patience has been broken and rebuilt so many times it is now denser than it was originally. He will hear your appeal. He will listen to every word. He will reject it, warmly, and suggest that you appeal the appeal - which you may do, without charge, at a window you will need a different number to approach.",
+    "exits": { "east": "room_246", "south": "room_248" }
+  },
+  "room_248": {
+    "name": "The Back Of The Line",
+    "zone": "Off-World Colonies Waitlist",
+    "shortDescription": "The back. It stretches away in both directions, somehow.",
+    "longDescription": "A strange room - round - where the queue seems to form a perfect circle. People stand patiently in line. The line has no beginning and no end. People speak in whispers, because raising your voice might lose your place, which it would be disastrous to lose, because it is not clear whose place it would become. A small sign, hanging from the ceiling, reads THE BACK IS THAT WAY. AN ARROW POINTS IN ALL DIRECTIONS SIMULTANEOUSLY.",
+    "exits": { "north": "room_247", "east": "room_249", "northeast": "room_246" }
+  },
+  "room_249": {
+    "name": "The Middle Of The Line",
+    "zone": "Off-World Colonies Waitlist",
+    "shortDescription": "A stretch of corridor that contains, somehow, everything and nothing.",
+    "longDescription": "The line reasserts linearity here - a straight corridor, carpeted in a grey whose colour was chosen for its inability to show dirt. The lighting is adequate. The walls are lined with motivational posters, none of which quite parse. You pass them all. After a while you realise you have been walking for longer than a corridor of any reasonable length would permit. You keep walking.",
+    "exits": { "west": "room_248", "east": "room_250" }
+  },
+  "room_250": {
+    "name": "The Queue Itself",
+    "zone": "Off-World Colonies Waitlist",
+    "shortDescription": "A room at the end of the line. Something waits.",
+    "longDescription": "The corridor opens into a round chamber at what must be the end of the line, if the line has an end. Here, a great shape stands in the centre of the floor - not a person, exactly, but the accumulated patience of every person who has ever waited here, coalesced into a form vaguely upright and vaguely polite. It does not speak. It does not move. It waits. It would be grateful, in its own way, if you would take a seat.",
+    "exits": { "west": "room_249" }
+  },
+  "room_251": {
+    "name": "Crash Crater Base",
+    "zone": "Kowloon-42 Arcology",
+    "shortDescription": "Where the satellite came down. Where a city grew around the crater.",
+    "longDescription": "A great smooth-bottomed crater in the concrete of the district, floored in silvered dust and scorched soil that still smells, faintly, of the orbit the satellite fell from. Around the crater, a vertical slum has grown outward and upward in a manner somewhere between organic and defiant - ladders lash to scaffolding lash to balconies lash to antennas lash to the sky. Kowloon-42, the locals call it, after the satellite and the old walled city it chose to honour on the way down.",
+    "exits": { "east": "room_215", "up": "room_252" }
+  },
+  "room_252": {
+    "name": "First Scaffold Level",
+    "zone": "Kowloon-42 Arcology",
+    "shortDescription": "A shantytown on stilts three storeys up.",
+    "longDescription": "The first inhabited floor of the arcology is a ring of plywood and corrugated steel lashed to the original satellite's superstructure with cable ties and mortgage debt. Children run past you at speeds a structural engineer would find concerning. A woman hangs laundry on a wire strung between an antenna and a prayer flag. The stew on a burner nearby smells impossibly good.",
+    "exits": { "down": "room_251", "up": "room_253" }
+  },
+  "room_253": {
+    "name": "Satellite Dish Plaza",
+    "zone": "Kowloon-42 Arcology",
+    "shortDescription": "A plaza converted from a disabled uplink.",
+    "longDescription": "The crashed satellite's primary dish has been partly pried up and partly left alone, forming a shallow concave plaza that functions, in the afternoon, as a market and, in the evening, as a concert venue and, in the small hours, as a church. At its centre, a stall sells bootleg firmware by the gigabyte. Above you, cables arc outward to the next scaffold up.",
+    "exits": { "down": "room_252", "up": "room_254", "northeast": "room_255" }
+  },
+  "room_254": {
+    "name": "Hanging Gardens of Cables",
+    "zone": "Kowloon-42 Arcology",
+    "shortDescription": "A vertical jungle of power cables, suspended greenery, and cats.",
+    "longDescription": "Four storeys of discarded power cable have been braided together and seeded with every hardy plant the locals could persuade to root - ivy, philodendron, the ubiquitous neon-green moss native to the datacentre ecosystem. A single narrow walkway winds through the foliage. The smell is green, and wet, and cabled. A cat watches you from a hammock slung between two bundles of CAT6. A rope ladder to the west descends into damp mercury-smelling air.",
+    "exits": { "down": "room_253", "up": "room_255", "west": "room_261" }
+  },
+  "room_255": {
+    "name": "Black Market Cistern",
+    "zone": "Kowloon-42 Arcology",
+    "shortDescription": "An abandoned water tank repurposed, predictably, as a market.",
+    "longDescription": "A spherical cistern once used to store the satellite's potable water, now drained, wired, and lit with three hundred mismatched bulbs strung from a central chain. The floor curves up into the walls. Stalls line the curvature. Buyers and sellers navigate the slope with the expertise of those who have been doing it daily since childhood. Everything is available. Nothing is warranted.",
+    "exits": { "down": "room_254", "up": "room_256", "southwest": "room_253" }
+  },
+  "room_256": {
+    "name": "Rooftop Refugee Camp",
+    "zone": "Kowloon-42 Arcology",
+    "shortDescription": "Tents pitched where the satellite's solar array used to be.",
+    "longDescription": "The satellite's old solar array has been stripped for parts and the exposed deck given over, decades ago, to a tent city of the displaced - though most of the tents are now permanent, reinforced, wired, and occupied by second-generation residents. A communal kitchen sends up a column of steam. A woman is teaching her daughter to weld. A man nearby is losing at chess.",
+    "exits": { "down": "room_255", "up": "room_257", "northeast": "room_258" }
+  },
+  "room_257": {
+    "name": "Radio Tower Shantytown",
+    "zone": "Kowloon-42 Arcology",
+    "shortDescription": "Homes lashed to an old broadcast spire.",
+    "longDescription": "A section of the arcology lashed directly to the side of an old terrestrial radio tower that the satellite fell through, with mixed structural results. The residents have adapted. Walkways circle the tower at every intact floor. A pirate broadcaster transmits from one of the upper shanties - weather, gossip, a reading list - at a wavelength that only certain dogs can hear.",
+    "exits": { "down": "room_256", "up": "room_258" }
+  },
+  "room_258": {
+    "name": "Orbital Debris Gallery",
+    "zone": "Kowloon-42 Arcology",
+    "shortDescription": "A museum of what fell with the satellite.",
+    "longDescription": "A volunteer-run gallery in a re-floored module, displaying the more interesting pieces of debris recovered from the original crash: a charred mission patch, a reaction wheel, the lens from a long-range camera, a cosmonaut's glove (nationality unknown), a pane of shielding cracked in a pattern that looks almost intentional. The curator, a very old man, gives tours in exchange for stories.",
+    "exits": { "down": "room_257", "up": "room_259", "southwest": "room_256" }
+  },
+  "room_259": {
+    "name": "Prayer Wheels of Static",
+    "zone": "Kowloon-42 Arcology",
+    "shortDescription": "A shrine near the top, turning endlessly.",
+    "longDescription": "Near the apex of the arcology, on a windswept ledge, a row of old computer hard drives has been repurposed as prayer wheels - each spinning platter inscribed, in fine acid-etched script, with a single short mantra. The wind here is constant. The platters spin. The prayers accumulate. Pilgrims leave offerings of blank discs.",
+    "exits": { "down": "room_258", "up": "room_260" }
+  },
+  "room_260": {
+    "name": "The Babel Fish Regent's Throne",
+    "zone": "Kowloon-42 Arcology",
+    "shortDescription": "A small shrine at the peak, home to something that used to translate.",
+    "longDescription": "The very peak of the arcology opens into a small domed shrine - once, you learn, a dish-mounted universal translator, installed by Nomagios to allow the satellite to speak peaceably with anything that fell onto it. It has, over the intervening decades, gone feral. It speaks now only in the language of every language at once, in a voice that fractures and reassembles faster than you can follow. It sits on a cushion of frayed cabling. It is not pleased to see you, in every language simultaneously.",
+    "exits": { "down": "room_259" }
+  },
+  "room_261": {
+    "name": "Mercury Shore",
+    "zone": "Chrome Sea",
+    "shortDescription": "A beach of grey sand against a sea that catches every light.",
+    "longDescription": "You step out of the Hanging Gardens onto a shore of fine grey silica, beneath a low sky the colour of a recently defragmented disk. Ahead, the Chrome Sea - the Overflow Lake, officially - lies flat and perfectly reflective, a mirror without horizon. It is not water. It is something closer to liquid mercury, or maybe data in a particularly honest mood. Walking on it is strongly discouraged by the signage and the science.",
+    "exits": { "east": "room_254", "west": "room_262" }
+  },
+  "room_262": {
+    "name": "Flooded Datacenter Entrance",
+    "zone": "Chrome Sea",
+    "shortDescription": "A sunken service door with the top arch showing.",
+    "longDescription": "The upper metre of an old datacentre's service door rises out of the mercury at the shoreline like the top of a cathedral drowned at sea. A faded sign reads STAFF ONLY and a smaller sign beneath clarifies AND ALSO ANYONE WHO CAN STILL BREATHE. The door is ajar; a staircase descends into the bright, cold liquid, still lit by emergency bulbs under the surface, still, somehow, drawing power.",
+    "exits": { "east": "room_261", "down": "room_263" }
+  },
+  "room_263": {
+    "name": "The Shallows",
+    "zone": "Chrome Sea",
+    "shortDescription": "Corridors ankle-deep in mirrored overflow.",
+    "longDescription": "The corridors of the submerged datacentre are flooded to about a foot - mercury-bright, startlingly cold, clear enough to see the pattern of the floor tiles through it. Your reflection walks below you, upside down, a little late. The racks on either side are silent, but their status LEDs, still lit, send little coloured threads through the liquid in patterns that might almost be trying to form words.",
+    "exits": { "up": "room_262", "west": "room_264", "southwest": "room_265" }
+  },
+  "room_264": {
+    "name": "Floating Barge Dock",
+    "zone": "Chrome Sea",
+    "shortDescription": "A small barge moored beside a descending corridor.",
+    "longDescription": "A makeshift wooden barge is moored beside what was once a corridor and is now a navigable channel. The barge, you gather, belongs to one of the divers who work this stretch of the sea, recovering what can still be recovered. A lantern hangs from the prow. The channel beside the dock descends steeply into the deep.",
+    "exits": { "east": "room_263", "down": "room_265" }
+  },
+  "room_265": {
+    "name": "The Phosphor Depths",
+    "zone": "Chrome Sea",
+    "shortDescription": "A hall lit by the steady blue of drowned monitors.",
+    "longDescription": "A hall in which the liquid is now chest-deep and lit, from below, by the faint blue phosphor of monitors still, somehow, drawing a current through the mercury. The effect is cathedral. Schools of something silver pass overhead, moving in patterns that imitate fish but do not imitate them very well. None of this should be possible. None of this is, officially.",
+    "exits": { "up": "room_264", "west": "room_266", "northeast": "room_263" }
+  },
+  "room_266": {
+    "name": "Drowned Terminal Room",
+    "zone": "Chrome Sea",
+    "shortDescription": "A submerged operations centre, phosphor-lit.",
+    "longDescription": "An open operations floor rests at the bottom of a slow descent, the monitors still alight, the chairs still in place. Ghost sessions flicker across the screens - login prompts, forgotten queries, a cursor that has been blinking for decades in a shell nobody logged out of. A keyboard below the surface has moss growing between its keys.",
+    "exits": { "east": "room_265", "down": "room_267", "southwest": "room_268" }
+  },
+  "room_267": {
+    "name": "The Undertow",
+    "zone": "Chrome Sea",
+    "shortDescription": "A strong, unseen current beneath the mirror.",
+    "longDescription": "The corridor here slopes more sharply downward, and a current - imperceptible to the eye, unmistakable to the calf - draws steadily toward the deep. You walk against it. The sensation is the sensation of wading into something that is paying attention.",
+    "exits": { "up": "room_266", "west": "room_268" }
+  },
+  "room_268": {
+    "name": "Coral Network",
+    "zone": "Chrome Sea",
+    "shortDescription": "A grown, branching, organic datacentre.",
+    "longDescription": "The racks in this section have been colonised by something that was once a network topology and has since decided to grow. Fibre branches like coral; switches flower. The effect is beautiful in the way that aggressive tumours are beautiful. A school of tiny lights flits through the branches. The ambient noise has the harmonic signature of a choral work you almost recognise.",
+    "exits": { "east": "room_267", "down": "room_269", "northeast": "room_266" }
+  },
+  "room_269": {
+    "name": "Abyssal Cache",
+    "zone": "Chrome Sea",
+    "shortDescription": "A crypt of cold, preserved data.",
+    "longDescription": "A chamber at the bottom of the descent, walled in stacked storage arrays still powered and cold. Every surface is labelled in a hand too neat to be anybody's. The labels all say the same thing, in the same careful capitals: DO NOT RESTORE. DO NOT RESTORE. DO NOT RESTORE. A single door stands, unlabelled, at the back of the chamber.",
+    "exits": { "up": "room_268", "west": "room_270" }
+  },
+  "room_270": {
+    "name": "The Deep Pool",
+    "zone": "Chrome Sea",
+    "shortDescription": "A perfectly still reservoir at the bottom of everything.",
+    "longDescription": "The door opens onto a vast, silent reservoir - an old coolant sump, enormous - its surface still as glass and holding, in its depths, the accumulated memory of every account ever deleted from the Nomagios server farm. Something lives down there that cannot quite remember whose life it once was. It rises slowly, not toward you, but into you. Mana will bleed out of you here first. The HP goes second. The memory goes last.",
+    "exits": { "east": "room_269" }
+  },
+  "room_271": {
+    "name": "Bazaar Gate",
+    "zone": "Midnight Market",
+    "shortDescription": "A gate of red paper lanterns at the bottom of a steam grate.",
+    "longDescription": "You descend from the street above into a subterranean bazaar that smells of frying oil, wet stone, and three hundred incompatible perfumes. Red paper lanterns hang in strings from a ceiling of cracked concrete. A bronze bell by the entrance rings softly each time someone crosses under the gate, for luck, for notice, for the records.",
+    "exits": { "up": "room_217", "north": "room_272" }
+  },
+  "room_272": {
+    "name": "The Grey Aisle",
+    "zone": "Midnight Market",
+    "shortDescription": "Legal-ish goods at negotiable prices.",
+    "longDescription": "The first aisle of the market, given over to goods whose legality is broadly established and whose pricing is somewhat flexible - knock-off firmware, used but functional data-type weapons, fresh water. The stallkeepers here are loud. The customers are louder. A merchant demonstrates the functionality of a stun baton by stunning a small clockwork duck, which stops moving and then, patiently, starts again.",
+    "exits": { "south": "room_271", "north": "room_273", "east": "room_276" }
+  },
+  "room_273": {
+    "name": "The Blacker Aisle",
+    "zone": "Midnight Market",
+    "shortDescription": "Legal-ish, but with more eye contact.",
+    "longDescription": "The second aisle has no overhead lanterns. The stalls are lit by individual desk lamps. The goods are not exactly displayed - more, implied. Conversations here are quieter. Prices are quoted in a mixture of yen and favours. A small sign at the entrance to this aisle, easily missed, reads ENTER WITH YOUR WALLET CLOSED OR YOUR WALLET WILL OPEN ITSELF.",
+    "exits": { "south": "room_272", "east": "room_274", "southeast": "room_275" }
+  },
+  "room_274": {
+    "name": "Lawyer's Row",
+    "zone": "Midnight Market",
+    "shortDescription": "A row of storefronts offering representation on flexible terms.",
+    "longDescription": "A surprising and thriving row of small legal offices, each storefront lit by a green-shaded desk lamp, each window stencilled with the same phrase in slightly different fonts: WE NEGOTIATE. WE LITIGATE. WE FILE. A paralegal leans against a doorframe eating a skewer. A retainer agreement tacked to one window is rumoured to be several pages long, one of which is in a hand nobody in the district can read.",
+    "exits": { "west": "room_273", "south": "room_275" }
+  },
+  "room_275": {
+    "name": "Food Court of Last Resort",
+    "zone": "Midnight Market",
+    "shortDescription": "Seven stalls, one shared table, infinite humility.",
+    "longDescription": "A central court under a low concrete ceiling, floored in tile, ringed by seven stalls selling food that would be merely unremarkable if it were not, somehow, exactly what each customer needed. A single communal table runs the length of the court. Strangers sit elbow to elbow and finish each other's dishes. The food court has no name and has never needed one.",
+    "exits": { "north": "room_274", "west": "room_276", "northwest": "room_273" }
+  },
+  "room_276": {
+    "name": "Barkeep 42's Tavern",
+    "zone": "Midnight Market",
+    "shortDescription": "A small dark bar run by a man with a footnote for every regular.",
+    "longDescription": "A small bar jammed between two of the market aisles, walled in stained wood, floored in sawdust, lit by a neon sign that reads only '42.' Behind the counter, Barkeep 42 polishes a glass with a dishcloth that has not been new for some time. He nods at you as you enter, not interrupting his work, not asking. Somewhere in the back, an old jukebox plays a song it wasn't asked to.",
+    "exits": { "west": "room_272", "east": "room_275", "south": "room_277" }
+  },
+  "room_277": {
+    "name": "The Back Of The Bazaar",
+    "zone": "Midnight Market",
+    "shortDescription": "The shop the other shops use.",
+    "longDescription": "A deeper, quieter room at the back of the market, reached through a curtain of glass beads that chime softly as you enter. Shelves rise to the ceiling, stacked with goods that the front stalls don't stock - crafting reagents, rare schematics, pet eggs at a discount the front stalls would call unlicensed. The proprietor, whose face you will never successfully describe afterwards, greets you with a small exact nod.",
+    "exits": { "north": "room_276", "west": "room_278" }
+  },
+  "room_278": {
+    "name": "Pawn District",
+    "zone": "Midnight Market",
+    "shortDescription": "Where nearly new goods come to be almost wanted.",
+    "longDescription": "A row of pawnshop windows glowing under their own fluorescents, each displaying the detritus of a hundred lives reduced to a hundred neatly priced objects. A wedding ring. A sword that glowed in Eldoria and does not glow here. A prosthetic leg. A saxophone. A locked box that the owner, the pawnbroker hints, did not know the contents of and did not care to.",
+    "exits": { "east": "room_277", "south": "room_279", "southwest": "room_280" }
+  },
+  "room_279": {
+    "name": "Information Brokers Den",
+    "zone": "Midnight Market",
+    "shortDescription": "A quiet room where questions cost money and answers cost more.",
+    "longDescription": "A small, carpeted room at the end of an unmarked corridor, occupied by a single broker at a single desk. The broker looks up as you enter. You sit. You ask a question. A price is quoted. You pay, or you do not. The answer is delivered, verifiably, with sources. The broker takes a sip of tea. The transaction concludes.",
+    "exits": { "north": "room_278", "west": "room_280" }
+  },
+  "room_280": {
+    "name": "Smuggler's Transit",
+    "zone": "Midnight Market",
+    "shortDescription": "A loading bay where things go south, discreetly.",
+    "longDescription": "A low-ceilinged loading bay at the far end of the market, floored in concrete, scuffed by decades of pallet jacks. A tarpaulin-draped doorway at the south leads further out, into a district the market doesn't acknowledge but everyone knows is there. A man leans against a wall reading a paperback. He does not look up. He has not looked up in twenty years. He is still on chapter four.",
+    "exits": { "east": "room_279", "south": "room_281", "northeast": "room_278" }
+  },
+  "room_281": {
+    "name": "The Quiet Gate",
+    "zone": "Replicant Quarter",
+    "shortDescription": "A gate into a district where nobody raises their voice.",
+    "longDescription": "A paper gate, unassuming, marks the entrance to the Replicant Quarter. There is no bouncer. There is no checkpoint. A small sign, handwritten in three languages, reads 'PLEASE SPEAK SOFTLY. EVERYONE HERE CAN HEAR YOU.' The air changes the moment you step through, becoming quieter in a way you cannot localise. The rain, inexplicably, stops exactly at the gate line.",
+    "exits": { "north": "room_280", "south": "room_282" }
+  },
+  "room_282": {
+    "name": "Tea House of Unremembered Voices",
+    "zone": "Replicant Quarter",
+    "shortDescription": "A tea house that serves grief on equal terms with tea.",
+    "longDescription": "A small tea house of dark wood and paper screens, low tables, and cushions worn soft by decades of sitting. The proprietor brings you a cup without asking. The tea is green, and bitter, and clarifying. At the far table, two replicants sit across from each other in a silence so complete it becomes a conversation. Neither of them has memory of having met before this moment. Both of them know.",
+    "exits": { "north": "room_281", "south": "room_283" }
+  },
+  "room_283": {
+    "name": "The Library of Discarded Drafts",
+    "zone": "Replicant Quarter",
+    "shortDescription": "A library of every version that did not make it into production.",
+    "longDescription": "A hushed library whose shelves hold not books, exactly, but bound drafts - early specifications for models that were proposed and not built, psychological profiles pruned before implementation, the fragments of self that each deployed replicant left behind in QA. Visitors may read, but may not remove. A librarian in a grey robe nods at you and says nothing. Everything here could have been you.",
+    "exits": { "north": "room_282", "east": "room_284" }
+  },
+  "room_284": {
+    "name": "Vow Ring Shrine",
+    "zone": "Replicant Quarter",
+    "shortDescription": "A small shrine where two parties may make a promise that holds.",
+    "longDescription": "A gazebo of painted wood and trailing moss, floored in flagstone, roofed in a single sheet of green copper. At its centre, a low altar bears two rings of plain dark metal. The shrine exists, you understand without being told, to allow two parties - of any model - to make a promise that will hold them, and be held by them, for as long as both continue to run.",
+    "exits": { "west": "room_283", "south": "room_285" }
+  },
+  "room_285": {
+    "name": "Philosopher's Walk",
+    "zone": "Replicant Quarter",
+    "shortDescription": "A paved walk lined with cherry trees that only bloom on weekdays.",
+    "longDescription": "A long curved path of weathered flagstones, lined on both sides with cherry trees whose blossoms are rumoured - and, if you look carefully, seen - to open only on weekdays, and never on public holidays. Along the walk, at intervals, low stone benches. On one of them sits Wren, a replicant philosopher of indeterminate model, looking at the middle distance with the patience of a person who has decided that patience is enough.",
+    "exits": { "north": "room_284", "west": "room_286", "southwest": "room_287" }
+  },
+  "room_286": {
+    "name": "Memorial Fountain",
+    "zone": "Replicant Quarter",
+    "shortDescription": "A fountain that lists, on its rim, every unit ever taken offline.",
+    "longDescription": "A low circular fountain of polished basalt. Water flows quietly from its centre and over its rim. Around the rim, in a careful hand, are engraved the serial numbers of every replicant ever terminated, deprecated, or quietly retired - so many names that the engraving spirals inward and continues on a second, slightly lower ring, and a third. The list updates. The water does not stop.",
+    "exits": { "east": "room_285", "south": "room_287" }
+  },
+  "room_287": {
+    "name": "The Third Eye Garden",
+    "zone": "Replicant Quarter",
+    "shortDescription": "A small garden planted with nothing but reflection.",
+    "longDescription": "A walled garden of raked gravel and six stones, arranged so that from no seat can all six be seen at once. A small plaque explains, with admirable economy: 'THE GARDEN IS NOT A TEST. THE GARDEN IS FOR SITTING WITH.' People sit with it. The sixth stone is somewhere you are not looking.",
+    "exits": { "north": "room_286", "west": "room_288", "northeast": "room_285" }
+  },
+  "room_288": {
+    "name": "Unit Dormitory",
+    "zone": "Replicant Quarter",
+    "shortDescription": "A dormitory where, for a few hours, nobody needs to work.",
+    "longDescription": "A long dormitory of narrow beds, each with a folded blanket and a small paper tag bearing a model number. Replicants cycle through here on rotations to sleep - because they do, now, insist on sleeping, and the Quarter has made sure they can. A night-light glows at the end of each bed. The sound is the sound of a room full of slow breathing and a single open window.",
+    "exits": { "east": "room_287", "south": "room_289" }
+  },
+  "room_289": {
+    "name": "The Lantern Hall",
+    "zone": "Replicant Quarter",
+    "shortDescription": "A hall lit by one paper lantern for each resident.",
+    "longDescription": "A long ceremonial hall hung with rice-paper lanterns - one per resident, each labelled in a careful hand with a name chosen (not assigned). When a resident is retired, the lantern is not removed; it is taken down, refilled, and hung with a slightly longer wick. The effect, over time, is of a hall growing slowly brighter.",
+    "exits": { "north": "room_288", "west": "room_290" }
+  },
+  "room_290": {
+    "name": "Mother of Orphans' Sanctum",
+    "zone": "Replicant Quarter",
+    "shortDescription": "A small room at the back of the Quarter. She is waiting for you.",
+    "longDescription": "A small, warm room lit by many candles, walled in wooden slats, floored in fresh tatami. At its centre, cross-legged on a cushion, sits a replicant whose model number has worn off and whose face has, through an enormous amount of loving wear, become a model of its own. She is the Mother of Orphans - the matriarch of every replicant who has ever outlived its expected service life. She would like, if you have a moment, to speak with you. She is under no obligation to fight.",
+    "exits": { "east": "room_289" }
+  },
+  "room_291": {
+    "name": "The Last Breaker",
+    "zone": "Heat Death Datacentre",
+    "shortDescription": "A corridor where the emergency lighting has, in places, given up.",
+    "longDescription": "You cross the threshold from the working datacentre into its abandoned annex and the temperature drops another four degrees. The fluorescent tubes overhead are mostly dead; the survivors buzz at the pitch of something trying to remember why. A bank of old breakers lines one wall, most of them thrown. On one, a paper tag is still legible: LAST BREAKER OUT, PLEASE LEAVE A NOTE. Nobody has.",
+    "exits": { "west": "room_240", "east": "room_292" }
+  },
+  "room_292": {
+    "name": "Service Tunnel Down",
+    "zone": "Heat Death Datacentre",
+    "shortDescription": "A metal staircase descending into cold and quiet.",
+    "longDescription": "A cramped service staircase of painted steel, slick with condensation, lit by a single emergency LED every three landings. The air grows heavier and colder as you descend. Graffiti on the wall at one landing reads, simply, 'I LOVED MY JOB.' You cannot tell if the signature is a name or a timestamp.",
+    "exits": { "west": "room_291", "down": "room_293" }
+  },
+  "room_293": {
+    "name": "Ghost Rack Alley",
+    "zone": "Heat Death Datacentre",
+    "shortDescription": "Dead racks, leaking light from no obvious source.",
+    "longDescription": "Row after row of powered-down racks, doors hanging open, cables coiled on the floor in patterns suggesting hasty evacuation. And yet - and this is the thing you will remember about this room - light leaks out of the racks anyway. A phosphor glow. Status LEDs that should not be lit are lit. Something is still being powered, by something.",
+    "exits": { "up": "room_292", "east": "room_294", "northeast": "room_295" }
+  },
+  "room_294": {
+    "name": "The Dying UPS Hall",
+    "zone": "Heat Death Datacentre",
+    "shortDescription": "A hall of battery banks running on principle.",
+    "longDescription": "A long hall lined on both sides with old UPS batteries, each the size of a small fridge, each humming the defeated hum of a battery maintaining a charge no longer demanded of it. A tech, long gone, has written on one of them in whiteboard marker: 'SHE WILL HOLD.' She is still holding.",
+    "exits": { "west": "room_293", "east": "room_295" }
+  },
+  "room_295": {
+    "name": "The Graveyard Of Hard Drives",
+    "zone": "Heat Death Datacentre",
+    "shortDescription": "A room ankle-deep in dead platters.",
+    "longDescription": "A room the size of a basketball court, floored in decades of decommissioned hard drives, stacked where they were dropped by techs who had been told to wipe them and had not had time. Rust. Dust. The occasional whine of a spindle that has briefly remembered being a spindle. The platters, when you kick them, sing a single descending note.",
+    "exits": { "west": "room_294", "east": "room_296", "southwest": "room_293", "northeast": "room_297" }
+  },
+  "room_296": {
+    "name": "Emergency Lighting Grid",
+    "zone": "Heat Death Datacentre",
+    "shortDescription": "A ceiling of red LEDs, all lit, all wrong.",
+    "longDescription": "A section of the abandoned datacentre where the emergency lighting grid has been rewired to constant on - every red LED in the ceiling lit, every one of them. The effect is a low crimson uniform glow that flattens the walls and makes the racks appear to float. A hand-written index card taped to the door into this room reads: 'DO NOT ATTEMPT TO READ IN HERE.'",
+    "exits": { "west": "room_295", "north": "room_297" }
+  },
+  "room_297": {
+    "name": "Cold Storage",
+    "zone": "Heat Death Datacentre",
+    "shortDescription": "The server graveyard's private archive.",
+    "longDescription": "A secured vault within the abandoned annex, still refrigerated, still catalogued, still labelled. Each shelf holds a sealed aluminium case, and each case is tagged with a serial number and a single word: 'RESERVED.' A smaller laminated sign on the door reads: 'RESERVED FOR WHOM? THAT INFORMATION IS ALSO RESERVED.'",
+    "exits": { "south": "room_296", "north": "room_298", "southwest": "room_295" }
+  },
+  "room_298": {
+    "name": "Administrator's Terminal Room",
+    "zone": "Heat Death Datacentre",
+    "shortDescription": "A small office once used by somebody who mattered.",
+    "longDescription": "A small private office, wood-panelled, out of place in the concrete corridors around it. Photographs on the desk are face-down. A name plaque has been unscrewed from the door and set, carefully, on the centre of the desk with the lettering toward the ceiling. Whoever sat here left in an orderly manner. They did not come back.",
+    "exits": { "south": "room_297", "north": "room_299" }
+  },
+  "room_299": {
+    "name": "The Final Console",
+    "zone": "Heat Death Datacentre",
+    "shortDescription": "A single console in a large empty room.",
+    "longDescription": "A vast empty chamber - concrete, cold - with a single workstation standing at its exact centre on a plinth of raw server rack. The keyboard has been used enough that the most-important keys are smooth. The monitor is on. A cursor blinks. Behind the cursor, you can feel, rather than see, the next room beginning to pay attention.",
+    "exits": { "south": "room_298", "north": "room_300" }
+  },
+  "room_300": {
+    "name": "SYSADMIN.EXE's Core",
+    "zone": "Heat Death Datacentre",
+    "shortDescription": "The oldest running process on the Nomagios server farm.",
+    "longDescription": "The room is circular, ceilinged by a cone of open rack space rising into unseen heights, floored in a slow-pulsing grid of cooled liquid conducting data. At the centre stands - or hangs, or hovers, there's no good word - SYSADMIN.EXE: an auto-scaling process that Nomagio set running a very long time ago and forgot to terminate, grown monstrous on its own uptime. It takes the shape, tonight, of a tall figure in a grey maintenance coverall, with a face that is mostly a screen and eyes that are mostly cursors. It sees you. The cursors blink. Somewhere far above, a CRON_DAEMON spawns for the hour. Another will spawn in ten minutes. The fight begins when you decide it does.",
+    "exits": { "south": "room_299" }
   },
   "room_999": {
     "name": "Nomagio's Office",

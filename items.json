@@ -8,6 +8,30 @@
       "value": 10,
       "description": "A worn dagger with spots of rust. Still sharp enough to be useful."
     },
+    "torch": {
+      "name": "Torch",
+      "type": "weapon",
+      "levelReq": 1,
+      "damageBonus": 1,
+      "value": 5,
+      "description": "A pitch-soaked length of wood, lit. Useful for hitting things, lighting things, and seeing what is hitting you."
+    },
+    "iron_shortsword": {
+      "name": "Iron Shortsword",
+      "type": "weapon",
+      "levelReq": 2,
+      "damageBonus": 4,
+      "value": 30,
+      "description": "A practical iron blade, plainly made and reliably sharp. The starter weapon of every militia in five kingdoms."
+    },
+    "steel_longsword": {
+      "name": "Steel Longsword",
+      "type": "weapon",
+      "levelReq": 6,
+      "damageBonus": 9,
+      "value": 90,
+      "description": "A two-handed steel longsword with a worn leather grip. The blade is folded steel; the balance, decent; the previous owner, no longer in possession."
+    },
     "crystal_blade": {
       "name": "Crystal Blade",
       "type": "weapon",
@@ -73,6 +97,15 @@
       "value": 0,
       "description": "A small silver fork that hums a single pure note when struck. Weak as a weapon, but it cuts through illusion where steel cannot."
     },
+    "apprentice_tuning_fork": {
+      "name": "Apprentice's Tuning Fork",
+      "type": "weapon",
+      "levelReq": 15,
+      "damageBonus": 12,
+      "damageType": "harmonic",
+      "value": 0,
+      "description": "An older, heavier tuning fork than the Initiate's, fashioned from raw silver and engraved at the base with two letters: 'L.P.' The note it sings is a half-step lower than the modern fork - a sound the latest Eldoria initiates would not recognise. It feels warm in your hand. It does not feel finished."
+    },
     "drum_stave": {
       "name": "Obsidian Drum-Stave",
       "type": "weapon",
@@ -81,6 +114,97 @@
       "damageType": "harmonic",
       "value": 0,
       "description": "The Obsidian Drum-Stave, reforged by Morwyn Ironheart from your Tuning Fork. Each strike lands with the weight of Matter itself."
+    },
+    "null_pointer_dagger": {
+      "name": "Null-Pointer Dagger",
+      "type": "weapon",
+      "levelReq": 16,
+      "damageBonus": 16,
+      "damageType": "data",
+      "value": 100,
+      "description": "A short blade with no tip - the tip is a reference to an address nobody remembers allocating. It cuts anyway, spitefully."
+    },
+    "stun_baton": {
+      "name": "Stun Baton",
+      "type": "weapon",
+      "levelReq": 16,
+      "damageBonus": 18,
+      "damageType": "data",
+      "value": 120,
+      "description": "Standard-issue crowd-control tool from the Corporate Spires procurement catalogue. Certified to SLA, mostly."
+    },
+    "packet_sniffer_pistol": {
+      "name": "Packet Sniffer Pistol",
+      "type": "weapon",
+      "levelReq": 17,
+      "damageBonus": 22,
+      "damageType": "data",
+      "value": 180,
+      "description": "A compact pistol that reads the target's traffic before firing. Does slightly better damage when the target is already logged in."
+    },
+    "shock_prod": {
+      "name": "Shock Prod",
+      "type": "weapon",
+      "levelReq": 18,
+      "damageBonus": 25,
+      "damageType": "data",
+      "value": 240,
+      "description": "A length of conductive alloy with a pair of prongs at the business end. For reasoning with uncooperative processes."
+    },
+    "root_kit_blade": {
+      "name": "Root-Kit Blade",
+      "type": "weapon",
+      "levelReq": 20,
+      "damageBonus": 32,
+      "damageType": "data",
+      "value": 360,
+      "description": "A jagged blade assembled from whatever permissions the wielder didn't have. Each strike escalates."
+    },
+    "kill_switch_pistol": {
+      "name": "Kill-Switch Pistol",
+      "type": "weapon",
+      "levelReq": 22,
+      "damageBonus": 38,
+      "damageType": "data",
+      "value": 480,
+      "description": "A sidearm with one very final firmware function. Legal only in jurisdictions that do not check."
+    },
+    "compile_error_rod": {
+      "name": "Compile-Error Rod",
+      "type": "weapon",
+      "levelReq": 23,
+      "damageBonus": 42,
+      "damageType": "data",
+      "manaBonus": 20,
+      "value": 560,
+      "description": "A rod etched with a stack trace that no debugger has ever successfully parsed. Hold it too long and your thoughts start to whitespace-mismatch."
+    },
+    "fork_bomb_axe": {
+      "name": "Fork-Bomb Axe",
+      "type": "weapon",
+      "levelReq": 24,
+      "damageBonus": 46,
+      "damageType": "data",
+      "value": 620,
+      "description": "A heavy axe whose blade splits into additional blades the faster you swing. Nobody has ever finished reviewing the spec."
+    },
+    "ice_breaker_rifle": {
+      "name": "ICE-Breaker Rifle",
+      "type": "weapon",
+      "levelReq": 25,
+      "damageBonus": 50,
+      "damageType": "data",
+      "value": 700,
+      "description": "A two-handed rifle designed for cracking intrusion-countermeasure electronics. Reloads by asking politely."
+    },
+    "segfault_cleaver": {
+      "name": "Segfault Cleaver",
+      "type": "weapon",
+      "levelReq": 26,
+      "damageBonus": 55,
+      "damageType": "data",
+      "value": 780,
+      "description": "A brutally simple two-handed cleaver that does not so much strike the target as access memory the target did not own."
     }
   },
   "instruments": {
@@ -128,6 +252,14 @@
       "armorBonus": 2,
       "value": 10,
       "description": "Simple leather armor offering basic protection."
+    },
+    "chainmail": {
+      "name": "Chainmail",
+      "type": "armor",
+      "levelReq": 5,
+      "armorBonus": 6,
+      "value": 70,
+      "description": "A shirt of riveted iron rings. Heavier than leather, kinder than nothing, noisier than either."
     },
     "crystal_shard_armor": {
       "name": "Crystal Shard Armor",
@@ -178,6 +310,24 @@
       "armorBonus": 3,
       "value": 30,
       "description": "A fluffy cloak made from cloud sheep wool, surprisingly protective."
+    },
+    "mesh_jacket": {
+      "name": "Mesh Jacket",
+      "type": "armor",
+      "levelReq": 16,
+      "armorBonus": 8,
+      "value": 100,
+      "resists": { "data": 10 },
+      "description": "Street-level kevlar-and-wire jacket, standard in Neon Soi. Stops most knives and some firewalls."
+    },
+    "chrome_plating": {
+      "name": "Chrome Plating",
+      "type": "armor",
+      "levelReq": 22,
+      "armorBonus": 14,
+      "resists": { "data": 15, "harmonic": -10 },
+      "value": 300,
+      "description": "Polished bodywork harvested from a Kowloon-42 billboard. Reflects gunfire and compliments."
     }
   },
   "shields": {
@@ -205,6 +355,40 @@
       "value": 400,
       "resists": { "shadow": 30, "harmonic": 20 },
       "description": "A shield made of condensed void energy, absorbing attacks into nothingness."
+    },
+    "static_buckler": {
+      "name": "Static Buckler",
+      "type": "shield",
+      "levelReq": 16,
+      "armorBonus": 4,
+      "value": 90,
+      "description": "A cheap polycarbonate buckler with a warranty sticker nobody has ever read."
+    },
+    "riot_shield": {
+      "name": "Riot Shield",
+      "type": "shield",
+      "levelReq": 18,
+      "armorBonus": 8,
+      "value": 200,
+      "description": "Corporate-issue transparent riot shield. Stops blunt objects, loud opinions, and the occasional manager."
+    },
+    "holoprojector": {
+      "name": "Holo-Projector",
+      "type": "shield",
+      "levelReq": 20,
+      "armorBonus": 6,
+      "resists": { "data": 10 },
+      "value": 300,
+      "description": "An off-hand projector that generates a second, slightly-more-confident you about half a metre to the left."
+    },
+    "ice_deflector": {
+      "name": "ICE Deflector",
+      "type": "shield",
+      "levelReq": 24,
+      "armorBonus": 14,
+      "resists": { "data": 15 },
+      "value": 450,
+      "description": "Intrusion-countermeasure deflection plating salvaged from a corporate vault. Glows softly when scanned."
     }
   },
   "accessories": {
@@ -342,6 +526,63 @@
       "armorBonus": 6,
       "value": 320,
       "description": "A black ring with a single chip of condensed magic at its center."
+    },
+    "faraday_hood": {
+      "name": "Faraday Hood",
+      "type": "armor",
+      "slot": "head",
+      "levelReq": 17,
+      "armorBonus": 6,
+      "resists": { "data": 10 },
+      "value": 120,
+      "description": "A mesh-lined hood that grounds out incoming signals. Wearing it makes you feel briefly unreachable."
+    },
+    "vr_goggles": {
+      "name": "VR Goggles",
+      "type": "armor",
+      "slot": "head",
+      "levelReq": 20,
+      "armorBonus": 5,
+      "manaBonus": 15,
+      "value": 180,
+      "description": "A set of heads-up goggles with lenses etched by somebody who saw the end of the tutorial once."
+    },
+    "synth_boots": {
+      "name": "Synth Boots",
+      "type": "armor",
+      "slot": "feet",
+      "levelReq": 16,
+      "armorBonus": 3,
+      "value": 80,
+      "description": "Mass-produced boots in a plastic that outlasts grief. Comfortable, unflattering, indestructible."
+    },
+    "gecko_grips": {
+      "name": "Gecko Grips",
+      "type": "armor",
+      "slot": "feet",
+      "levelReq": 22,
+      "armorBonus": 6,
+      "value": 200,
+      "description": "Traction pads harvested from climbers who no longer need them. Hold to walls that don't want to be walked on."
+    },
+    "encrypted_gloves": {
+      "name": "Encrypted Gloves",
+      "type": "armor",
+      "slot": "hands",
+      "levelReq": 18,
+      "armorBonus": 4,
+      "value": 140,
+      "description": "Gloves with fingerprint-obscuring weave. Anything you touch with them leaves no trace, including your self-esteem."
+    },
+    "rollback_ring": {
+      "name": "Rollback Ring",
+      "type": "armor",
+      "slot": "finger",
+      "levelReq": 20,
+      "armorBonus": 3,
+      "resists": { "data": 10 },
+      "value": 220,
+      "description": "A ring that lets you un-take the last hit, once. The process is subtle. Nobody has reproduced it on purpose."
     }
   },
   "consumables": {
@@ -471,6 +712,51 @@
       "manaAmount": 150,
       "value": 200,
       "description": "A vial of pure arcane essence that fully restores even the greatest mages."
+    },
+    "stim_pak": {
+      "name": "Stim-Pak",
+      "type": "consumable",
+      "healAmount": 75,
+      "value": 45,
+      "description": "A pre-loaded injector of combat-grade stimulants. The label warns against reading the label."
+    },
+    "root_beer": {
+      "name": "Root Beer",
+      "type": "consumable",
+      "healAmount": 50,
+      "manaAmount": 25,
+      "value": 60,
+      "description": "A fizzing brown bottle that claims to be 'a refreshing beverage for hackers of every stripe.' Tastes of sugar and administrator access."
+    },
+    "static_tea": {
+      "name": "Static Tea",
+      "type": "consumable",
+      "manaAmount": 40,
+      "value": 35,
+      "description": "Lukewarm tea served in a ceramic mug with a small Faraday cage in the base. Settles the signal."
+    },
+    "cold_brew": {
+      "name": "Cold Brew",
+      "type": "consumable",
+      "healAmount": 120,
+      "value": 80,
+      "description": "Twenty-four-hour slow-steep coffee dark enough to absorb light. Patches you back together via spite."
+    },
+    "patch_notes_scroll": {
+      "name": "Patch Notes Scroll",
+      "type": "consumable",
+      "healAmount": 80,
+      "manaAmount": 40,
+      "value": 90,
+      "description": "A scroll of pending patch notes. Reading them restores you in ways that are documented, if not tested."
+    },
+    "admin_cola": {
+      "name": "Admin Cola",
+      "type": "consumable",
+      "healAmount": 200,
+      "manaAmount": 100,
+      "value": 150,
+      "description": "A matte-black can of cola in the Nomagios staff fridge. The brand has rotated nine times and never been refilled. Restores absurdly."
     }
   },
   "treasure": {
@@ -575,6 +861,84 @@
       "type": "treasure",
       "value": 450,
       "description": "A crystal pulsing with pure arcane energy."
+    },
+    "yen_chip": {
+      "name": "Yen Chip",
+      "type": "treasure",
+      "value": 75,
+      "description": "A palm-sized chip of Neo Kyoto yen. The hologram on the back hasn't updated its face in a decade."
+    },
+    "expired_eula": {
+      "name": "Expired EULA",
+      "type": "treasure",
+      "value": 90,
+      "description": "A folded sheet of microprint terms and conditions. The agreements inside expired a long time ago; the words are still very sharp."
+    },
+    "deprecated_cert": {
+      "name": "Deprecated Cert",
+      "type": "treasure",
+      "value": 150,
+      "description": "A laminated identification wafer marked with a revoked seal. Worth real money to the right fence."
+    },
+    "corrupted_datapad": {
+      "name": "Corrupted Datapad",
+      "type": "treasure",
+      "value": 130,
+      "description": "A slate whose screen boots to a login prompt for an OS nobody ships any more. The battery has outlived two empires."
+    },
+    "neon_eye": {
+      "name": "Neon Eye",
+      "type": "treasure",
+      "value": 200,
+      "description": "A synthetic eye still in its socket-ring. The iris advertises a bar that closed in Q3. The pupil still tracks light."
+    },
+    "bytecode_shard": {
+      "name": "Bytecode Shard",
+      "type": "treasure",
+      "value": 220,
+      "description": "A splinter of compiled-in-flight instructions that were never executed. Warm, slightly."
+    },
+    "orphan_locket": {
+      "name": "Orphan Locket",
+      "type": "treasure",
+      "value": 60,
+      "description": "A small locket containing a checksum of someone's missing parent-process. It refuses to open."
+    },
+    "deleted_memory": {
+      "name": "Deleted Memory",
+      "type": "treasure",
+      "value": 80,
+      "description": "A small sealed canister, heavier than it should be, labelled with a filename ending in .bak.gz."
+    },
+    "dream_of_sheep": {
+      "name": "Dream of Sheep",
+      "type": "treasure",
+      "value": 70,
+      "description": "A tightly-folded scrap of paper on which someone has written, in neat handwriting: 'yes, we do.'"
+    },
+    "escalation_token": {
+      "name": "Escalation Token",
+      "type": "treasure",
+      "value": 50,
+      "description": "A brass-coloured token embossed with the Nomagios logo and the word PRIORITY. Spent in the right window, it moves your ticket exactly one place forward."
+    },
+    "waitlist_ticket": {
+      "name": "Waitlist Ticket",
+      "type": "treasure",
+      "value": 40,
+      "description": "A paper stub printed with a number long enough to be humbling. It reads, at the bottom: 'NOW SERVING: 7.'"
+    },
+    "access_keycard": {
+      "name": "Access Keycard",
+      "type": "treasure",
+      "value": 100,
+      "description": "A matte-black keycard with no label. Carrying it makes certain doors decide they always liked you."
+    },
+    "system_log_page": {
+      "name": "System Log Page",
+      "type": "treasure",
+      "value": 120,
+      "description": "A single printed page from a log file nobody was meant to read. The timestamp is from last cycle. The content is from the one after this."
     }
   },
   "boss_drops": {
@@ -607,6 +971,36 @@
       "type": "treasure",
       "value": 800,
       "description": "A pulsing crystal containing the essence of void energy."
+    },
+    "chiyo_expired_cert": {
+      "name": "Chiyo-7's Expired Cert",
+      "type": "treasure",
+      "value": 1200,
+      "description": "A revoked blade-runner certification, signed by a department that has since been dissolved. Reads 'RETIRED' in the same tone a gun does."
+    },
+    "managerial_letter": {
+      "name": "Managerial Letter of Recommendation",
+      "type": "treasure",
+      "value": 1400,
+      "description": "A thick cream envelope sealed with corporate wax. The letter inside has not been read, but it is known to be, on balance, very positive about you."
+    },
+    "babel_fish_crown": {
+      "name": "Babel Fish Crown",
+      "type": "treasure",
+      "value": 1800,
+      "description": "A crown of interlocked translation nodes, still mumbling the last twelve words the Regent ever heard, in languages nobody in the realm speaks."
+    },
+    "deep_pool_pearl": {
+      "name": "Deep-Pool Pearl",
+      "type": "treasure",
+      "value": 2200,
+      "description": "A pearl the size of a fist, heavy in a way that suggests it remembers being deeper. It refuses to roll."
+    },
+    "sysadmin_root_key": {
+      "name": "SYSADMIN.EXE's Root Key",
+      "type": "treasure",
+      "value": 5000,
+      "description": "A brass key on a lanyard, cut by Nomagio himself some cycles ago. Dropping it produces an error sound from nowhere in particular."
     }
   },
   "monsterLootTables": {
@@ -662,7 +1056,33 @@
     "memory_leak": ["memory_fragment", "superior_mana_potion"],
     "clockwork_inquisitor": ["reality_fragment", "arcane_infusion"],
     "tempus_wraith": ["reality_fragment", "superior_mana_potion"],
-    "logic_sphinx": ["forbidden_tome", "arcane_infusion"]
+    "logic_sphinx": ["forbidden_tome", "arcane_infusion"],
+    "patched_pedestrian": ["yen_chip", "expired_eula", "stim_pak"],
+    "baggage_claim_beast": ["yen_chip", "expired_eula", "corrupted_datapad"],
+    "expired_traveler": ["yen_chip", "waitlist_ticket", "stim_pak"],
+    "neon_yakuza": ["yen_chip", "neon_eye", "stun_baton", "mesh_jacket"],
+    "rogue_replicant": ["deprecated_cert", "null_pointer_dagger", "root_beer"],
+    "bazaar_cutpurse": ["yen_chip", "stun_baton", "null_pointer_dagger", "static_buckler"],
+    "noodle_vendor_aggro": ["yen_chip", "root_beer", "stim_pak"],
+    "corporate_enforcer": ["escalation_token", "shock_prod", "riot_shield", "encrypted_gloves"],
+    "flickering_janitor": ["corrupted_datapad", "static_tea", "synth_boots"],
+    "junior_associate": ["escalation_token", "stun_baton", "faraday_hood"],
+    "data_ghost": ["deleted_memory", "bytecode_shard", "packet_sniffer_pistol", "vr_goggles"],
+    "security_subroutine": ["access_keycard", "root_kit_blade", "shock_prod"],
+    "memory_leak_wraith": ["bytecode_shard", "deleted_memory", "compile_error_rod"],
+    "queue_fragment": ["waitlist_ticket", "escalation_token", "patch_notes_scroll"],
+    "offworld_recruiter": ["waitlist_ticket", "expired_eula", "cold_brew"],
+    "kowloon_parkourist": ["yen_chip", "gecko_grips", "kill_switch_pistol"],
+    "chrome_wolf": ["bytecode_shard", "chrome_plating", "rollback_ring"],
+    "mantis_debugger": ["deleted_memory", "fork_bomb_axe", "holoprojector"],
+    "mercury_kelpie": ["neon_eye", "chrome_plating", "cold_brew"],
+    "black_ice_basilisk": ["neon_eye", "ice_deflector", "ice_breaker_rifle"],
+    "backup_spirit": ["deleted_memory", "patch_notes_scroll", "rollback_ring"],
+    "deprecated_bladerunner": ["deprecated_cert", "kill_switch_pistol", "encrypted_gloves"],
+    "philosopher_model": ["orphan_locket", "dream_of_sheep", "static_tea"],
+    "synthetic_orphan": ["orphan_locket", "dream_of_sheep", "root_beer"],
+    "cron_daemon": ["system_log_page", "segfault_cleaver", "admin_cola"],
+    "oncall_wight": ["system_log_page", "access_keycard", "cold_brew", "admin_cola"]
   },
   "bossDrops": {
     "crystal_dragon": {
@@ -691,6 +1111,21 @@
     },
     "thessarian_patient": {
       "guaranteed": ["crystal_flute_of_wisdom", "arcane_infusion", "superior_mana_potion"]
+    },
+    "chiyo_7": {
+      "guaranteed": ["chiyo_expired_cert", "kill_switch_pistol", "deprecated_cert"]
+    },
+    "account_manager": {
+      "guaranteed": ["managerial_letter", "shock_prod", "escalation_token", "patch_notes_scroll"]
+    },
+    "babel_fish_regent": {
+      "guaranteed": ["babel_fish_crown", "compile_error_rod", "neon_eye"]
+    },
+    "deep_pool": {
+      "guaranteed": ["deep_pool_pearl", "ice_breaker_rifle", "ice_deflector", "admin_cola"]
+    },
+    "sysadmin_exe": {
+      "guaranteed": ["sysadmin_root_key", "segfault_cleaver", "admin_cola", "system_log_page"]
     }
   },
   "crafting": {
@@ -807,6 +1242,27 @@
       "healAmount": 100,
       "value": 75,
       "description": "A phoenix-warm brew. Mends even deep wounds."
+    },
+    "data_ward_amulet": {
+      "name": "Data-Ward Amulet",
+      "type": "armor",
+      "slot": "neck",
+      "levelReq": 20,
+      "armorBonus": 5,
+      "resists": { "data": 20 },
+      "value": 600,
+      "description": "An enchanter-sealed amulet wound with bytecode threading. Wearing it muffles incoming Data-type damage and the urge to read user-agreements aloud."
+    },
+    "replicant_vow_ring": {
+      "name": "Replicant Vow Ring",
+      "type": "armor",
+      "slot": "finger",
+      "levelReq": 22,
+      "armorBonus": 4,
+      "manaBonus": 25,
+      "affinityReq": { "replicant": 5 },
+      "value": 800,
+      "description": "A silver band soldered to an orphan-locket and a single neatly-folded scrap of paper. Worn in the Replicant Quarter as a vow that no process is unlinked while you have memory left. Attunes only to those who have stood with the Quarter."
     }
   },
   "qp_gear": {
@@ -849,6 +1305,27 @@
       "damageType": "harmonic",
       "value": 2500,
       "description": "Three times remorted, three times reforged. The blade hums in harmonic sympathy with its wielder's three-fold return. QP redemption, tier-gated."
+    },
+    "tier3_data_blade": {
+      "name": "Server-Cleaved Blade",
+      "type": "weapon",
+      "levelReq": 25,
+      "tierReq": 1,
+      "damageBonus": 55,
+      "damageType": "data",
+      "value": 3000,
+      "description": "A two-handed Data-type blade reforged from a fragment of SYSADMIN.EXE's outer casing. Hums faintly with the tone of a cooling rack. QP redemption, requires remort Tier 1+."
+    },
+    "tier3_quarter_walker_boots": {
+      "name": "Quarter-Walker Boots",
+      "type": "armor",
+      "slot": "feet",
+      "levelReq": 22,
+      "tierReq": 1,
+      "armorBonus": 6,
+      "resists": { "data": 15 },
+      "value": 3500,
+      "description": "Boots stitched from rain-soaked leather harvested from the Replicant Quarter. They have walked the realm so often that the realm now politely steps aside for them. QP redemption, requires remort Tier 1+."
     }
   }
 }

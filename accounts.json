@@ -144,14 +144,5 @@
     "locked": false,
     "lockTime": null,
     "needsPasswordMigration": false
-  },
-  "testadmin": {
-    "passwordHash": "$2b$10$K4q.Ha.JZ6ft79SXuD5fRuvKhCFXw.KcLM1JCEmJSsKVfmF1TAqmu",
-    "created": "2026-04-22T14:25:13.679Z",
-    "lastLogin": "2026-04-23T08:53:32.913Z",
-    "loginAttempts": 0,
-    "locked": false,
-    "lockTime": null,
-    "needsPasswordMigration": false
   }
 }
