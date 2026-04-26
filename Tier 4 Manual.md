@@ -9,7 +9,7 @@
 | 4.1 | **Clans / Guilds** | **DONE** — see "Clans" below |
 | 4.2 | Auction house | not started |
 | 4.3 | Online creation (OLC, admin-only) | not started |
-| 4.4 | MSDP/GMCP protocol | not started |
+| 4.4 | **MSDP/GMCP protocol** | **DONE** — see "MSDP/GMCP" below |
 | 4.5 | Server-side triggers | not started |
 | 4.6 | Goals system | not started |
 | 4.7 | Friend list | not started |
@@ -222,9 +222,188 @@ Per plan: admin commands `redit`, `medit`, `oedit` for in-game world editing wit
 
 ---
 
-## 4.4 MSDP/GMCP protocol — NOT STARTED
+## 4.4 MSDP/GMCP protocol — SHIPPED
 
-Per plan: telnet subnegotiation for rich client UIs (HP/mana bars in Mudlet, MUSHclient, etc.). New `protocol/msdp.js`, hooked into the player connect path. No game-state changes; pure protocol layer.
+Telnet sub-negotiation layer. Rich clients (Mudlet, MUSHclient, tintin++, Blowtorch, BeipMU…) receive structured live data — HP/mana bars, automaps, status panels, channel highlights — and the plain-telnet experience is byte-for-byte unchanged.
+
+Both sister protocols are implemented in a single module — `protocol/gmcp.js` — because they share the IAC parser and the same per-socket state map. Plain telnet sessions strip negotiation cleanly and never see a single rogue byte.
+
+### Concepts
+
+- **GMCP** (Generic MUD Communication Protocol, telnet option **201 / 0xC9**): JSON-payload sub-negotiation. Clients receive `Package.Subpackage <json>` messages.
+- **MSDP** (Mud Server Data Protocol, telnet option **69 / 0x45**): byte-tagged sub-negotiation. Older but still widely supported. Variables not packages.
+- We are the **server-side** of both — we offer support, and clients accept or ignore.
+- Both protocols **silently no-op** on plain telnet. Nothing leaks into the user-visible stream.
+- Both protocols can run on the same socket simultaneously and are independent.
+
+### Wire format quick-reference
+
+```
+GMCP send:   IAC SB 201 "Package.Sub <json>" IAC SE
+MSDP send:   IAC SB  69 VAR <name> VAL <value> IAC SE
+             (where VAR=1, VAL=2, TABLE_OPEN=3, TABLE_CLOSE=4,
+              ARRAY_OPEN=5, ARRAY_CLOSE=6)
+```
+
+Any literal `0xFF` inside the payload is escaped as `IAC IAC` per RFC 854.
+
+### Negotiation handshake
+
+| Step | Direction | Bytes |
+| :-- | :-- | :-- |
+| 1. Server offers GMCP | server → client | `IAC WILL 201` |
+| 2. Server offers MSDP | server → client | `IAC WILL 69` |
+| 3. Client accepts GMCP | client → server | `IAC DO 201` |
+| 4. Client accepts MSDP | client → server | `IAC DO 69` |
+| 5. Server pushes initial state | server → client | full vital/status/room frames |
+
+Plain telnet clients ignore the offers — server stays silent on those options. Refusal (`IAC DONT …`) flips the per-socket flag back to disabled and the next push silently no-ops.
+
+### GMCP packages emitted
+
+| Package | When | Payload shape |
+| :-- | :-- | :-- |
+| `Char.Status` | login, level-up | `{ name, title, suffix, class, tier, gold, bank, qp, clan, clanRank }` |
+| `Char.Stats` | login, level-up | `{ str, dex, con, int, wis, level, practice }` |
+| `Char.Vitals` | login, level-up, combat tick, consumable use | `{ hp, maxhp, mp, maxmp, xp }` |
+| `Room.Info` | login, room change | `{ id, name, zone, exits, description }` |
+| `Comm.Channel.Text` | global channel msg, clan-channel msg | `{ channel, talker, text }` |
+
+Clients that send `Core.Hello` get their name/version recorded and visible to admins via `getClientInfo`. `Core.Supports.Set` / `Core.Supports.Add` are accepted (informational only — we don't gate emits on declared support).
+
+### MSDP variables emitted
+
+Standard Aardwolf-derived variable set:
+
+| Variable | Type | Pushed on |
+| :-- | :-- | :-- |
+| `CHARACTER_NAME` | string | login |
+| `HEALTH` / `HEALTH_MAX` | int | login, level-up, combat tick, consumable |
+| `MANA` / `MANA_MAX` | int | login, level-up, combat tick, consumable |
+| `LEVEL` | int | login, level-up |
+| `EXPERIENCE` | int | login, level-up |
+| `GOLD` | int | login, level-up |
+| `ROOM_VNUM` / `ROOM_NAME` / `ROOM_AREA` | string | login, room change |
+| `ROOM_EXITS` | array of strings | login, room change |
+
+Plus pseudo-variables answered on demand only (via SEND): `SERVER_NAME`, `SERVER_TIME`.
+
+### MSDP commands the server understands
+
+| Client command | Effect |
+| :-- | :-- |
+| `LIST COMMANDS` | server replies with the list above |
+| `LIST REPORTABLE_VARIABLES` | server replies with the variable list above |
+| `LIST REPORTED_VARIABLES` | server replies with this socket's REPORT subscriptions |
+| `LIST SENDABLE_VARIABLES` | server replies with reportable + `SERVER_NAME` + `SERVER_TIME` |
+| `REPORT <var>` or `REPORT [<var>, <var>]` | subscribe (currently informational — we always push) |
+| `UNREPORT <var>` | unsubscribe |
+| `RESET REPORTED_VARIABLES` | clear all subscriptions |
+| `SEND <var>` or `SEND [<var>, <var>]` | one-shot read, server pushes the current value |
+
+Unknown variables bubble up as a `msdp_message` event for future game-layer handling. Currently no game logic listens (parity with GMCP — clients mostly listen, not talk).
+
+### Module API
+
+`protocol/gmcp.js` exports:
+
+```js
+// Lifecycle
+offerSupport(socket)              // server offers GMCP
+offerMsdpSupport(socket)          // server offers MSDP
+processIncoming(socket, data, onEvent) -> Buffer  // strips IAC, returns clean bytes
+cleanup(socket)                   // wipe per-socket state on disconnect
+
+// State
+isGmcpEnabled(socket) / isMsdpEnabled(socket)
+getClientInfo(socket)             // { name, version, gmcpEnabled }
+
+// Raw send
+send(socket, packageName, data)            // GMCP
+sendMsdp(socket, varName, value)           // MSDP — value can be string/number/array/object
+
+// Standard GMCP emitters
+emitCharVitals / emitCharStats / emitCharStatus / emitRoomInfo / emitCommChannel
+
+// Standard MSDP emitters
+emitMsdpPlayerState(socket, player)        // 8 vars: name, hp, hpmax, mp, mpmax, level, xp, gold
+emitMsdpVitals(socket, player)             // hp/mp pair only — used in combat
+emitMsdpRoom(socket, player, room, roomId) // 4 vars: vnum, name, area, exits
+```
+
+Events delivered to the `onEvent` handler in `processIncoming`:
+
+```
+{ type: 'gmcp_enabled' | 'gmcp_disabled' | 'msdp_enabled' | 'msdp_disabled' }
+{ type: 'gmcp_message',  package, payload }
+{ type: 'msdp_message',  name, value }
+{ type: 'msdp_send', vars: ['HEALTH', ...] }
+```
+
+### Server-side wiring
+
+| Hot point | Functions called |
+| :-- | :-- |
+| `net.createServer` connection handler | `gmcp.offerSupport(socket)` + `gmcp.offerMsdpSupport(socket)` |
+| socket `data` listener (every chunk) | `gmcp.processIncoming(socket, rawData, onGmcpEvent)` runs first; the returned cleaned bytes feed the line buffer |
+| `completePlayerLogin` | full GMCP `Char.Status` + `Char.Stats` + `Char.Vitals` + `Room.Info`; full MSDP `emitMsdpPlayerState` + `emitMsdpRoom` |
+| `checkLevelUp` (after auto-save) | GMCP `Char.Status` + `Char.Stats` + `Char.Vitals`; MSDP `emitMsdpPlayerState` |
+| `executeMonsterCounterAttack` | GMCP `Char.Vitals`; MSDP `emitMsdpVitals` |
+| `handleUse` (after consumable applied) | GMCP `Char.Vitals`; MSDP `emitMsdpVitals` |
+| `handleMove` (after `currentRoom` updated) | GMCP `gmcpRoom` + `gmcpVitals`; MSDP `msdpRoom` + `msdpVitals` |
+| `handleChannelMessage` (per subscribed peer) | GMCP `Comm.Channel.Text` to each socket |
+| `handleClanChannel` (per online clanmate) | GMCP `Comm.Channel.Text` to each socket |
+| disconnect handler | `gmcp.cleanup(socket)` |
+
+The `onGmcpEvent` handler in `mud_server.js` reacts to `gmcp_enabled` / `msdp_enabled` events with a deferred initial-state push (in case the client confirmed support after login was already in progress) and answers `msdp_send` requests immediately by reading from the live player object.
+
+### Plain-telnet safety
+
+The original socket data path used to do its own ad-hoc IAC stripping. With Tier 4.4 that hand-rolled stripping is removed — `gmcp.processIncoming` is now the single point of truth for IAC handling and runs on every chunk before line-buffering. This means:
+
+- Negotiation bytes never reach the password-input or command-input paths.
+- Literal `0xFF` survives via `IAC IAC` escaping in both directions.
+- A malformed sub-negotiation block is dropped silently (parser resets to NORMAL).
+
+### Client setup notes
+
+Mudlet:
+- GMCP is on by default. The server's `Char.Vitals` package will fire the `gmcp.Char.Vitals` event in your client script.
+- For MSDP, enable in **Settings → MSDP** and the `msdp.HEALTH` etc. variables become live-readable in scripts.
+
+MUSHclient / tintin++ / Blowtorch:
+- Both GMCP and MSDP are negotiated automatically once you accept our `IAC WILL` offers.
+- Neither protocol prints anything to the user's screen — they're parsed and routed by the client's plugin layer.
+
+### Verification
+
+`_verify_gmcp.js` is a one-shot harness that exercises the protocol module in isolation and grep-checks the server-side wiring. Run it from the repo root:
+
+```
+node _verify_gmcp.js
+```
+
+Expected: `58/58 checks passed` (28 GMCP + 30 MSDP). Coverage:
+
+- Both negotiation handshakes (offer, DO, DONT, WILL-from-client)
+- IAC-strip correctness on mixed-data input (literal `0xFF`, NOPs, embedded sub-negotiation blocks)
+- Frame format for scalar/array/table values in both protocols
+- `send()` and `sendMsdp()` both no-op cleanly on disabled sockets
+- All five GMCP standard emitter payload shapes
+- MSDP `LIST COMMANDS` / `LIST REPORTABLE_VARIABLES` / `LIST REPORTED_VARIABLES` replies
+- MSDP REPORT-then-LIST round-trip subscribes correctly
+- MSDP `SEND` bubbles up as event for the game layer to answer
+- Coexistence of both protocols on the same socket
+- Server-side wiring grep checks for every hot point above
+
+The harness is intentionally lightweight (no test framework dependency) so it can run on any clean checkout.
+
+### Known limitations
+
+- We don't yet implement **MCCP** (compression) or **ATCP** (Achaea's older variant) — neither is needed for current clients.
+- MSDP REPORT subscriptions are **tracked but not enforced** — we always push to enabled sockets regardless of declared subscription. Strict-subscription mode is a one-line gate change in `sendMsdp` if a future client needs it.
+- Packages `Comm.Channel.List` and `Char.Items.List` (per the GMCP spec) are not emitted yet. Players still get inventory data via the standard `inventory` command.
+- No persistence of negotiated client name/version — `getClientInfo` is per-socket only and is dropped on disconnect.
 
 ---
 

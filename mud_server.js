@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const npcRegistry = require('./npcs/registry');
 const npcOllama = require('./llm/ollama');
 const questManager = require('./world/quests');
+const gmcp = require('./protocol/gmcp');
 
 const PORT = parseInt(process.env.MUD_PORT, 10) || 8888;
 const START_ROOM = 'room_001';
@@ -1425,6 +1426,15 @@ function checkLevelUp(socket, player) {
 
     // Auto-save on level up
     savePlayer(player, socket, true);
+
+    // Tier 4.4: GMCP push on level-up (status + stats + vitals all changed)
+    if (socket) {
+      gmcp.emitCharStatus(socket, player);
+      gmcp.emitCharStats(socket, player);
+      gmcp.emitCharVitals(socket, player);
+      // MSDP mirror — LEVEL/EXPERIENCE/HEALTH all changed, push the full state
+      gmcp.emitMsdpPlayerState(socket, player);
+    }
 
     // Log activity
     logActivity(`${player.name} reached Level ${newLevel}`);
@@ -4358,6 +4368,10 @@ function executeMonsterCounterAttack(combatId) {
     return;
   }
 
+  // Tier 4.4: GMCP vitals after damage taken (HP changed)
+  gmcp.emitCharVitals(socket, player);
+  gmcp.emitMsdpVitals(socket, player);
+
   // Automatic combat - no prompt needed, just schedule next round (speed-buffed bosses tick sooner)
   const roundSpeedMult = (currentMonster.bossState && currentMonster.bossState.speedMultiplier) || 1.0;
   const nextRoundDelay = Math.max(300, Math.floor((MONSTER_COMBAT_ROUND_INTERVAL - MONSTER_COUNTER_DELAY) / roundSpeedMult));
@@ -5941,6 +5955,10 @@ function handleUse(socket, player, itemName) {
   socket.write(colorize(`You use ${item.name}.\r\n`, 'green'));
   if (healMessage) socket.write(healMessage);
   if (manaMessage) socket.write(manaMessage);
+
+  // Tier 4.4: GMCP vitals after consumable applied
+  gmcp.emitCharVitals(socket, player);
+  gmcp.emitMsdpVitals(socket, player);
 
   // Tier 3.1 Phase 6: Static Tea applies a +2 hack-skill buff for 5 minutes
   if (item.id === 'static_tea') {
@@ -9291,6 +9309,49 @@ function getSocketForPlayer(player) {
   return null;
 }
 
+// Tier 4.4: GMCP emit helpers - all silently no-op for plain-telnet sessions
+function gmcpVitals(player) {
+  if (!player) return;
+  const s = getSocketForPlayer(player);
+  if (s) gmcp.emitCharVitals(s, player);
+}
+function gmcpStatus(player) {
+  if (!player) return;
+  const s = getSocketForPlayer(player);
+  if (s) gmcp.emitCharStatus(s, player);
+}
+function gmcpStats(player) {
+  if (!player) return;
+  const s = getSocketForPlayer(player);
+  if (s) gmcp.emitCharStats(s, player);
+}
+function gmcpRoom(player) {
+  if (!player) return;
+  const s = getSocketForPlayer(player);
+  if (!s) return;
+  const room = rooms[player.currentRoom];
+  if (room) gmcp.emitRoomInfo(s, player, room, player.currentRoom);
+}
+
+// Tier 4.4: MSDP emit helpers — sister-protocol mirror of the gmcp* helpers
+function msdpVitals(player) {
+  if (!player) return;
+  const s = getSocketForPlayer(player);
+  if (s) gmcp.emitMsdpVitals(s, player);
+}
+function msdpPlayer(player) {
+  if (!player) return;
+  const s = getSocketForPlayer(player);
+  if (s) gmcp.emitMsdpPlayerState(s, player);
+}
+function msdpRoom(player) {
+  if (!player) return;
+  const s = getSocketForPlayer(player);
+  if (!s) return;
+  const room = rooms[player.currentRoom];
+  if (room) gmcp.emitMsdpRoom(s, player, room, player.currentRoom);
+}
+
 // Teleport all players command
 function handleTeleportAll(socket, player, args) {
   if (!isAdmin(player.name)) {
@@ -10065,6 +10126,13 @@ function handleMove(socket, player, direction) {
 
   // Move to new room
   player.currentRoom = newRoomId;
+
+  // Tier 4.4: GMCP room update for supporting clients
+  gmcpRoom(player);
+  gmcpVitals(player);
+  // MSDP mirror
+  msdpRoom(player);
+  msdpVitals(player);
 
   // Tier 3.1 Phase 7: Neo Kyoto entry achievements
   const nkMatch = newRoomId.match(/^room_(\d+)$/);
@@ -12982,6 +13050,8 @@ function handleClanChannel(socket, player, message) {
   const line = `${colorize(tag, 'brightYellow')} ${colorize(player.name, 'brightWhite')}: ${message.trim()}`;
   for (const { socket: s } of getOnlineClanmates(clan.id)) {
     s.write(`\r\n${line}\r\n> `);
+    // Tier 4.4: GMCP clan-channel event
+    gmcp.emitCommChannel(s, `clan:${clan.id}`, player.name, message.trim());
   }
 }
 
@@ -14481,7 +14551,11 @@ function handleChannelMessage(socket, player, channelKey, message) {
   for (const { player: p, socket: sock } of getOnlinePlayers()) {
     if (!p.channelSubs || !p.channelSubs[channelKey]) continue;
     if (p.ignoreList && p.ignoreList.includes((player.name || '').toLowerCase())) continue;
-    if (sock) sock.write(line);
+    if (sock) {
+      sock.write(line);
+      // Tier 4.4: GMCP channel event for subscribers (clients can render in dedicated panel)
+      gmcp.emitCommChannel(sock, channelKey, getDisplayName(player), message.trim());
+    }
   }
 }
 
@@ -14781,6 +14855,16 @@ function completePlayerLogin(socket, player, isNewPlayer) {
 
   // Tier 4.1: reconcile clan state - if clan was disbanded while player was offline, clear stale refs
   if (typeof reconcilePlayerClan === 'function') reconcilePlayerClan(player);
+
+  // Tier 4.4: full GMCP state push for clients that confirmed support before login
+  gmcp.emitCharStatus(socket, player);
+  gmcp.emitCharStats(socket, player);
+  gmcp.emitCharVitals(socket, player);
+  const _room = rooms[player.currentRoom];
+  if (_room) gmcp.emitRoomInfo(socket, player, _room, player.currentRoom);
+  // MSDP mirror — sister protocol; no-op for clients that didn't confirm
+  gmcp.emitMsdpPlayerState(socket, player);
+  if (_room) gmcp.emitMsdpRoom(socket, player, _room, player.currentRoom);
 
   // Log admin login for security tracking
   if (isAdmin(player.name)) {
@@ -15423,6 +15507,10 @@ const server = net.createServer((socket) => {
   // Suppress client echo - server will handle all echoing
   suppressClientEcho(socket);
 
+  // Tier 4.4: offer GMCP and MSDP to the client (no-op for plain telnet)
+  gmcp.offerSupport(socket);
+  gmcp.offerMsdpSupport(socket);
+
   // Create temporary player object
   const player = createPlayer();
 
@@ -15432,6 +15520,55 @@ const server = net.createServer((socket) => {
   // Buffer to accumulate characters until Enter is pressed
   let inputBuffer = '';
 
+  // GMCP/MSDP event handler for this socket — fires when client confirms
+  // support or sends a sub-negotiation message back to us
+  const onGmcpEvent = (evt) => {
+    if (evt.type === 'gmcp_enabled') {
+      // Client supports GMCP. Send initial state if they're already authenticated.
+      const p = players.get(socket);
+      if (p && p.authenticated) {
+        gmcp.emitCharStatus(socket, p);
+        gmcp.emitCharVitals(socket, p);
+        gmcp.emitCharStats(socket, p);
+        const room = rooms[p.currentRoom];
+        if (room) gmcp.emitRoomInfo(socket, p, room, p.currentRoom);
+      }
+    } else if (evt.type === 'msdp_enabled') {
+      // Client confirmed MSDP support. Push the full variable set if logged in.
+      const p = players.get(socket);
+      if (p && p.authenticated) {
+        gmcp.emitMsdpPlayerState(socket, p);
+        const room = rooms[p.currentRoom];
+        if (room) gmcp.emitMsdpRoom(socket, p, room, p.currentRoom);
+      }
+    } else if (evt.type === 'msdp_send') {
+      // Client requested current values for a list of variables — answer immediately.
+      const p = players.get(socket);
+      if (!p || !p.authenticated) return;
+      const room = rooms[p.currentRoom];
+      for (const name of evt.vars) {
+        switch (name) {
+          case 'CHARACTER_NAME': gmcp.sendMsdp(socket, name, p.name || ''); break;
+          case 'HEALTH':         gmcp.sendMsdp(socket, name, p.currentHP || 0); break;
+          case 'HEALTH_MAX':     gmcp.sendMsdp(socket, name, p.maxHP || 0); break;
+          case 'MANA':           gmcp.sendMsdp(socket, name, p.currentMana || 0); break;
+          case 'MANA_MAX':       gmcp.sendMsdp(socket, name, p.maxMana || 0); break;
+          case 'LEVEL':          gmcp.sendMsdp(socket, name, p.level || 1); break;
+          case 'EXPERIENCE':     gmcp.sendMsdp(socket, name, p.experience || 0); break;
+          case 'GOLD':           gmcp.sendMsdp(socket, name, p.gold || 0); break;
+          case 'ROOM_VNUM':      gmcp.sendMsdp(socket, name, p.currentRoom || ''); break;
+          case 'ROOM_NAME':      gmcp.sendMsdp(socket, name, room ? (room.name || '') : ''); break;
+          case 'ROOM_AREA':      gmcp.sendMsdp(socket, name, room ? (room.zone || '') : ''); break;
+          case 'ROOM_EXITS':     gmcp.sendMsdp(socket, name, room && room.exits ? Object.keys(room.exits) : []); break;
+          case 'SERVER_NAME':    gmcp.sendMsdp(socket, name, 'The Shattered Realms'); break;
+          case 'SERVER_TIME':    gmcp.sendMsdp(socket, name, new Date().toISOString()); break;
+        }
+      }
+    }
+    // gmcp_message / msdp_message events are not consumed by game logic in 4.4 —
+    // clients mostly listen rather than send. Future phases can route them here.
+  };
+
   // Show welcome banner and initial prompt
   showWelcomeBanner(socket);
   socket.write('Do you have an account? (Y/N): ');
@@ -15440,18 +15577,17 @@ const server = net.createServer((socket) => {
   let lastWasCR = false;
 
   // Handle incoming data from player
-  socket.on('data', (data) => {
+  socket.on('data', (rawData) => {
+    // Tier 4.4: run telnet/GMCP parser on every chunk before line buffering
+    const data = gmcp.processIncoming(socket, rawData, onGmcpEvent);
+
     // Handle password input using raw bytes (completely silent)
     if (player.authState && player.authState.isPasswordInput) {
       // Process byte by byte for password input
       for (let i = 0; i < data.length; i++) {
         const byte = data[i];
 
-        // Skip telnet negotiation sequences (IAC = 255)
-        if (byte === 255) {
-          i += 2; // Skip IAC + command + option
-          continue;
-        }
+        // (telnet IAC sequences already stripped by gmcp.processIncoming)
 
         // Handle CR-LF as single Enter (CR=13, LF=10)
         if (byte === 13) {
@@ -15516,16 +15652,8 @@ const server = net.createServer((socket) => {
     // Reset CR tracking for normal input
     lastWasCR = false;
 
-    // Filter out telnet negotiation sequences from display
-    const filteredBytes = [];
-    for (let i = 0; i < data.length; i++) {
-      if (data[i] === 255 && i + 2 < data.length) {
-        i += 2; // Skip IAC + command + option
-        continue;
-      }
-      filteredBytes.push(data[i]);
-    }
-    const chunk = Buffer.from(filteredBytes).toString();
+    // Tier 4.4: telnet bytes already stripped by gmcp.processIncoming above
+    const chunk = data.toString();
 
     // Server-side echo for normal input (more reliable than client echo)
     // Process each character for echo AND buffer management
@@ -15593,6 +15721,9 @@ const server = net.createServer((socket) => {
 
   // Handle player disconnect
   socket.on('end', () => {
+    // Tier 4.4: free GMCP per-socket state
+    gmcp.cleanup(socket);
+
     // Handle monster combat disconnect
     if (isInMonsterCombat(player)) {
       handleMonsterCombatDisconnect(player);
