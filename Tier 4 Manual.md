@@ -8,7 +8,7 @@
 | :-- | :-- | :-- |
 | 4.1 | **Clans / Guilds** | **DONE** — see "Clans" below |
 | 4.2 | Auction house | not started |
-| 4.3 | Online creation (OLC, admin-only) | not started |
+| 4.3 | **Online creation (OLC, admin-only)** | **DONE (Sprint-1 scope: rooms only)** — see "OLC" below |
 | 4.4 | **MSDP/GMCP protocol** | **DONE** — see "MSDP/GMCP" below |
 | 4.5 | Server-side triggers | not started |
 | 4.6 | Goals system | not started |
@@ -216,9 +216,126 @@ Per plan: `auction list/bid/post`, time-based, gold escrow, broadcasts on bid. N
 
 ---
 
-## 4.3 Online creation (OLC) — NOT STARTED (admin-only)
+## 4.3 Online creation (OLC, admin-only) — SHIPPED (Sprint-1 scope)
 
-Per plan: admin commands `redit`, `medit`, `oedit` for in-game world editing with persistence. **Permissions confirmed: admin-only** (uses `isAdmin()` check). A future builder-rank tier may be added later, but Phase 4.3 ships admin-only.
+The world-building scaffolding for in-game editing. Sprint 1 ships **room editing only** (`redit`); items and monster templates land in a follow-up.
+
+### Concepts
+
+- **A session** is per-admin and edits the room they're standing in. Multiple admins can edit different rooms in parallel; one admin can hold one session at a time.
+- **Drafts are isolated** — edits buffer in the session and don't touch live world state until `redit save` or `redit done`.
+- **Persistence is durable** — `save` updates the live `rooms` map *and* writes through to `rooms.json` with a `.bak` backup, using a temp-file + rename pattern so partial writes can't corrupt the world file.
+- **Permissions** — gated through `isAdmin(player.name)` and logged via `logAdminCommand`. Non-admins get a permission-denied message.
+- **No live-edit race** — the draft is a shallow copy of the room object; if another admin's `modify_room` mutates the live room while a `redit` session is open, the session's `save` overwrites their change. Use `modify_room` for ad-hoc tweaks, `redit` for considered work.
+
+### Command surface
+
+All subcommands live under the `redit` verb:
+
+| Command | Effect |
+| :-- | :-- |
+| `redit` | Start a session on the current room (if none active) and show the draft |
+| `redit show` | Display the current draft (also shown by bare `redit`) |
+| `redit name <text>` | Set room name (≤ 80 chars, non-empty) |
+| `redit short <text>` | Set short description (≤ 200 chars) — used in `Room.Info` GMCP and brief view |
+| `redit desc <text>` | Set the long description (≤ 4000 chars, non-empty) |
+| `redit zone <text>` | Set the zone label (≤ 50 chars, non-empty) |
+| `redit exit <dir> <roomId>` | Add or replace an exit. `dir` accepts full names or `n/s/e/w/ne/nw/se/sw/u/d` |
+| `redit exit <dir> none` | Remove the named exit |
+| `redit save` | Commit the draft to the live world *and* write `rooms.json` (keeps session open) |
+| `redit done` | Save + end the session |
+| `redit cancel` | Discard the draft and end the session |
+
+`redit name` / `redit short` / `redit desc` / `redit zone` / `redit exit` will **auto-start a session on the current room** if one isn't already active, so you can begin editing with a single command.
+
+### Validation rules
+
+- **Name:** non-empty, ≤ 80 chars
+- **Zone:** non-empty, ≤ 50 chars
+- **Short description:** ≤ 200 chars (may be empty)
+- **Long description:** non-empty, ≤ 4000 chars
+- **Exit direction:** must normalize to one of north/south/east/west/northeast/northwest/southeast/southwest/up/down
+- **Exit target:** must be a known room id; `redit exit dir none` (or `remove`) deletes the exit instead
+- **No self-loops:** a room cannot exit to itself
+- All inputs are trimmed of trailing whitespace; descriptions and room ids preserve case (the dispatcher passes the original input through, not the lowercased command).
+
+### Persistence flow
+
+`redit save` does, in order:
+
+1. Apply draft fields onto the live `rooms[roomId]` object (name, zone, shortDescription, longDescription, exits — exits is replaced wholesale via `Object.assign({}, draft.exits)`).
+2. Mark the session as clean (`dirty = false`).
+3. `fs.copyFileSync(rooms.json, rooms.json.bak)` — rotate the previous backup. Failure here is non-fatal; the in-memory commit already happened.
+4. `fs.writeFileSync(rooms.json.tmp, JSON.stringify(rooms, 2))`
+5. `fs.renameSync(rooms.json.tmp, rooms.json)` — the rename is atomic, so an interrupted save can never leave a half-written world file.
+
+If the disk write fails, the live in-memory edit still stands and the admin sees a `WARNING: rooms.json write failed` line. Run `save_all` or restart with caution if that ever fires.
+
+### Live broadcast
+
+After `save` or `done`, occupants of the edited room receive a flavor message:
+
+> *The fabric of this room shifts as a creator's edit takes hold.*
+
+This makes edits feel intentional rather than ghostly, and prompts players to `look` again to pick up the new description.
+
+### Module API (`world/olc.js`)
+
+```js
+start(player, rooms)            -> { ok, roomId, draft } | { ok:false, error }
+get(player)                     -> { roomId, draft, dirty } | null
+isEditing(player)               -> bool
+activeRoom(player)              -> roomId | null
+setField(player, field, value)  -> { ok, field, value } | { ok:false, error }
+                                   field: 'name' | 'short' | 'desc' | 'zone'
+setExit(player, dir, target, rooms)
+                                -> { ok, dir, target?, removed? } | { ok:false, error }
+                                   target='none' or 'remove' to delete
+save(player, rooms)             -> { ok, roomId, persistError? } | { ok:false, error }
+                                   (persistError is set if disk write failed)
+end(player)                     -> alias for cancel
+cancel(player)                  -> { ok } | { ok:false, error }
+formatDraft(player)             -> string | null  (multi-line summary for display)
+normalizeDir(d)                 -> canonical name | null
+```
+
+### Server-side wiring
+
+| Hot point | What runs |
+| :-- | :-- |
+| `processCommand` (`redit` / `redit ...`) | Routes to `handleRedit`, passing the original case-preserved tail |
+| `handleRedit` | `isAdmin` guard → subcommand parse → calls into `world/olc.js` |
+| `redit save` / `redit done` | Calls `olc.save(player, rooms)` then `broadcastToRoom` for occupants |
+| Admin help (`admin redit`) | One-line summary in the help map; `redit` listed in the World category |
+| Logging | `logAdminCommand` fires for every state-changing subcommand (start, save, cancel, done) |
+
+### Verification
+
+`_verify_olc.js` runs a 53-check standalone harness. From the repo root:
+
+```
+node _verify_olc.js
+```
+
+Coverage:
+
+- Direction normalization (full forms, short aliases, case-insensitivity, invalid input)
+- Session lifecycle (start, isEditing, activeRoom, cancel, draft isolation)
+- Field edits (each field, length caps, empty rejection, unknown-field rejection, no live mutation pre-save)
+- Exit edits (add, replace, remove, alias direction, invalid direction, missing target room, self-loop rejection, remove-nothing rejection)
+- Persistence round trip — writes to the real `rooms.json` location, asserts the file content reflects the edit, then **restores the original `rooms.json` and `rooms.json.bak` byte-for-byte** so the harness leaves the repo unchanged
+- Per-player session isolation
+- Server-side wiring grep checks (import, handler, dispatch, help map, world-category list, broadcast, isAdmin gate, command logging)
+
+The persistence test is the load-bearing one — if it ever leaves residue in `rooms.json` you have a bug in either the rollback or the OLC `save` path. Run from a clean working tree to make this obvious.
+
+### Limitations / deferred to 4.3-pt2
+
+- **Item OLC (`oedit`)** and **monster template OLC (`medit`)** are not implemented yet — items and monsters still come from `items.json` and `monsters.json` static data.
+- **Zone OLC** — adding/removing zones, editing zone-level spawn rules — not implemented.
+- **No undo log** beyond the single `.bak` rotation; multiple successive `save`s only keep the most recent prior state.
+- **No cross-admin lock** — two admins editing the same room will see whichever `save` runs last.
+- The session is in-memory only; if the server restarts mid-edit the unsaved draft is lost (mid-edit `redit save` would have committed it, by design).
 
 ---
 
@@ -452,7 +569,7 @@ The bug was found while implementing the clan channel (Phase 4.1) — the new cl
 
 Per the approved Tier 4 plan (`audit-against-the-north-sharded-wombat.md`):
 
-- **Sprint 1 — Foundation triad** (in progress): 4.1 Clans ✓ → 4.4 MSDP/GMCP → 4.3 OLC
+- **Sprint 1 — Foundation triad**: 4.1 Clans ✓ → 4.4 MSDP/GMCP ✓ → 4.3 OLC ✓ (rooms only; items/mobs deferred)
 - **Sprint 2 — Economy + social**: 4.2 Auction → 4.5 Triggers → 4.6 Goals
 - **Sprint 3 — QoL bundle**: 4.7 Friend list + 4.8 Speedwalker
 
@@ -460,4 +577,4 @@ Then Tier 5 stretch goals.
 
 ---
 
-*Document revision: Tier 4.1 shipped. Channel bug fixed. Sprint 1 next: 4.4 MSDP/GMCP.*
+*Document revision: Sprint 1 closed (4.1 Clans, 4.4 MSDP/GMCP, 4.3 OLC rooms). Sprint 2 next: 4.2 Auction → 4.5 Triggers → 4.6 Goals.*

@@ -7,6 +7,7 @@ const npcRegistry = require('./npcs/registry');
 const npcOllama = require('./llm/ollama');
 const questManager = require('./world/quests');
 const gmcp = require('./protocol/gmcp');
+const olc = require('./world/olc');
 
 const PORT = parseInt(process.env.MUD_PORT, 10) || 8888;
 const START_ROOM = 'room_001';
@@ -7565,6 +7566,116 @@ function handleModifyRoom(socket, player, args) {
 }
 
 // ============================================
+// TIER 4.3: ONLINE CREATION (OLC) — REDIT
+// ============================================
+//
+// `redit` lets an admin edit the room they're standing in. Edits go to a
+// per-player draft; nothing touches live world state until `redit save` or
+// `redit done`. Persistence writes through to rooms.json (with .bak backup).
+function handleRedit(socket, player, args) {
+  if (!isAdmin(player.name)) {
+    socket.write(colorize("You don't have permission to use this command.\r\n", 'red'));
+    return;
+  }
+
+  const trimmed = (args || '').trim();
+  const tokens = trimmed.length ? trimmed.split(/\s+/) : [];
+  const sub = (tokens[0] || '').toLowerCase();
+  const rest = tokens.slice(1).join(' ');
+
+  // Bare `redit` -> show draft (or start a new session if none active)
+  if (!sub) {
+    if (!olc.isEditing(player)) {
+      const r = olc.start(player, rooms);
+      if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
+      socket.write(colorize(`Started OLC session on ${r.roomId}.\r\n`, 'brightCyan'));
+      logAdminCommand(player.name, `redit start ${r.roomId}`);
+    }
+    socket.write(olc.formatDraft(player) || '');
+    socket.write(colorize('Subcommands: name <text> | short <text> | desc <text> | zone <text> | exit <dir> <roomId|none> | show | save | cancel | done\r\n', 'gray'));
+    return;
+  }
+
+  // `redit show` — display current draft
+  if (sub === 'show') {
+    const out = olc.formatDraft(player);
+    if (!out) { socket.write(colorize('No active redit session. Run `redit` first.\r\n', 'red')); return; }
+    socket.write(out);
+    return;
+  }
+
+  // `redit cancel`
+  if (sub === 'cancel' || sub === 'abort') {
+    const r = olc.cancel(player);
+    socket.write(colorize(r.ok ? 'Edit session discarded.\r\n' : (r.error + '\r\n'), r.ok ? 'yellow' : 'red'));
+    if (r.ok) logAdminCommand(player.name, 'redit cancel');
+    return;
+  }
+
+  // `redit save` — commit draft, persist to disk, keep session open
+  if (sub === 'save') {
+    const r = olc.save(player, rooms);
+    if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
+    socket.write(colorize(`Saved ${r.roomId} to live world.\r\n`, 'brightGreen'));
+    if (r.persistError) {
+      socket.write(colorize(`WARNING: rooms.json write failed (${r.persistError}). In-memory edit is live but will be lost on restart.\r\n`, 'red'));
+    } else {
+      socket.write(colorize('rooms.json updated (rooms.json.bak written).\r\n', 'gray'));
+    }
+    // Broadcast to room occupants so they see the change immediately
+    broadcastToRoom(r.roomId, colorize("The fabric of this room shifts as a creator's edit takes hold.", 'magenta'), socket);
+    logAdminCommand(player.name, `redit save ${r.roomId}`);
+    return;
+  }
+
+  // `redit done` — save + end session
+  if (sub === 'done' || sub === 'exit' && tokens.length === 1) {
+    const r = olc.save(player, rooms);
+    if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
+    olc.end(player);
+    socket.write(colorize(`Saved ${r.roomId} and ended OLC session.\r\n`, 'brightGreen'));
+    if (r.persistError) {
+      socket.write(colorize(`WARNING: rooms.json write failed (${r.persistError}).\r\n`, 'red'));
+    }
+    broadcastToRoom(r.roomId, colorize("The fabric of this room shifts as a creator's edit takes hold.", 'magenta'), socket);
+    logAdminCommand(player.name, `redit done ${r.roomId}`);
+    return;
+  }
+
+  // `redit exit <dir> <target|none>`
+  if (sub === 'exit') {
+    if (tokens.length < 3) {
+      socket.write('Usage: redit exit <dir> <roomId|none>\r\n');
+      return;
+    }
+    if (!olc.isEditing(player)) {
+      const r0 = olc.start(player, rooms);
+      if (!r0.ok) { socket.write(colorize(r0.error + '\r\n', 'red')); return; }
+    }
+    const r = olc.setExit(player, tokens[1], tokens[2], rooms);
+    if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
+    socket.write(colorize(r.removed ? `Removed ${r.dir} exit.\r\n` : `Set ${r.dir} -> ${r.target}.\r\n`, 'green'));
+    return;
+  }
+
+  // Field edits: name / short / desc / zone
+  const fieldMap = { name: 'name', short: 'short', desc: 'desc', long: 'long', zone: 'zone' };
+  if (fieldMap[sub]) {
+    if (!rest) { socket.write(`Usage: redit ${sub} <text>\r\n`); return; }
+    if (!olc.isEditing(player)) {
+      const r0 = olc.start(player, rooms);
+      if (!r0.ok) { socket.write(colorize(r0.error + '\r\n', 'red')); return; }
+    }
+    const r = olc.setField(player, fieldMap[sub], rest);
+    if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
+    socket.write(colorize(`Set ${r.field}: "${String(r.value).slice(0, 60)}${String(r.value).length > 60 ? '...' : ''}"\r\n`, 'green'));
+    return;
+  }
+
+  socket.write(colorize(`Unknown redit subcommand: ${sub}. Try \`redit\` for help.\r\n`, 'red'));
+}
+
+// ============================================
 // ADMIN INFORMATION COMMANDS
 // ============================================
 
@@ -9869,6 +9980,7 @@ function handleAdminHelp(socket, player, specificCommand) {
       'despawn': 'Remove a monster by ID. Usage: despawn <monster_id>',
       'create_item': 'Place an item in a room. Usage: create_item <item> <room#>',
       'modify_room': 'Temporarily modify room properties. Usage: modify_room <room#> <property> <value>',
+      'redit': 'Online room editor. Usage: redit | redit <name|short|desc|zone> <text> | redit exit <dir> <roomId|none> | redit save | redit done | redit cancel',
       'admin_score': 'Show complete player data. Usage: admin_score <player>',
       'logs': 'Show recent server activity. Usage: logs [lines]',
       'test_combat': 'Spawn a weak test monster for combat testing.',
@@ -9910,7 +10022,7 @@ function handleAdminHelp(socket, player, specificCommand) {
   socket.write('  broadcast, god_say, invisible\r\n');
 
   socket.write(colorize('WORLD:\r\n', 'yellow'));
-  socket.write('  spawn, monster_types, despawn, create_item, modify_room\r\n');
+  socket.write('  spawn, monster_types, despawn, create_item, modify_room, redit\r\n');
 
   socket.write(colorize('INFO:\r\n', 'yellow'));
   socket.write('  monsters, admin_score, logs\r\n');
@@ -11311,6 +11423,15 @@ function processCommand(socket, player, input) {
   }
   if (command === 'modify_room' || command === 'modifyroom') {
     socket.write('Usage: modify_room <room#> <property> <value>\r\n');
+    return true;
+  }
+
+  // Tier 4.3: redit (online room creation/editing). Use the original input
+  // (not lowercased command) because descriptions and room ids are case-sensitive.
+  if (command === 'redit' || command.startsWith('redit ')) {
+    const original = input.trim();
+    const originalArgs = original.length > 5 ? original.slice(6) : '';
+    handleRedit(socket, player, originalArgs);
     return true;
   }
 
