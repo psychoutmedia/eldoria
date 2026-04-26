@@ -7,7 +7,7 @@
 | # | Phase | Status |
 | :-- | :-- | :-- |
 | 4.1 | **Clans / Guilds** | **DONE** — see "Clans" below |
-| 4.2 | Auction house | not started |
+| 4.2 | **Auction house** | **DONE** — see "Auction house" below |
 | 4.3 | **Online creation (OLC, admin-only)** | **DONE (Sprint-1 scope: rooms only)** — see "OLC" below |
 | 4.4 | **MSDP/GMCP protocol** | **DONE** — see "MSDP/GMCP" below |
 | 4.5 | Server-side triggers | not started |
@@ -210,9 +210,225 @@ Static + simulation suite: **38/38 PASS** (every command wired, full clan lifecy
 
 ---
 
-## 4.2 Auction house — NOT STARTED
+## 4.2 Auction house — SHIPPED
 
-Per plan: `auction list/bid/post`, time-based, gold escrow, broadcasts on bid. New `auctions.json` config. Will detail commands and flow when this phase ships.
+Player-driven asynchronous trading. List items for a fixed duration, accept bids, settle on expiry — gold and items move automatically and offline players are notified on next login.
+
+### Concepts
+
+- **Active auction** — an item escrowed off the seller's inventory, with a starting bid and an expiry timestamp. Bidders escrow their gold to take the top slot; outbid bidders are auto-refunded.
+- **Pending claim** — a won (or returned) item the recipient couldn't accept because their inventory was full. Picked up via `auction claim`.
+- **History** — settled / cancelled auctions. Capped at 200 entries on disk to keep `auctions.json` small.
+- **House fee** — 5% of the winning bid is burned (not paid to anyone) on a successful sale.
+- **Gold flow is conserved** for failed bids: a 100g bid creates a 100g escrow; if the bidder is outbid they get all 100g back; if the auction is cancelled they get all 100g back; if they win, only the fee disappears.
+
+### Tunables (`world/auctions.js`)
+
+| Constant | Default | Meaning |
+| :-- | :-- | :-- |
+| `HOUSE_FEE_PCT` | 0.05 | Fee on winning bids (burned, not redistributed) |
+| `MIN_INCREMENT_PCT` | 0.05 | Min next-bid bump as a fraction of current bid |
+| `MIN_INCREMENT_GOLD` | 1 | Floor on the bump for cheap auctions |
+| `DEFAULT_DURATION_HRS` | 24 | If `auction sell` omits the hours arg |
+| `MIN_DURATION_HRS` / `MAX_DURATION_HRS` | 1 / 72 | Valid range for duration |
+| `MIN_STARTING_BID` | 1 | Cheapest valid starting bid |
+| `MAX_PER_SELLER` | 5 | Per-account active-listing cap |
+| `MAX_TOTAL_ACTIVE` | 100 | House-wide active-listing cap |
+
+The reaper runs every **60 seconds** (`AUCTION_REAPER_INTERVAL_MS` in `mud_server.js`).
+
+### Command surface
+
+| Command | Effect |
+| :-- | :-- |
+| `auction` / `auction list` / `ah` | List all active auctions (sorted by soonest expiry) |
+| `auction info <id>` | Detail page for one auction (item, bids, time left, min next bid) |
+| `auction sell <item> <minBid> [hours]` | List an item from your inventory. Default duration 24h. Item is escrowed immediately. Equipped items must be unequipped first. |
+| `auction bid <id> <amount>` | Escrow `amount` gold and take top bid. Auto-refunds the previous top bidder. |
+| `auction cancel <id>` | Seller cancels. Top bidder (if any) is refunded; item is returned (or queued if inventory full). |
+| `auction claim` | Pick up items waiting in your queue (won bids that couldn't deliver, or cancelled listings whose seller had a full inventory). |
+
+The `ah` shorthand is wired identically to `auction`.
+
+### Validation rules
+
+**Listing (`auction sell`):**
+- Item must be in inventory (partial-name match supported via `findItemInInventory`).
+- Item must not be equipped.
+- Starting bid ≥ 1g.
+- Duration in `[1h, 72h]`.
+- Seller may not exceed `MAX_PER_SELLER` active listings.
+- House may not exceed `MAX_TOTAL_ACTIVE` active listings.
+
+**Bidding (`auction bid`):**
+- Auction must exist and not be expired.
+- Bidder cannot be the seller.
+- Amount must be a positive integer.
+- For the first bid: amount ≥ starting bid.
+- For subsequent bids: amount ≥ current bid + max(`MIN_INCREMENT_GOLD`, `ceil(currentBid * MIN_INCREMENT_PCT)`).
+- Bidder must hold enough gold (escrow happens at the moment of `auction bid`).
+
+**Cancelling (`auction cancel`):**
+- Only the seller can cancel.
+- Top bidder (if any) is refunded the full escrowed amount.
+
+### Settlement flow (the reaper)
+
+Every 60 seconds, `runAuctionReaper` calls `auctions.findExpired(now)` and processes each match:
+
+1. **Sold** — top bidder + non-null current bid:
+   - Move auction to history with `outcome: 'sold'` and computed fee.
+   - Pay seller `currentBid - fee` (online: live; offline: edits player file).
+   - Try to deliver the item to the winner. If their inventory is full, route to `pending` queue.
+   - Notify both parties (live-write if online, queue to `auctionMail` if offline).
+2. **Unsold** — no bidder:
+   - Move auction to history with `outcome: 'unsold'`.
+   - Try to deliver the item back to the seller; route to pending if full.
+   - Notify the seller.
+3. Persist to `auctions.json` once at the end of the tick.
+
+`auctions.json` is written via temp-file + atomic rename, with a `.bak` rotated on every save (same pattern as OLC and player files).
+
+### Notifications
+
+- **Online recipient** — direct write to their socket: `\r\n[Auctions] <message>\r\n> `.
+- **Offline recipient** — appended to a per-player `auctionMail` array on disk (capped at 50 entries). Flushed on next login as `=== N auction message(s) while you were away ===`.
+- **Pending claim warning** — printed on every login if the player has anything in the claim queue.
+
+### Persistence schema (`auctions.json`)
+
+```json
+{
+  "active": [
+    {
+      "id": "auc_0001",
+      "seller": "Alice",
+      "item": { /* full item snapshot at list time */ },
+      "startingBid": 100,
+      "currentBid": 150,
+      "topBidder": "Bob",
+      "listedAt": 1700000000000,
+      "expiresAt": 1700086400000
+    }
+  ],
+  "pending": [
+    { "id": "auc_xxx", "winner": "Bob", "item": { /* ... */ }, "pendingSince": 1700000000000 }
+  ],
+  "history": [
+    {
+      "id": "auc_xxx",
+      "seller": "Alice",
+      "winner": "Bob",
+      "item": { /* ... */ },
+      "finalBid": 150,
+      "fee": 7,
+      "outcome": "sold",          // | "unsold" | "cancelled"
+      "listedAt": 1700000000000,
+      "settledAt": 1700086400123
+    }
+  ],
+  "nextSeq": 7
+}
+```
+
+The `item` is a snapshot taken at list time — if the item template changes mid-auction the auction still delivers the original.
+
+### Module API (`world/auctions.js`)
+
+```js
+emptyState() / loadState(filePath?) / saveState(state, filePath?)
+
+canList(state, sellerName, item, startingBid, durationHrs)
+  -> { ok, startingBid, durationHrs } | { ok:false, error }
+addAuction(state, sellerName, item, startingBid, durationHrs, now)
+  -> auction
+getAuction(state, auctionId) -> auction | null
+
+canBid(state, auctionId, bidderName, amount, now)
+  -> { ok, auction, amount, prevBidder, prevBid } | { ok:false, error }
+applyBid(state, auctionId, bidderName, amount) -> auction | null
+
+canCancel(state, auctionId, sellerName)
+  -> { ok, auction, refundBidder, refundAmount } | { ok:false, error }
+removeAuction(state, auctionId) -> auction | null
+
+findExpired(state, now) -> [auction]
+moveToHistory(state, auction, outcome, settledAt) -> fee (0 if not sold)
+
+addPending(state, winnerName, auction)
+takePending(state, winnerName, auctionId?) -> claim | null
+listPendingFor(state, winnerName) -> [claim]
+
+listActive(state) -> sorted by expiresAt
+formatRemaining(ms) -> "Xh Ym" / "Ym Zs" / "Ns" / "expired"
+```
+
+### Server-side wiring
+
+| Hot point | What runs |
+| :-- | :-- |
+| `server.listen` callback (startup) | `auctions.loadState()` populates `auctionState`; `setInterval(runAuctionReaper, 60s)` scheduled |
+| `processCommand` (`auction` / `auction ...` / `ah` / `ah ...`) | Routes to `handleAuction` with original-case args |
+| `handleAuction sell` | Validates, escrows item, calls `addAuction`, persists, broadcasts `[Auctions] ... listed ...` |
+| `handleAuction bid` | Validates, escrows bidder gold, refunds prev bidder, calls `applyBid`, persists, notifies seller |
+| `handleAuction cancel` | Validates, refunds top bidder, returns item (or queues), removes auction, persists |
+| `handleAuction claim` | Drains pending queue subject to inventory cap, persists |
+| `runAuctionReaper` (every 60s) | Settles each expired auction, persists once at end of tick |
+| `completePlayerLogin` | Flushes `player.auctionMail` queue; warns if pending claims exist |
+
+Gold and inventory mutation lives entirely in `mud_server.js`; the module is pure data + validation. This separation lets the unit tests run without booting the server.
+
+### Testing
+
+Two harnesses cover this phase:
+
+**Unit (`_verify_auctions.js`)** — 65 checks against the module in isolation:
+- `canList` validation (negative bid, oversize/undersize duration, missing seller/item, default duration, per-seller cap, total cap)
+- `addAuction` returns id, increments seq, computes expiresAt
+- `canBid` (self-bid, under starting, increment threshold, prev-bidder reflection, expired auction, unknown id, non-positive amount)
+- Min-increment math floor of 1g for cheap bids
+- `canCancel` (seller-only, unknown id)
+- `findExpired` + `moveToHistory` fee math + history unshift + cap
+- `removeAuction` semantics
+- Pending queue (`addPending` / `listPendingFor` / `takePending`, case-insensitive)
+- `formatRemaining` formatting bands
+- `loadState` / `saveState` round-trip, .bak rotation, garbage-file resilience
+- 14 server-side wiring grep checks
+
+**Live integration (`_smoke_auctions.js`)** — 6 checks against a real spawned server:
+- Spawns `mud_server.js` on `MUD_PORT=18888` so it doesn't collide with anything on 8888.
+- Waits for the `Loaded N active auction` log line — proves the module integrates with startup and `auctions.json` is parsed at boot.
+- Opens a real TCP socket; receives the welcome banner; verifies the "Do you have an account?" prompt arrives (after stripping IAC + ANSI).
+- Confirms the server process stays alive after a connect/disconnect cycle.
+- Sends SIGTERM and confirms a clean shutdown.
+
+Run from the repo root:
+
+```
+node _verify_auctions.js     # 65/65 unit checks
+node _smoke_auctions.js      # 6/6 live-server smoke checks
+```
+
+The smoke harness spawns its own server, so don't run a second instance on `localhost:18888` while it's executing.
+
+### Anti-griefing & known limitations
+
+**Implemented:**
+- Self-bid blocked.
+- Equipped items can't be listed.
+- Per-seller and house-wide listing caps.
+- Min-increment floor (no 1-copper bid wars on cheap items).
+- All gold movement is escrow-based — no orphan gold on outbid/cancel.
+- Pending-claim queue means winning a bid never silently destroys an item.
+
+**Deferred to a future pass:**
+- No `auction history` command yet — history is persisted but not user-visible. (Admins can `cat auctions.json`.)
+- No `auction search <text>` filter.
+- No buyout / reserve-price mechanic.
+- Pending claims have no expiry — items live in the queue forever until claimed.
+- No multi-currency support (only `gold`).
+- No anti-shill mechanism beyond the self-bid block (alts can collude).
+- No admin break-glass tool to force-settle or void an auction.
 
 ---
 
@@ -570,11 +786,11 @@ The bug was found while implementing the clan channel (Phase 4.1) — the new cl
 Per the approved Tier 4 plan (`audit-against-the-north-sharded-wombat.md`):
 
 - **Sprint 1 — Foundation triad**: 4.1 Clans ✓ → 4.4 MSDP/GMCP ✓ → 4.3 OLC ✓ (rooms only; items/mobs deferred)
-- **Sprint 2 — Economy + social**: 4.2 Auction → 4.5 Triggers → 4.6 Goals
+- **Sprint 2 — Economy + social** (in progress): 4.2 Auction ✓ → 4.5 Triggers → 4.6 Goals
 - **Sprint 3 — QoL bundle**: 4.7 Friend list + 4.8 Speedwalker
 
 Then Tier 5 stretch goals.
 
 ---
 
-*Document revision: Sprint 1 closed (4.1 Clans, 4.4 MSDP/GMCP, 4.3 OLC rooms). Sprint 2 next: 4.2 Auction → 4.5 Triggers → 4.6 Goals.*
+*Document revision: Sprint 1 closed; Sprint 2 leg 1 (4.2 Auction) shipped. Sprint 2 next: 4.5 Triggers → 4.6 Goals.*

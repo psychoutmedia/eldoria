@@ -8,6 +8,7 @@ const npcOllama = require('./llm/ollama');
 const questManager = require('./world/quests');
 const gmcp = require('./protocol/gmcp');
 const olc = require('./world/olc');
+const auctions = require('./world/auctions');
 
 const PORT = parseInt(process.env.MUD_PORT, 10) || 8888;
 const START_ROOM = 'room_001';
@@ -7676,6 +7677,328 @@ function handleRedit(socket, player, args) {
 }
 
 // ============================================
+// TIER 4.2: AUCTION HOUSE
+// ============================================
+//
+// Live state pointer — populated on server start by `auctions.loadState()`.
+// All gold/inventory mutation lives here; world/auctions.js is pure data.
+let auctionState = auctions.emptyState();
+const AUCTION_REAPER_INTERVAL_MS = 60 * 1000;  // settle expired auctions every minute
+
+// Persist state and log to console on failure (admins can inspect via `logs`).
+function persistAuctions() {
+  const r = auctions.saveState(auctionState);
+  if (!r.ok) {
+    console.error(`auctions.json save failed: ${r.error}`);
+    logActivity(`Auction persistence error: ${r.error}`);
+  }
+}
+
+// Notify a player by name. Online: write directly. Offline: queue on disk so
+// they see the message on next login.
+function notifyAuctionPlayer(name, message) {
+  if (!name) return;
+  const target = findPlayerByName(name);
+  if (target) {
+    target.socket.write(`\r\n${colorize('[Auctions] ', 'brightYellow')}${message}\r\n> `);
+    return;
+  }
+  // Offline: load file, append to mail-style queue, save
+  try {
+    const data = loadPlayer(name);
+    if (!data) return;
+    if (!Array.isArray(data.auctionMail)) data.auctionMail = [];
+    data.auctionMail.push({ at: Date.now(), message });
+    if (data.auctionMail.length > 50) data.auctionMail = data.auctionMail.slice(-50);
+    const filePath = getPlayerFilePath(name);
+    const tmp = filePath + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
+    fs.renameSync(tmp, filePath);
+  } catch (e) { /* swallow — offline notify is best-effort */ }
+}
+
+// Pay an offline player gold (load + mutate + save).
+function payOfflineGold(name, amount) {
+  if (!name || amount <= 0) return false;
+  const target = findPlayerByName(name);
+  if (target) {
+    target.player.gold = (target.player.gold || 0) + amount;
+    savePlayer(target.player, target.socket, true);
+    return true;
+  }
+  try {
+    const data = loadPlayer(name);
+    if (!data) return false;
+    data.gold = (data.gold || 0) + amount;
+    const filePath = getPlayerFilePath(name);
+    const tmp = filePath + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
+    fs.renameSync(tmp, filePath);
+    return true;
+  } catch (e) { return false; }
+}
+
+// Try to give an offline player an item — returns true on success, false if
+// they're at the inventory cap (caller routes to the pending queue).
+function deliverOfflineItem(name, item) {
+  const target = findPlayerByName(name);
+  if (target) {
+    if (target.player.inventory.length >= getInventoryCap(target.player)) return false;
+    target.player.inventory.push(item);
+    savePlayer(target.player, target.socket, true);
+    return true;
+  }
+  try {
+    const data = loadPlayer(name);
+    if (!data) return false;
+    if (!Array.isArray(data.inventory)) data.inventory = [];
+    const cap = (data.level >= 19) ? 25 : 20;  // mirrors getInventoryCap
+    if (data.inventory.length >= cap) return false;
+    data.inventory.push(item);
+    const filePath = getPlayerFilePath(name);
+    const tmp = filePath + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
+    fs.renameSync(tmp, filePath);
+    return true;
+  } catch (e) { return false; }
+}
+
+// === The reaper: settles every expired auction ===
+function runAuctionReaper() {
+  const now = Date.now();
+  const expired = auctions.findExpired(auctionState, now);
+  if (!expired.length) return;
+  for (const a of expired) {
+    settleAuction(a, now);
+  }
+  persistAuctions();
+}
+
+function settleAuction(auction, now) {
+  if (auction.topBidder && auction.currentBid) {
+    // Sold. Compute fee, pay seller, deliver item.
+    const fee = auctions.moveToHistory(auctionState, auction, 'sold', now);
+    auctions.removeAuction(auctionState, auction.id);
+    const sellerPayout = auction.currentBid - fee;
+    payOfflineGold(auction.seller, sellerPayout);
+    notifyAuctionPlayer(auction.seller,
+      `Your "${auction.item.name}" sold to ${auction.topBidder} for ${auction.currentBid}g (fee ${fee}g, you receive ${sellerPayout}g).`);
+    if (deliverOfflineItem(auction.topBidder, auction.item)) {
+      notifyAuctionPlayer(auction.topBidder,
+        `You won "${auction.item.name}" for ${auction.currentBid}g. It has been added to your inventory.`);
+    } else {
+      auctions.addPending(auctionState, auction.topBidder, auction);
+      notifyAuctionPlayer(auction.topBidder,
+        `You won "${auction.item.name}" for ${auction.currentBid}g, but your inventory is full. Use \`auction claim\` once you have space.`);
+    }
+    logActivity(`Auction ${auction.id}: ${auction.seller} sold ${auction.item.name} to ${auction.topBidder} for ${auction.currentBid}g (fee ${fee}g)`);
+  } else {
+    // Unsold. Item back to seller (or pending queue if their inventory is full).
+    auctions.moveToHistory(auctionState, auction, 'unsold', now);
+    auctions.removeAuction(auctionState, auction.id);
+    if (deliverOfflineItem(auction.seller, auction.item)) {
+      notifyAuctionPlayer(auction.seller,
+        `Your "${auction.item.name}" expired without a winner and has been returned to your inventory.`);
+    } else {
+      auctions.addPending(auctionState, auction.seller, auction);
+      notifyAuctionPlayer(auction.seller,
+        `Your "${auction.item.name}" expired unsold but your inventory is full. Use \`auction claim\` once you have space.`);
+    }
+    logActivity(`Auction ${auction.id}: ${auction.seller}'s ${auction.item.name} expired unsold`);
+  }
+}
+
+// === Display helpers ===
+function formatAuctionLine(a, now) {
+  const remaining = auctions.formatRemaining(a.expiresAt - now);
+  const bidStr = a.currentBid != null
+    ? `${a.currentBid}g (bid by ${a.topBidder})`
+    : `start ${a.startingBid}g`;
+  return `  ${colorize(a.id, 'brightCyan')}  ${a.item.name.padEnd(28)} ${bidStr.padEnd(28)} ${remaining.padStart(8)}  seller: ${a.seller}`;
+}
+
+function showAuctionList(socket) {
+  const now = Date.now();
+  const list = auctions.listActive(auctionState);
+  if (!list.length) {
+    socket.write(colorize('No active auctions.\r\n', 'gray'));
+    return;
+  }
+  socket.write(colorize(`=== ${list.length} active auction(s) ===\r\n`, 'brightYellow'));
+  socket.write(colorize('  ID         Item                         Bid                          Remaining  Seller\r\n', 'gray'));
+  for (const a of list) {
+    socket.write(formatAuctionLine(a, now) + '\r\n');
+  }
+}
+
+function showAuctionInfo(socket, auctionId) {
+  const a = auctions.getAuction(auctionState, auctionId);
+  if (!a) { socket.write(colorize('No such auction.\r\n', 'red')); return; }
+  const now = Date.now();
+  socket.write(colorize(`=== Auction ${a.id} ===\r\n`, 'brightYellow'));
+  socket.write(`Item:        ${a.item.name}\r\n`);
+  if (a.item.description) socket.write(`Description: ${a.item.description}\r\n`);
+  if (a.item.type)        socket.write(`Type:        ${a.item.type}\r\n`);
+  if (a.item.value != null) socket.write(`Vendor value:${a.item.value}g\r\n`);
+  socket.write(`Seller:      ${a.seller}\r\n`);
+  socket.write(`Starting:    ${a.startingBid}g\r\n`);
+  socket.write(`Top bid:     ${a.currentBid != null ? `${a.currentBid}g (${a.topBidder})` : '(no bids yet)'}\r\n`);
+  socket.write(`Time left:   ${auctions.formatRemaining(a.expiresAt - now)}\r\n`);
+  if (a.currentBid != null) {
+    const minNext = a.currentBid + Math.max(
+      auctions.MIN_INCREMENT_GOLD,
+      Math.ceil(a.currentBid * auctions.MIN_INCREMENT_PCT)
+    );
+    socket.write(colorize(`Min next bid: ${minNext}g\r\n`, 'gray'));
+  }
+}
+
+// === Command handler ===
+function handleAuction(socket, player, args) {
+  if (!player || !player.authenticated) {
+    socket.write('You must be logged in to use the auction house.\r\n');
+    return;
+  }
+  const trimmed = (args || '').trim();
+  const tokens = trimmed.length ? trimmed.split(/\s+/) : [];
+  const sub = (tokens[0] || '').toLowerCase();
+
+  // Bare `auction` / `ah` -> list
+  if (!sub || sub === 'list' || sub === 'ls') { showAuctionList(socket); return; }
+
+  // info <id>
+  if (sub === 'info' || sub === 'show') {
+    if (!tokens[1]) { socket.write('Usage: auction info <id>\r\n'); return; }
+    showAuctionInfo(socket, tokens[1]);
+    return;
+  }
+
+  // sell <item> <minBid> [hours]
+  if (sub === 'sell' || sub === 'list_sell') {
+    if (tokens.length < 3) { socket.write('Usage: auction sell <item> <minBid> [hours]\r\n'); return; }
+    // Parse from the right: last token is hours? if numeric and we have 4+ tokens
+    let hours = null;
+    let bidIdx = tokens.length - 1;
+    if (tokens.length >= 4 && /^\d+(\.\d+)?$/.test(tokens[tokens.length - 1])) {
+      hours = parseFloat(tokens[tokens.length - 1]);
+      bidIdx = tokens.length - 2;
+    }
+    const minBid = parseInt(tokens[bidIdx], 10);
+    const itemName = tokens.slice(1, bidIdx).join(' ');
+    if (!Number.isFinite(minBid)) { socket.write('Bid must be a number.\r\n'); return; }
+    const found = findItemInInventory(player, itemName);
+    if (!found) { socket.write(colorize(`No "${itemName}" in your inventory.\r\n`, 'red')); return; }
+    // Don't allow listing equipped items
+    for (const slot of Object.keys(player.equipped || {})) {
+      if (player.equipped[slot] === found.item) {
+        socket.write(colorize('That item is equipped. Unequip it first.\r\n', 'red')); return;
+      }
+    }
+    const validation = auctions.canList(auctionState, player.name, found.item, minBid, hours);
+    if (!validation.ok) { socket.write(colorize(validation.error + '\r\n', 'red')); return; }
+    // Escrow: take the item
+    player.inventory.splice(found.index, 1);
+    const auction = auctions.addAuction(
+      auctionState, player.name, found.item,
+      validation.startingBid, validation.durationHrs, Date.now()
+    );
+    persistAuctions();
+    savePlayer(player, socket, true);
+    socket.write(colorize(`Listed ${found.item.name} as ${auction.id} (start ${auction.startingBid}g, ${validation.durationHrs}h).\r\n`, 'brightGreen'));
+    broadcastToAll(colorize(`[Auctions] ${getDisplayName(player)} listed ${found.item.name} (${auction.id}, start ${auction.startingBid}g).`, 'yellow'), socket);
+    logActivity(`Auction ${auction.id}: ${player.name} listed ${found.item.name} for ${auction.startingBid}g`);
+    return;
+  }
+
+  // bid <id> <amount>
+  if (sub === 'bid') {
+    if (tokens.length < 3) { socket.write('Usage: auction bid <id> <amount>\r\n'); return; }
+    const auctionId = tokens[1];
+    const amount = parseInt(tokens[2], 10);
+    const validation = auctions.canBid(auctionState, auctionId, player.name, amount, Date.now());
+    if (!validation.ok) { socket.write(colorize(validation.error + '\r\n', 'red')); return; }
+    if ((player.gold || 0) < validation.amount) {
+      socket.write(colorize(`You only have ${player.gold || 0}g; need ${validation.amount}g.\r\n`, 'red')); return;
+    }
+    // Escrow new bidder gold; refund previous bidder if any
+    player.gold -= validation.amount;
+    if (validation.prevBidder && validation.prevBid) {
+      payOfflineGold(validation.prevBidder, validation.prevBid);
+      notifyAuctionPlayer(validation.prevBidder,
+        `You were outbid on auction ${auctionId} ("${validation.auction.item.name}"); ${validation.prevBid}g refunded.`);
+    }
+    auctions.applyBid(auctionState, auctionId, player.name, validation.amount);
+    persistAuctions();
+    savePlayer(player, socket, true);
+    socket.write(colorize(`Bid ${validation.amount}g placed on ${auctionId}.\r\n`, 'brightGreen'));
+    notifyAuctionPlayer(validation.auction.seller,
+      `${player.name} bid ${validation.amount}g on your "${validation.auction.item.name}" (${auctionId}).`);
+    return;
+  }
+
+  // cancel <id>
+  if (sub === 'cancel') {
+    if (!tokens[1]) { socket.write('Usage: auction cancel <id>\r\n'); return; }
+    const auctionId = tokens[1];
+    const validation = auctions.canCancel(auctionState, auctionId, player.name);
+    if (!validation.ok) { socket.write(colorize(validation.error + '\r\n', 'red')); return; }
+    // Refund bidder if any
+    if (validation.refundBidder && validation.refundAmount) {
+      payOfflineGold(validation.refundBidder, validation.refundAmount);
+      notifyAuctionPlayer(validation.refundBidder,
+        `Auction ${auctionId} ("${validation.auction.item.name}") was cancelled. ${validation.refundAmount}g refunded.`);
+    }
+    // Return item to seller
+    auctions.moveToHistory(auctionState, validation.auction, 'cancelled', Date.now());
+    auctions.removeAuction(auctionState, auctionId);
+    if (player.inventory.length < getInventoryCap(player)) {
+      player.inventory.push(validation.auction.item);
+      socket.write(colorize(`Cancelled ${auctionId}; ${validation.auction.item.name} returned to your inventory.\r\n`, 'brightGreen'));
+    } else {
+      auctions.addPending(auctionState, player.name, validation.auction);
+      socket.write(colorize(`Cancelled ${auctionId}; your inventory is full, item placed in claim queue. Use \`auction claim\`.\r\n`, 'yellow'));
+    }
+    persistAuctions();
+    savePlayer(player, socket, true);
+    return;
+  }
+
+  // claim — pull pending items
+  if (sub === 'claim') {
+    const pending = auctions.listPendingFor(auctionState, player.name);
+    if (!pending.length) { socket.write(colorize('Nothing in your claim queue.\r\n', 'gray')); return; }
+    let claimed = 0;
+    while (pending.length && player.inventory.length < getInventoryCap(player)) {
+      const claim = auctions.takePending(auctionState, player.name, pending[0].id);
+      if (!claim) break;
+      player.inventory.push(claim.item);
+      socket.write(colorize(`Claimed: ${claim.item.name}\r\n`, 'brightGreen'));
+      pending.shift();
+      claimed++;
+    }
+    if (pending.length) {
+      socket.write(colorize(`${pending.length} more item(s) waiting; clear inventory space and try again.\r\n`, 'yellow'));
+    }
+    if (claimed > 0) {
+      persistAuctions();
+      savePlayer(player, socket, true);
+    }
+    return;
+  }
+
+  // help / unknown
+  socket.write(colorize('=== Auction House ===\r\n', 'brightYellow'));
+  socket.write('  auction list                              List active auctions (alias: ah)\r\n');
+  socket.write('  auction info <id>                         Show one auction in detail\r\n');
+  socket.write('  auction sell <item> <minBid> [hours]      List an item from your inventory\r\n');
+  socket.write('  auction bid <id> <amount>                 Place a bid (must beat current)\r\n');
+  socket.write('  auction cancel <id>                       Cancel your auction (refunds top bidder)\r\n');
+  socket.write('  auction claim                             Pick up items waiting in your queue\r\n');
+  socket.write(colorize(`  House fee: ${Math.round(auctions.HOUSE_FEE_PCT * 100)}%   Min bid increment: ${Math.round(auctions.MIN_INCREMENT_PCT * 100)}% or ${auctions.MIN_INCREMENT_GOLD}g\r\n`, 'gray'));
+  socket.write(colorize(`  Default duration: ${auctions.DEFAULT_DURATION_HRS}h   Max active per seller: ${auctions.MAX_PER_SELLER}\r\n`, 'gray'));
+}
+
+// ============================================
 // ADMIN INFORMATION COMMANDS
 // ============================================
 
@@ -10850,6 +11173,16 @@ function processCommand(socket, player, input) {
   // Handle pray command (chapel healing)
   if (command === 'pray') {
     handlePray(socket, player);
+    return true;
+  }
+
+  // Tier 4.2: auction house
+  if (command === 'auction' || command.startsWith('auction ') || command === 'ah' || command.startsWith('ah ')) {
+    const original = input.trim();
+    let auctionArgs = '';
+    if (command.startsWith('auction ')) auctionArgs = original.slice(8);
+    else if (command.startsWith('ah '))  auctionArgs = original.slice(3);
+    handleAuction(socket, player, auctionArgs);
     return true;
   }
 
@@ -14987,6 +15320,18 @@ function completePlayerLogin(socket, player, isNewPlayer) {
   gmcp.emitMsdpPlayerState(socket, player);
   if (_room) gmcp.emitMsdpRoom(socket, player, _room, player.currentRoom);
 
+  // Tier 4.2: flush queued auction-house notifications + warn about pending claims
+  if (Array.isArray(player.auctionMail) && player.auctionMail.length) {
+    socket.write(colorize(`\r\n=== ${player.auctionMail.length} auction message(s) while you were away ===\r\n`, 'brightYellow'));
+    for (const m of player.auctionMail) socket.write(colorize(`[Auctions] ${m.message}\r\n`, 'yellow'));
+    player.auctionMail = [];
+    savePlayer(player, socket, true);
+  }
+  const pending = auctions.listPendingFor(auctionState, player.name);
+  if (pending.length) {
+    socket.write(colorize(`\r\nYou have ${pending.length} item(s) waiting in your auction claim queue. Use \`auction claim\`.\r\n`, 'brightYellow'));
+  }
+
   // Log admin login for security tracking
   if (isAdmin(player.name)) {
     const ipAddress = socket.remoteAddress || 'unknown';
@@ -15938,6 +16283,11 @@ server.listen(PORT, '0.0.0.0', () => {
   // Tier 4.1: load clans
   loadClans();
   console.log(`Loaded ${Object.keys(clansData.clans).length} clan(s)`);
+
+  // Tier 4.2: load auction-house state and start the settlement reaper
+  auctionState = auctions.loadState();
+  console.log(`Loaded ${auctionState.active.length} active auction(s), ${auctionState.pending.length} pending claim(s)`);
+  setInterval(runAuctionReaper, AUCTION_REAPER_INTERVAL_MS);
 
   // Start the Wandering Healer NPC
   startHealerWandering();
