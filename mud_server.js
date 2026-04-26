@@ -11,6 +11,7 @@ const olc = require('./world/olc');
 const auctions = require('./world/auctions');
 const triggers = require('./world/triggers');
 const goals = require('./world/goals');
+const friends = require('./world/friends');
 
 const PORT = parseInt(process.env.MUD_PORT, 10) || 8888;
 const START_ROOM = 'room_001';
@@ -1324,6 +1325,7 @@ function createPlayer(name = null) {
     triggers: [],
     goalProgress: {},
     goalsClaimed: [],
+    friends: [],
     // === Tier 1 ===
     abilities: { str: 10, dex: 10, con: 10, int: 10, wis: 10 },
     charClass: null, // 'warder' | 'loresinger' | 'echobound'
@@ -1576,6 +1578,8 @@ function savePlayer(player, socket = null, silent = false) {
     // Tier 4.6: goals progress + claim history
     goalProgress: (player.goalProgress && typeof player.goalProgress === 'object') ? player.goalProgress : {},
     goalsClaimed: Array.isArray(player.goalsClaimed) ? player.goalsClaimed : [],
+    // Tier 4.7: friends list (lowercase, ≤50)
+    friends: Array.isArray(player.friends) ? player.friends : [],
     // Tier 1
     abilities: player.abilities || { str: 10, dex: 10, con: 10, int: 10, wis: 10 },
     charClass: player.charClass || null,
@@ -1685,6 +1689,8 @@ function loadPlayer(playerName) {
       // Tier 4.6: goals progress + claim history
       goalProgress: (data.goalProgress && typeof data.goalProgress === 'object') ? data.goalProgress : {},
       goalsClaimed: Array.isArray(data.goalsClaimed) ? data.goalsClaimed : [],
+      // Tier 4.7: friends list (sanitized)
+      friends: friends.loadFriends(data.friends),
       gold: data.gold || 0,
       stats: {
         monstersKilled: data.stats?.monstersKilled || 0,
@@ -8426,6 +8432,86 @@ function handleGoals(socket, player, args) {
 }
 
 // ============================================
+// TIER 4.7: FRIEND LIST
+// ============================================
+//
+// Per-player friend roster, persisted in the save file. Online friends get a
+// notification when a tracked player connects/disconnects.
+
+function handleFriend(socket, player, args) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  if (!Array.isArray(player.friends)) player.friends = [];
+
+  const trimmed = (args || '').trim();
+  const tokens = trimmed.length ? trimmed.split(/\s+/) : [];
+  const sub = (tokens[0] || '').toLowerCase();
+
+  // Bare `friend` / `friends` / `friend list` -> list view
+  if (!sub || sub === 'list' || sub === 'ls') {
+    if (!player.friends.length) {
+      socket.write(colorize('You have no friends on your list. Try `friend add <name>`.\r\n', 'gray'));
+      return;
+    }
+    const lookup = (lower) => {
+      const found = findPlayerByName(lower);
+      return found ? found.player : null;
+    };
+    const status = friends.statusList(player.friends, lookup);
+    socket.write(colorize(`=== Friends (${status.length}/${friends.MAX_FRIENDS}) ===\r\n`, 'brightYellow'));
+    for (const s of status) {
+      const tag = s.online ? colorize('[online] ', 'brightGreen') : colorize('[offline]', 'gray');
+      const display = s.online ? getDisplayName(s.player) : s.name;
+      socket.write(`  ${tag} ${display}\r\n`);
+    }
+    return;
+  }
+
+  if (sub === 'add') {
+    if (!tokens[1]) { socket.write('Usage: friend add <name>\r\n'); return; }
+    const target = tokens.slice(1).join(' ');
+    const r = friends.add(player.friends, target, player.name);
+    if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
+    savePlayer(player, socket, true);
+    socket.write(colorize(`Added ${r.name} to your friend list.\r\n`, 'brightGreen'));
+    return;
+  }
+
+  if (sub === 'remove' || sub === 'rm' || sub === 'delete' || sub === 'del') {
+    if (!tokens[1]) { socket.write('Usage: friend remove <name>\r\n'); return; }
+    const target = tokens.slice(1).join(' ');
+    const r = friends.remove(player.friends, target);
+    if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
+    savePlayer(player, socket, true);
+    socket.write(colorize(`Removed ${r.name} from your friend list.\r\n`, 'yellow'));
+    return;
+  }
+
+  if (sub === 'help' || sub === '?') {
+    socket.write(colorize('=== Friend List ===\r\n', 'brightYellow'));
+    socket.write('  friends / friend list       Show your friends with online status\r\n');
+    socket.write('  friend add <name>           Add a player to your friend list\r\n');
+    socket.write('  friend remove <name>        Remove a player from your friend list\r\n');
+    socket.write(colorize(`  Limit: ${friends.MAX_FRIENDS} friends.\r\n`, 'gray'));
+    socket.write(colorize('  You will be notified when friends log in or quit.\r\n', 'gray'));
+    return;
+  }
+
+  socket.write(colorize(`Unknown friend subcommand: ${sub}. Try \`friend help\`.\r\n`, 'red'));
+}
+
+// Notify all online players who have `player` on their friend list. Used at
+// login + logout. Excludes the player themselves and any socket they're on.
+function notifyFriendsOf(player, message, color = 'brightCyan') {
+  if (!player || !player.name) return;
+  const watchers = friends.whoseFriendsContain(player.name, getOnlinePlayers());
+  for (const { player: p, socket } of watchers) {
+    if (p.name && p.name.toLowerCase() === player.name.toLowerCase()) continue;
+    if (!socket || socket.destroyed) continue;
+    socket.write(`\r\n${colorize('[Friends] ', color)}${message}\r\n> `);
+  }
+}
+
+// ============================================
 // ADMIN INFORMATION COMMANDS
 // ============================================
 
@@ -11260,6 +11346,8 @@ function processCommand(socket, player, input) {
       // Broadcast departure to room and all players
       broadcastToRoom(player.currentRoom, `${getDisplayName(player)} vanishes in a swirl of mist.`, socket);
       broadcastToAll(colorize(`${getDisplayName(player)} has left the Shattered Realms.`, 'yellow'), socket);
+      // Tier 4.7: friend logout notification
+      notifyFriendsOf(player, `${getDisplayName(player)} has gone offline.`, 'gray');
     } else {
       socket.write('Goodbye, traveler!\r\n');
     }
@@ -11631,6 +11719,16 @@ function processCommand(socket, player, input) {
     if (command.startsWith('goal '))       goalArgs = original.slice(5);
     else if (command.startsWith('goals ')) goalArgs = original.slice(6);
     handleGoals(socket, player, goalArgs);
+    return true;
+  }
+
+  // Tier 4.7: friend list
+  if (command === 'friend' || command === 'friends' || command.startsWith('friend ') || command.startsWith('friends ')) {
+    const original = input.trim();
+    let friendArgs = '';
+    if (command.startsWith('friend '))        friendArgs = original.slice(7);
+    else if (command.startsWith('friends '))  friendArgs = original.slice(8);
+    handleFriend(socket, player, friendArgs);
     return true;
   }
 
@@ -15775,6 +15873,9 @@ function completePlayerLogin(socket, player, isNewPlayer) {
   // player object is loaded so the tap can read player.triggers
   installTriggerTap(socket, player);
 
+  // Tier 4.7: notify online friends that this player has come online
+  notifyFriendsOf(player, `${getDisplayName(player)} has come online.`);
+
   // Tier 4.2: flush queued auction-house notifications + warn about pending claims
   if (Array.isArray(player.auctionMail) && player.auctionMail.length) {
     socket.write(colorize(`\r\n=== ${player.auctionMail.length} auction message(s) while you were away ===\r\n`, 'brightYellow'));
@@ -16663,6 +16764,8 @@ const server = net.createServer((socket) => {
       // Broadcast departure (if not already done via quit command)
       broadcastToRoom(player.currentRoom, `${getDisplayName(player)} vanishes in a swirl of mist.`, socket);
       broadcastToAll(colorize(`${getDisplayName(player)} has left the Shattered Realms.`, 'yellow'), socket);
+      // Tier 4.7: friend logout notification
+      notifyFriendsOf(player, `${getDisplayName(player)} has gone offline.`, 'gray');
     }
 
     // Clear auto-save timer
@@ -16698,6 +16801,8 @@ const server = net.createServer((socket) => {
       // Broadcast departure
       broadcastToRoom(player.currentRoom, `${getDisplayName(player)} vanishes in a swirl of mist.`, socket);
       broadcastToAll(colorize(`${getDisplayName(player)} has left the Shattered Realms.`, 'yellow'), socket);
+      // Tier 4.7: friend logout notification
+      notifyFriendsOf(player, `${getDisplayName(player)} has gone offline.`, 'gray');
     }
 
     // Clear auto-save timer

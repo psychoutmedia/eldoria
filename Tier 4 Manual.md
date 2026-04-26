@@ -12,7 +12,7 @@
 | 4.4 | **MSDP/GMCP protocol** | **DONE** — see "MSDP/GMCP" below |
 | 4.5 | **Server-side triggers** | **DONE** — see "Triggers" below |
 | 4.6 | **Goals system** | **DONE** — see "Goals" below |
-| 4.7 | Friend list | not started |
+| 4.7 | **Friend list** | **DONE** — see "Friend list" below |
 | 4.8 | Speedwalker | not started |
 
 Plus one **pre-existing bug fix** landed alongside 4.1 (channel broadcast iteration), documented in the Bug Fixes appendix.
@@ -1098,9 +1098,126 @@ The smoke harness owns its server child + admins.json patch — don't run a seco
 
 ---
 
-## 4.7 Friend list — NOT STARTED
+## 4.7 Friend list — SHIPPED
 
-Per plan: `friend add/remove/list`, online notifications. Extends player schema. Counterpart to the existing ignore list.
+Persistent per-player social roster. Mirror of the existing (session-only) ignore list, but durable across logins and decorated with online-status broadcasts.
+
+### Concepts
+
+- **A friend list** is an array of lowercase player names attached to each player. Capped at **50** entries.
+- **Persisted** in the player save file alongside `aliases`, `channelSubs`, `triggers`, `goalProgress`.
+- **Notifications**: when player X connects or quits, every online player who has X on their friend list receives a `[Friends]` line.
+- **No mutual consent** — adding someone to your friend list doesn't alert them, and you don't need their approval (matches the ignore-list pattern).
+- **Validation**: 3-12 letters, no digits or punctuation; reuses the same name rules as character creation.
+
+### Command surface
+
+| Command | Effect |
+| :-- | :-- |
+| `friends` / `friend list` (`friend ls`) | Show your friends with `[online]` / `[offline]` status |
+| `friend add <name>` | Add a player to your list |
+| `friend remove <name>` (`rm` / `delete` / `del`) | Remove from list |
+| `friend help` / `friend ?` | Usage summary |
+
+The list view shows each friend with their current online status. Online friends are rendered with their full `getDisplayName` (suffix, clan tag, etc.); offline friends show their lowercase name.
+
+### Notifications
+
+When a player completes login (`completePlayerLogin`), the server walks the online roster and writes a `[Friends] <name> has come online.` line to every socket whose owner has the new arrival on their list. The same fires in reverse when a player disconnects — quit, kick, dropped connection — via the existing `has left the Shattered Realms` broadcast site.
+
+The notification is written directly into each watcher's stream, prefixed with `\r\n` and followed by `> ` so it sits cleanly above their next prompt without breaking the line they were typing.
+
+### Validation rules
+
+- **Name format**: 3-12 chars, ASCII letters only (`/^[a-zA-Z]+$/`). Matches `isValidPlayerName` semantics.
+- **Self-friend**: blocked. The error message says so explicitly.
+- **Duplicates**: blocked — you cannot add the same person twice.
+- **Cap**: blocked at `MAX_FRIENDS` (50).
+- All comparisons are case-insensitive; storage is normalized to lowercase.
+
+### Module API (`world/friends.js`)
+
+```js
+// Constants
+MAX_FRIENDS, NAME_MIN, NAME_MAX
+
+// Helpers
+normalize(name) -> lowercase trimmed string
+isValidName(name) -> bool
+loadFriends(rawArray) -> sanitized lowercase[] (deduped, capped, validated)
+
+// Mutators (return { ok, error?, name? } so caller can show feedback)
+add(friendList, name, selfName) -> { ok, name } | { ok:false, error }
+remove(friendList, name) -> { ok, name } | { ok:false, error }
+has(friendList, name) -> bool
+
+// Queries
+statusList(friendList, lookupOnline) -> [{ name, online, player? }]
+whoseFriendsContain(name, onlinePlayers) -> [{ player, socket }]
+```
+
+### Server-side wiring
+
+| Hot point | What runs |
+| :-- | :-- |
+| `processCommand` (`friend` / `friend ...` / `friends` / `friends ...`) | Routes to `handleFriend` |
+| `handleFriend` | Dispatches subcommands; calls `savePlayer` on every state change |
+| `completePlayerLogin` | After auth complete, calls `notifyFriendsOf(player, "<name> has come online.")` |
+| Disconnect/quit broadcast site | Calls `notifyFriendsOf(player, "<name> has gone offline.", 'gray')` |
+| `savePlayer` / `loadPlayer` / `createPlayer` | `friends` array round-trips through `friends.loadFriends` (sanitizing on load) |
+
+### Persistence schema
+
+Each player save (`players/<name>.json`) gets a `friends` array of lowercase strings:
+
+```json
+{
+  "friends": ["alice", "bob", "carol"]
+}
+```
+
+Old saves missing the field load as an empty array. Malformed entries (digits, oversize, duplicates) are dropped silently by `loadFriends`.
+
+### Verification
+
+**Unit (`_verify_friends.js`)** — 44 checks against the module:
+- `normalize` (lowercase, trim, null/empty handling)
+- `isValidName` (length bounds, alpha-only, rejects spaces/digits/symbols/non-string)
+- `loadFriends` (preserves valid entries, deduplicates case-insensitively, drops invalid, caps at MAX_FRIENDS, handles non-array input)
+- `add` (success path, self-rejection, duplicate-rejection, invalid-name rejection, cap-rejection)
+- `remove` (case-insensitive, not-on-list, empty input)
+- `has` (case-insensitive)
+- `statusList` (shape, online vs offline branches)
+- `whoseFriendsContain` (finds matching watchers, case-insensitive, handles missing-friends-array safely)
+- 9 server-side wiring grep checks (import, handler, dispatcher, save/load, createPlayer, login broadcast, logout broadcast)
+
+**Live integration (`_smoke_friends.js`)** — 17 checks against a real spawned server:
+- Spawns `mud_server.js` on port 18891.
+- Registers two test players A and B via the full registration flow.
+- B adds A as a friend, verifies the `[online]` status line in `friend list`.
+- Verifies the four rejection paths: self-friend, duplicate, invalid name, oversize-cap (via unit test).
+- A quits → asserts B's stream contains `[Friends] Friendia has gone offline`.
+- A logs back in → asserts B's stream contains `[Friends] Friendia has come online`.
+- B removes A; verifies the empty-list hint.
+- Save round-trip: writes save, reads from disk, asserts `friends` array shape (empty after remove, lowercase entry after re-add).
+- Cleans up both player files + accounts entries on exit.
+
+Run from repo root:
+
+```
+node _verify_friends.js     # 44/44 unit checks
+node _smoke_friends.js      # 17/17 live-server checks
+```
+
+The smoke harness owns its server child — don't run a second instance on `localhost:18891` while it's executing.
+
+### Known limitations
+
+- **No mutual consent** — you can add anyone without their knowledge; no "X wants to add you" dialog.
+- **No private grouping** — there's one flat list; future addition could include named groups.
+- **No friend-only chat channel** — friends can use existing `tell` / `gossip` / clan channels but there's no dedicated `friendsay`.
+- **Notifications fire on every connect/disconnect** — players with many active friends will see a stream of join/leave lines, which is the intent but may be noisy. A future toggle could mute these.
+- **Offline-friend display** uses the lowercase stored name rather than their canonical capitalization. Acceptable trade-off; canonical capitalization would require loading their save file just to display the list.
 
 ---
 
