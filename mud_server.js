@@ -9,6 +9,7 @@ const questManager = require('./world/quests');
 const gmcp = require('./protocol/gmcp');
 const olc = require('./world/olc');
 const auctions = require('./world/auctions');
+const triggers = require('./world/triggers');
 
 const PORT = parseInt(process.env.MUD_PORT, 10) || 8888;
 const START_ROOM = 'room_001';
@@ -1319,6 +1320,7 @@ function createPlayer(name = null) {
     // QoL: aliases + channels
     aliases: {},
     channelSubs: { newbie: true, ooc: true, gossip: true, trade: true },
+    triggers: [],
     // === Tier 1 ===
     abilities: { str: 10, dex: 10, con: 10, int: 10, wis: 10 },
     charClass: null, // 'warder' | 'loresinger' | 'echobound'
@@ -1565,6 +1567,7 @@ function savePlayer(player, socket = null, silent = false) {
     stats: player.stats,
     aliases: player.aliases || {},
     channelSubs: player.channelSubs || {},
+    triggers: Array.isArray(player.triggers) ? player.triggers : [],
     // Tier 1
     abilities: player.abilities || { str: 10, dex: 10, con: 10, int: 10, wis: 10 },
     charClass: player.charClass || null,
@@ -1666,6 +1669,8 @@ function loadPlayer(playerName) {
       // QoL: aliases + channel subscriptions (persistent)
       aliases: data.aliases || {},
       channelSubs: Object.assign({ newbie: true, ooc: true, gossip: true, trade: true }, data.channelSubs || {}),
+      // Tier 4.5: server-side triggers (sanitized on load)
+      triggers: triggers.loadTriggers(data.triggers),
       gold: data.gold || 0,
       stats: {
         monstersKilled: data.stats?.monstersKilled || 0,
@@ -7999,6 +8004,173 @@ function handleAuction(socket, player, args) {
 }
 
 // ============================================
+// TIER 4.5: SERVER-SIDE TRIGGERS
+// ============================================
+//
+// Player-defined "when output matches X, run command Y" rules. The match
+// runs against ANSI-stripped outgoing text (see installTriggerTap below).
+// Safety: cooldown + rate cap + an "in trigger action" flag that prevents
+// trigger output from triggering more triggers (recursion guard).
+
+function getTriggerState(player) {
+  if (!player._triggerState) {
+    player._triggerState = { lastFired: 0, fires: [], lockedUntil: 0 };
+  }
+  return player._triggerState;
+}
+
+// Wrap socket.write so every outgoing chunk runs trigger evaluation. Idempotent.
+function installTriggerTap(socket, player) {
+  if (socket._triggerTapInstalled) return;
+  socket._triggerTapInstalled = true;
+  const origWrite = socket.write.bind(socket);
+  socket.write = function (data, ...rest) {
+    // Skip evaluation for auth-state writes (pre-login) and binary frames
+    if (player && player.authenticated && Array.isArray(player.triggers) && player.triggers.length) {
+      // Don't evaluate triggers on text the trigger system itself caused
+      if (!player._inTriggerAction) {
+        const text = (typeof data === 'string') ? data : (Buffer.isBuffer(data) ? data.toString('utf8') : '');
+        if (text) tryFireTrigger(socket, player, text);
+      }
+    }
+    return origWrite(data, ...rest);
+  };
+}
+
+function tryFireTrigger(socket, player, text) {
+  const firing = triggers.findFiring(player.triggers, text);
+  if (!firing) return;
+  const state = getTriggerState(player);
+  const now = Date.now();
+  const rate = triggers.checkRate(state, now);
+  if (!rate.allow) {
+    if (rate.reason === 'rate-exceeded') {
+      // Auto-disable all of this player's triggers — user must re-enable
+      for (const t of player.triggers) t.enabled = false;
+      // Print a warning, but use origWrite-style scheduling so we don't recurse
+      setImmediate(() => {
+        if (!socket.destroyed) {
+          socket.write(colorize(`\r\n[Triggers] Rate cap exceeded — all your triggers have been disabled. Use \`trigger toggle <id>\` to re-enable.\r\n> `, 'brightRed'));
+        }
+      });
+    }
+    return;
+  }
+  triggers.recordFiring(state, now);
+  firing.trigger.fired = (firing.trigger.fired || 0) + 1;
+  // Schedule the action via setImmediate so the original write completes first
+  setImmediate(() => {
+    if (socket.destroyed) return;
+    player._inTriggerAction = true;
+    try {
+      processCommand(socket, player, firing.action);
+    } catch (e) {
+      console.error(`Trigger action error for ${player.name}: ${e.message}`);
+    } finally {
+      player._inTriggerAction = false;
+    }
+  });
+}
+
+function handleTrigger(socket, player, args) {
+  if (!player || !player.authenticated) {
+    socket.write('You must be logged in to use triggers.\r\n');
+    return;
+  }
+  if (!Array.isArray(player.triggers)) player.triggers = [];
+
+  const trimmed = (args || '').trim();
+  const tokens = trimmed.length ? trimmed.split(/\s+/) : [];
+  const sub = (tokens[0] || '').toLowerCase();
+
+  // Bare `trigger` / `trigger help` / `trigger list`
+  if (!sub || sub === 'help') {
+    socket.write(colorize('=== Triggers ===\r\n', 'brightYellow'));
+    socket.write('  trigger add <pattern> -> <action>   Create a trigger\r\n');
+    socket.write('  trigger list                        Show your triggers\r\n');
+    socket.write('  trigger remove <id>                 Delete one trigger\r\n');
+    socket.write('  trigger toggle <id>                 Enable / disable one\r\n');
+    socket.write('  trigger clear                       Wipe all your triggers\r\n');
+    socket.write(colorize('  Patterns are case-insensitive substrings. Wrap in /.../ for regex with capture groups (use %1..%9 in action).\r\n', 'gray'));
+    socket.write(colorize(`  Limits: ${triggers.MAX_TRIGGERS_PER_PLAYER} triggers per player, ${triggers.MAX_PATTERN_LENGTH} chars per pattern, ${triggers.MAX_ACTION_LENGTH} chars per action.\r\n`, 'gray'));
+    socket.write(colorize(`  Safety: ${triggers.TRIGGER_COOLDOWN_MS}ms cooldown between fires; > ${triggers.RATE_LIMIT_FIRES} fires/sec auto-disables your triggers for ${triggers.RATE_LIMIT_PENALTY_MS / 1000}s.\r\n`, 'gray'));
+    return;
+  }
+
+  if (sub === 'list' || sub === 'ls') {
+    if (!player.triggers.length) {
+      socket.write(colorize('You have no triggers. Try `trigger add <pattern> -> <action>`.\r\n', 'gray'));
+      return;
+    }
+    socket.write(colorize(`=== ${player.triggers.length}/${triggers.MAX_TRIGGERS_PER_PLAYER} triggers ===\r\n`, 'brightYellow'));
+    for (const t of player.triggers) {
+      const flag = t.enabled ? colorize('[on] ', 'green') : colorize('[off]', 'gray');
+      const kind = t.regex ? colorize('regex', 'brightCyan') : 'text ';
+      socket.write(`  ${String(t.id).padStart(2)}. ${flag} ${kind}  "${t.pattern}" -> "${t.action}"  (fired ${t.fired || 0}x)\r\n`);
+    }
+    const state = player._triggerState;
+    if (state && state.lockedUntil && Date.now() < state.lockedUntil) {
+      const remaining = Math.ceil((state.lockedUntil - Date.now()) / 1000);
+      socket.write(colorize(`  RATE-LOCKED: ${remaining}s remaining.\r\n`, 'brightRed'));
+    }
+    return;
+  }
+
+  if (sub === 'add') {
+    if (player.triggers.length >= triggers.MAX_TRIGGERS_PER_PLAYER) {
+      socket.write(colorize(`You already have ${triggers.MAX_TRIGGERS_PER_PLAYER} triggers. Remove one first.\r\n`, 'red'));
+      return;
+    }
+    const body = trimmed.slice(3).trim();  // strip 'add'
+    const parsed = triggers.parseAddSyntax(body);
+    if (!parsed) {
+      socket.write(colorize('Usage: trigger add <pattern> -> <action>\r\n', 'red'));
+      return;
+    }
+    const id = triggers.nextId(player.triggers);
+    const r = triggers.buildTrigger(id, parsed.pattern, parsed.action);
+    if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
+    player.triggers.push(r.trigger);
+    savePlayer(player, socket, true);
+    socket.write(colorize(`Trigger ${id} added: "${r.trigger.pattern}" -> "${r.trigger.action}"${r.trigger.regex ? ' [regex]' : ''}\r\n`, 'brightGreen'));
+    return;
+  }
+
+  if (sub === 'remove' || sub === 'rm' || sub === 'delete') {
+    if (!tokens[1]) { socket.write('Usage: trigger remove <id>\r\n'); return; }
+    const id = parseInt(tokens[1], 10);
+    const idx = player.triggers.findIndex(t => t.id === id);
+    if (idx === -1) { socket.write(colorize(`No trigger with id ${id}.\r\n`, 'red')); return; }
+    const [removed] = player.triggers.splice(idx, 1);
+    savePlayer(player, socket, true);
+    socket.write(colorize(`Trigger ${removed.id} removed: "${removed.pattern}"\r\n`, 'yellow'));
+    return;
+  }
+
+  if (sub === 'toggle' || sub === 'on' || sub === 'off') {
+    if (!tokens[1]) { socket.write('Usage: trigger toggle <id>\r\n'); return; }
+    const id = parseInt(tokens[1], 10);
+    const t = player.triggers.find(t => t.id === id);
+    if (!t) { socket.write(colorize(`No trigger with id ${id}.\r\n`, 'red')); return; }
+    t.enabled = !t.enabled;
+    savePlayer(player, socket, true);
+    socket.write(colorize(`Trigger ${id} is now ${t.enabled ? 'ENABLED' : 'disabled'}.\r\n`, t.enabled ? 'brightGreen' : 'gray'));
+    return;
+  }
+
+  if (sub === 'clear') {
+    const count = player.triggers.length;
+    player.triggers.length = 0;
+    if (player._triggerState) player._triggerState = { lastFired: 0, fires: [], lockedUntil: 0 };
+    savePlayer(player, socket, true);
+    socket.write(colorize(`Cleared ${count} trigger(s).\r\n`, 'yellow'));
+    return;
+  }
+
+  socket.write(colorize(`Unknown trigger subcommand: ${sub}. Try \`trigger help\`.\r\n`, 'red'));
+}
+
+// ============================================
 // ADMIN INFORMATION COMMANDS
 // ============================================
 
@@ -11183,6 +11355,14 @@ function processCommand(socket, player, input) {
     if (command.startsWith('auction ')) auctionArgs = original.slice(8);
     else if (command.startsWith('ah '))  auctionArgs = original.slice(3);
     handleAuction(socket, player, auctionArgs);
+    return true;
+  }
+
+  // Tier 4.5: triggers (case-preserved args because patterns may be regex)
+  if (command === 'trigger' || command.startsWith('trigger ')) {
+    const original = input.trim();
+    const triggerArgs = original.length > 8 ? original.slice(8) : '';
+    handleTrigger(socket, player, triggerArgs);
     return true;
   }
 
@@ -15319,6 +15499,10 @@ function completePlayerLogin(socket, player, isNewPlayer) {
   // MSDP mirror — sister protocol; no-op for clients that didn't confirm
   gmcp.emitMsdpPlayerState(socket, player);
   if (_room) gmcp.emitMsdpRoom(socket, player, _room, player.currentRoom);
+
+  // Tier 4.5: install the trigger tap on socket.write — must run after the
+  // player object is loaded so the tap can read player.triggers
+  installTriggerTap(socket, player);
 
   // Tier 4.2: flush queued auction-house notifications + warn about pending claims
   if (Array.isArray(player.auctionMail) && player.auctionMail.length) {

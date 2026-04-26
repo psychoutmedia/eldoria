@@ -10,7 +10,7 @@
 | 4.2 | **Auction house** | **DONE** — see "Auction house" below |
 | 4.3 | **Online creation (OLC, admin-only)** | **DONE (Sprint-1 scope: rooms only)** — see "OLC" below |
 | 4.4 | **MSDP/GMCP protocol** | **DONE** — see "MSDP/GMCP" below |
-| 4.5 | Server-side triggers | not started |
+| 4.5 | **Server-side triggers** | **DONE** — see "Triggers" below |
 | 4.6 | Goals system | not started |
 | 4.7 | Friend list | not started |
 | 4.8 | Speedwalker | not started |
@@ -740,9 +740,179 @@ The harness is intentionally lightweight (no test framework dependency) so it ca
 
 ---
 
-## 4.5 Server-side triggers — NOT STARTED
+## 4.5 Server-side triggers — SHIPPED
 
-Per plan: player-defined `trigger add "low hp" -> use minor potion`. Extends player schema + command dispatcher hook.
+Player-defined "when output line matches X, run command Y" rules. The classic MUD-client trigger feature, but **server-side** so plain-telnet players get them without needing Mudlet/MUSHclient. Triggers persist in the player's save file.
+
+### Concepts
+
+- **Pattern** — what to match against the server's outgoing text. Substring match is case-insensitive by default; wrap in `/.../` for full regex with capture groups.
+- **Action** — a command line the server runs as if the player typed it (goes through `processCommand`).
+- **Capture substitution** — regex groups become `%1`, `%2`, …, `%9` inside the action, so `/took (\d+) damage/ -> say I took %1` becomes `say I took 25` when the line `You took 25 damage` is matched.
+- **Per-player** — every player owns their own trigger list, capped at 20. Loaded with the save file, saved on every change.
+- **Always-on safety** — fires are throttled, runaway loops auto-disable the offender's triggers, and trigger-action output is flagged so it can't itself fire more triggers.
+
+### Command surface
+
+| Command | Effect |
+| :-- | :-- |
+| `trigger` / `trigger help` | Show usage, limits, and safety constants |
+| `trigger add <pattern> -> <action>` | Create a new trigger (ids assigned 1..20, smallest unused) |
+| `trigger list` (`trigger ls`) | Show all your triggers with id / state / kind / fired counter |
+| `trigger toggle <id>` | Flip enabled ↔ disabled |
+| `trigger remove <id>` (`rm` / `delete`) | Delete one trigger |
+| `trigger clear` | Wipe all your triggers (and reset the rate-state) |
+
+The arrow `->` must have whitespace on both sides — patterns can contain `->` mid-text without confusing the parser, and the regex form `/foo -> bar/` parses correctly because the splitter ignores arrows inside `/.../` zones.
+
+### Pattern matching rules
+
+- Plain text patterns are matched as case-insensitive substrings; regex metacharacters are escaped automatically (so `foo (1)` matches the literal string `foo (1)`).
+- `/...../` patterns are compiled as `RegExp(body, 'i')` — always case-insensitive.
+- ANSI escape sequences are stripped from outgoing text **before** matching, so a colorized `[red]low hp[reset]` line still matches the pattern `low hp`.
+- The first enabled trigger that matches wins for a given output chunk — only one fire per chunk.
+
+### Capture group substitution
+
+Captures `%1` through `%9` are replaced with the matching regex group. Tokens with no corresponding group are left as-is (e.g. `%9` in an action when only one group exists → still `%9`).
+
+```
+trigger add /HP: (\d+)\/(\d+)/ -> say I'm at %1 of %2
+```
+
+When the server prints `HP: 35/100`, the action becomes `say I'm at 35 of 100`.
+
+### Safety constants (`world/triggers.js`)
+
+| Constant | Default | What it does |
+| :-- | :-- | :-- |
+| `MAX_TRIGGERS_PER_PLAYER` | 20 | Hard cap; `trigger add` rejects beyond this |
+| `MAX_PATTERN_LENGTH` | 200 chars | Pattern compile rejects oversize input |
+| `MAX_ACTION_LENGTH` | 200 chars | Action validation rejects oversize input |
+| `TRIGGER_COOLDOWN_MS` | 500 ms | Minimum gap between any two trigger fires per player |
+| `RATE_LIMIT_FIRES` | 5 | Max fires within `RATE_LIMIT_WINDOW_MS` before auto-disable |
+| `RATE_LIMIT_WINDOW_MS` | 1000 ms | Rolling window the rate cap watches |
+| `RATE_LIMIT_PENALTY_MS` | 30 000 ms | If rate cap is exceeded, all the player's triggers are flipped off and stay off until they're re-enabled with `trigger toggle` |
+
+The cooldown alone is sufficient to keep ordinary use sane; the rate cap is defense-in-depth — under current tunables you cannot legitimately reach it (the cooldown enforces ≥ 500 ms between fires, which already caps the rate at 2/sec). It exists so a future change to the cooldown can't accidentally turn this into a runaway-action footgun.
+
+### Recursion guard
+
+When a trigger's action runs, the player's `_inTriggerAction` flag is set true for the duration of the dispatch. The `socket.write` tap checks this flag and skips trigger evaluation on output produced inside that scope. This means:
+
+- A trigger `low hp -> use potion` whose `use potion` produces output containing the substring `low hp` will not chain into itself.
+- One trigger cannot fire another trigger via the action's text output.
+- Players can still use multiple triggers — they just can't cascade.
+
+Action validation also rejects any action starting with the literal word `trigger` (so `trigger add ... -> trigger clear` is blocked at add-time).
+
+### Server-side wiring
+
+`mud_server.js` integrates with the module via three hot points:
+
+| Hot point | What it does |
+| :-- | :-- |
+| `installTriggerTap(socket, player)` (called in `completePlayerLogin`) | Wraps the socket's `write` method once. The wrapper extracts text, strips ANSI/IAC, runs `triggers.findFiring`, gates by `triggers.checkRate`, and schedules the matching action via `setImmediate` so it doesn't reenter the current write call. Idempotent (`socket._triggerTapInstalled` flag). |
+| `handleTrigger` | Dispatches the six subcommands above. Persists via `savePlayer` on every state change. |
+| Save/load (`savePlayer` / `loadPlayer`) | `triggers` array is stored alongside aliases and channelSubs. `loadPlayer` runs the array through `triggers.loadTriggers()` to drop malformed entries, fill missing ids, and cap at `MAX_TRIGGERS_PER_PLAYER`. `createPlayer` initializes an empty array for new characters. |
+
+### Module API (`world/triggers.js`)
+
+```js
+// Constants exported for tests + the runtime help screen
+MAX_TRIGGERS_PER_PLAYER, MAX_PATTERN_LENGTH, MAX_ACTION_LENGTH,
+TRIGGER_COOLDOWN_MS, RATE_LIMIT_FIRES, RATE_LIMIT_WINDOW_MS, RATE_LIMIT_PENALTY_MS
+
+// Helpers
+stripAnsi(text) -> text
+isRegexShorthand(pattern) -> bool
+escapeForRegex(s) -> escaped
+compilePattern(pattern) -> { ok, regex } | { ok:false, error }
+validateAction(action) -> { ok, action } | { ok:false, error }
+parseAddSyntax('<pattern> -> <action>') -> { pattern, action } | null
+applyCaptures(action, regexMatch) -> action with %N substituted
+buildTrigger(id, pattern, action) -> { ok, trigger } | { ok:false, error }
+nextId(triggers[]) -> smallest unused id 1..MAX_TRIGGERS_PER_PLAYER
+loadTriggers(rawArray) -> sanitized triggers[]
+
+// Match + rate gating
+findFiring(triggers, text) -> { trigger, match, action } | null
+checkRate(state, now) -> { allow } | { allow:false, reason, lockedUntil? }
+recordFiring(state, now)
+```
+
+### Persistence schema
+
+Each player save (`players/<name>.json`) gets a `triggers` array:
+
+```json
+{
+  "triggers": [
+    {
+      "id": 1,
+      "pattern": "low hp",
+      "action": "use minor potion",
+      "enabled": true,
+      "regex": false,
+      "fired": 7
+    },
+    {
+      "id": 2,
+      "pattern": "/took (\\d+) damage/",
+      "action": "say I took %1",
+      "enabled": true,
+      "regex": true,
+      "fired": 0
+    }
+  ]
+}
+```
+
+`loadTriggers` is forgiving: malformed entries are dropped, missing ids are reassigned, oversize patterns are rejected, the array is capped. A garbage save never crashes the server.
+
+### Verification
+
+**Unit (`_verify_triggers.js`)** — 73 checks against the module in isolation:
+- ANSI strip, regex-shorthand detection, regex metachar escaping
+- Pattern compilation: substring vs regex, length cap, empty rejection, bad-regex error reporting
+- Action validation: trim, length cap, empty rejection, recursive-trigger block
+- `parseAddSyntax`: simple, regex form, missing whitespace, multiple arrows, non-string
+- `applyCaptures`: %1..%9 substitution, missing groups, no match
+- `buildTrigger`: success path, bad pattern, bad action, regex flag detection
+- `nextId`: empty list, gap-filling, contiguous extension
+- `loadTriggers`: valid entries preserved, missing ids reassigned, regex flag inferred from pattern shape, oversize patterns dropped, disabled state preserved, garbage input → empty, MAX_TRIGGERS_PER_PLAYER cap honored
+- `findFiring`: substring match, regex w/ capture, skip disabled, ANSI-strip before match, first-trigger-wins, empty inputs
+- Rate state: cooldown enforcement, RATE_LIMIT_FIRES cap (defense-in-depth via direct stuffing), penalty expiry, rolling window
+- 12 server-side wiring grep checks (import, handler, dispatch, tap install, idempotency flag, setImmediate scheduling, recursion guard, rate-exceeded auto-disable, save/load integration, createPlayer init)
+
+**Live integration (`_smoke_triggers.js`)** — 18 checks against a real spawned server:
+- Spawns `mud_server.js` on port 18889; waits for the auctions-loaded log line.
+- Real TCP connect + full registration flow (Y/N → username → password → confirm).
+- Exercises every trigger subcommand via real user input: `help`, `add`, `list`, `toggle`, `remove`, `clear` (implicitly).
+- Verifies the help screen shows the safety/limits constants.
+- Verifies malformed `trigger add` is rejected with the Usage line.
+- Verifies the action-level recursion guard rejects `... -> trigger clear`.
+- Issues `save`, then reads the player save file from disk and asserts the trigger persisted with the right pattern/action.
+- Verifies the server stays alive across the connect/quit cycle and shuts down cleanly on SIGTERM.
+- All test artifacts (test character + accounts entry + .bak files) are cleaned up on exit so the harness leaves the repo unchanged.
+
+Run from repo root:
+
+```
+node _verify_triggers.js     # 73/73 unit checks
+node _smoke_triggers.js      # 18/18 live-server checks
+```
+
+The smoke test owns its server child — don't run a second instance on `localhost:18889` while it's executing.
+
+### Known limitations
+
+- **No multi-line patterns** — each `socket.write` call is matched in isolation. A line split across two writes won't match a pattern that spans both.
+- **No timer triggers** — only output-driven matches. (Aardwolf has timer triggers; future addition.)
+- **No grouping / priorities** — first-match-wins; you can't say "trigger A only fires if trigger B has fired recently."
+- **Captures are positional** — no named-group support yet.
+- **Trigger fire counter is not persisted** — `fired` resets to 0 on save (though incremented in memory). Easy fix if it becomes useful for analytics.
+- **Rate-locked state is in-memory** — surviving a server restart wipes the lock; if a player burned through the rate cap right before a crash, they get a clean slate next login. Acceptable: the lock is a brake, not a punishment.
 
 ---
 
@@ -786,11 +956,11 @@ The bug was found while implementing the clan channel (Phase 4.1) — the new cl
 Per the approved Tier 4 plan (`audit-against-the-north-sharded-wombat.md`):
 
 - **Sprint 1 — Foundation triad**: 4.1 Clans ✓ → 4.4 MSDP/GMCP ✓ → 4.3 OLC ✓ (rooms only; items/mobs deferred)
-- **Sprint 2 — Economy + social** (in progress): 4.2 Auction ✓ → 4.5 Triggers → 4.6 Goals
+- **Sprint 2 — Economy + social** (in progress): 4.2 Auction ✓ → 4.5 Triggers ✓ → 4.6 Goals
 - **Sprint 3 — QoL bundle**: 4.7 Friend list + 4.8 Speedwalker
 
 Then Tier 5 stretch goals.
 
 ---
 
-*Document revision: Sprint 1 closed; Sprint 2 leg 1 (4.2 Auction) shipped. Sprint 2 next: 4.5 Triggers → 4.6 Goals.*
+*Document revision: Sprint 1 closed; Sprint 2 legs 1-2 (4.2 Auction, 4.5 Triggers) shipped. Sprint 2 next: 4.6 Goals.*
