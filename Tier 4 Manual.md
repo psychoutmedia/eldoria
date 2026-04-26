@@ -13,7 +13,7 @@
 | 4.5 | **Server-side triggers** | **DONE** — see "Triggers" below |
 | 4.6 | **Goals system** | **DONE** — see "Goals" below |
 | 4.7 | **Friend list** | **DONE** — see "Friend list" below |
-| 4.8 | Speedwalker | not started |
+| 4.8 | **Speedwalker** | **DONE** — see "Speedwalker" below |
 
 Plus one **pre-existing bug fix** landed alongside 4.1 (channel broadcast iteration), documented in the Bug Fixes appendix.
 
@@ -1221,9 +1221,143 @@ The smoke harness owns its server child — don't run a second instance on `loca
 
 ---
 
-## 4.8 Speedwalker — NOT STARTED
+## 4.8 Speedwalker — SHIPPED
 
-Per plan: `run nnnesseu` resolves into a chained sequence of single moves with collision/exit checks. Extends `handleMove` with a new `handleRun`.
+`run <directions>` chains single moves through a path, stopping on the first obstacle. Reuses `handleMove` per step so all the existing room-broadcast / monster-aggro / GMCP / goal-tracking hooks fire naturally.
+
+### Concepts
+
+- **Path** — a sequence of canonical direction names parsed from a flexible user input string.
+- **Per-step delay** — 220 ms between moves so room broadcasts, monster aggro grace periods, and any setImmediate-deferred work can interleave naturally. A 50-step run takes about 11 seconds.
+- **Brief mode override** — the player's `displayMode` is forced to `brief` for the duration of the run so each step prints just the room name + exits, not a full description. The original mode is restored on completion or abort.
+- **Stop conditions**: missing exit, parse error, combat started mid-run, max-step cap, socket destroyed.
+
+### Command surface
+
+| Command | Effect |
+| :-- | :-- |
+| `run <directions>` | Walk the path |
+| `run` (bare, in combat) | Falls through to flee semantics — preserves the legacy `flee` / `escape` / `run` muscle memory |
+| `run` (bare, out of combat) | Shows usage line |
+
+### Direction syntax
+
+Three input forms, all mixable:
+
+| Form | Example | Notes |
+| :-- | :-- | :-- |
+| Concatenated single letters | `run nneessd` | Cardinals + up/down only (`n s e w u d`). Each char is one step. `ne` etc. cannot be expressed concatenated — use a separator. |
+| Space-separated tokens | `run n ne e se s` | Each token is a full canonical name or a shorthand from `DIR_SHORTCUTS`. |
+| Comma-separated tokens | `run n,ne,e,se,s` | Same shape; commas and whitespace can be mixed: `n, ne se,s` works. |
+
+Both shorthand forms (`n`, `ne`, `u`, etc.) and full names (`north`, `northeast`, `up`) are accepted. Case-insensitive throughout. The `enter` / `inside` / `exit` / `outside` / `leave` aliases for `in` / `out` are also recognized.
+
+### Step limit
+
+Hard cap is **50 steps** per run (`MAX_STEPS` in `world/speedwalker.js`). Paths over this length are rejected at parse time:
+
+```
+> run nnnnnnnnnn ... (60 ns)
+Path too long (max 50 steps).
+```
+
+### Output during a run
+
+```
+> run n n e s
+Running: north -> north -> east -> south (4 steps)
+[room name brief line for step 1]
+[room name brief line for step 2]
+[room name brief line for step 3]
+[room name brief line for step 4]
+Arrived after 4 step(s).
+[full room display in original mode]
+```
+
+If the path hits a missing exit:
+```
+Run aborted at step 3: no east exit from this room.
+[full room display]
+```
+
+If combat starts mid-run (e.g. an aggressive monster engages):
+```
+Run aborted: combat started.
+```
+
+### Module API (`world/speedwalker.js`)
+
+```js
+// Constants
+MAX_STEPS, SAFE_CONCAT_CHARS
+
+parse(input, shortcuts, canonicals)
+  -> { ok: true, steps: [canonicalDir, ...] }
+   | { ok: false, error, errorAt?, errorToken? }
+```
+
+The module is parameterized over the direction tables (the caller passes in `DIR_SHORTCUTS` and `DIRECTIONS` from `mud_server.js`), so it can be unit-tested without booting the server.
+
+### Server-side wiring
+
+| Hot point | What runs |
+| :-- | :-- |
+| `processCommand` (`run` or `run ...`) | Routes to `handleRun` |
+| `handleRun` (no args, in combat) | Delegates to `handlePvpFlee` / `handleFlee` so the legacy combat `run` reflex still works |
+| `handleRun` (no args, not in combat) | Prints usage |
+| `handleRun` (with args) | Calls `speedwalker.parse(...)`. On success, sets `setInterval` at 220ms that walks each step via `handleMove` and stops on combat / missing exit / completion. |
+| `handleMove` per step | Unchanged — fires all existing room/movement hooks (broadcasts, GMCP, MSDP, goals, aggressive monsters, etc.) |
+
+### Testing
+
+**Unit (`_verify_speedwalker.js`)** — 32 checks against the parser:
+- Empty / non-string input rejection
+- Concatenated single-letter form (`nneessd` → 7 steps; case-insensitive)
+- Space-separated and comma-separated tokens, mixed
+- Full-name single-token (`northeast`, `UP`)
+- Mixed shorthand + full name in the same input
+- Concatenated form with non-cardinal character rejected (`nbsw`)
+- Unknown token surfaces `errorAt` index
+- `MAX_STEPS` cap enforced (over-cap rejected, exactly-at-cap accepted)
+- Concatenated path over cap rejected
+- `enter` / `leave` aliases work
+- Canonicals param accepts both Set and Array; null falls back gracefully
+- 10 server-side wiring grep checks (import, handler, dispatcher, combat block, parse call, setInterval stepping, missing-exit abort, combat-start abort, displayMode save/restore)
+
+**Live integration (`_smoke_speedwalker.js`)** — 11 checks against a real spawned server:
+- Spawns `mud_server.js` on port 18892.
+- Reads `rooms.json` to pick a known-valid 2-step path from `room_001`.
+- Registers a fresh test character.
+- `run` (bare) → shows usage line.
+- `run bogus` → unknown-direction error.
+- `run nbsw` → concatenated-with-bad-letter error.
+- `run <known path>` → `Arrived after 2 step(s).` plus the destination room name in the post-arrival display.
+- `run <missing direction>` → `Run aborted at step 1: no <dir> exit from this room.`
+- Comma-separated reverse path back to the start works.
+- Server stays alive across the full session and shuts down cleanly.
+- Cleans up the test character + accounts entry on exit.
+
+Run from the repo root:
+
+```
+node _verify_speedwalker.js     # 32/32 unit checks
+node _smoke_speedwalker.js      # 11/11 live-server checks
+```
+
+### Compatibility notes
+
+The Tier 4.8 wiring removes `run` from the explicit flee dispatch (`flee` and `escape` still alias correctly). `run` in combat is delegated to flee from inside `handleRun`, so the user-visible combat behavior is preserved exactly. Players who type `run` purely as a flee reflex see no change.
+
+The combat-allow-lists (`isMonsterCombatAllowed`, `isPvpAllowed` in `processCommand`) keep `command === 'run'` so the speedwalker dispatcher receives the input even mid-combat — `handleRun` then routes to flee.
+
+### Known limitations
+
+- **No path memorization** — there's no `route save <name>` / `route walk <name>`. Future addition.
+- **No reverse-walk shortcut** — `run-back` would be useful but isn't implemented.
+- **No interrupt commands** — once a run starts you can't cancel it explicitly; you have to wait for it to complete or for combat to abort it. Movement during the run is impossible because the player's input is dispatched normally but the `setInterval` keeps stepping.
+- **Brief mode is forced** — players who prefer verbose during runs would need a future `run -v` flag.
+- **No anti-trample** — an existing monster combat being ticked from the room you walk into doesn't cancel the run preemptively (it'll be detected on the next step). The 220ms cadence keeps this short.
+- **Concatenated form is cardinal-only** — to walk a diagonal path concatenated, you'd need to use commas or spaces because `ne` would otherwise be ambiguous with `n,e`.
 
 ---
 
@@ -1250,10 +1384,10 @@ Per the approved Tier 4 plan (`audit-against-the-north-sharded-wombat.md`):
 
 - **Sprint 1 — Foundation triad**: 4.1 Clans ✓ → 4.4 MSDP/GMCP ✓ → 4.3 OLC ✓ (rooms only; items/mobs deferred)
 - **Sprint 2 — Economy + social**: 4.2 Auction ✓ → 4.5 Triggers ✓ → 4.6 Goals ✓
-- **Sprint 3 — QoL bundle**: 4.7 Friend list + 4.8 Speedwalker
+- **Sprint 3 — QoL bundle**: 4.7 Friend list ✓ + 4.8 Speedwalker ✓
 
-Then Tier 5 stretch goals.
+**Tier 4 is closed.** All eight phases shipped. Tier 5 stretch goals next.
 
 ---
 
-*Document revision: Sprints 1 + 2 closed (4.1 Clans, 4.4 MSDP/GMCP, 4.3 OLC rooms, 4.2 Auction, 4.5 Triggers, 4.6 Goals). Sprint 3 next: 4.7 Friend list → 4.8 Speedwalker.*
+*Document revision: Tier 4 closed (4.1 Clans, 4.2 Auction, 4.3 OLC rooms, 4.4 MSDP/GMCP, 4.5 Triggers, 4.6 Goals, 4.7 Friend list, 4.8 Speedwalker). Cumulative test count across all phases: 408 (397 unit + 11 live-integration).*

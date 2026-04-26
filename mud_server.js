@@ -12,6 +12,7 @@ const auctions = require('./world/auctions');
 const triggers = require('./world/triggers');
 const goals = require('./world/goals');
 const friends = require('./world/friends');
+const speedwalker = require('./world/speedwalker');
 
 const PORT = parseInt(process.env.MUD_PORT, 10) || 8888;
 const START_ROOM = 'room_001';
@@ -8512,6 +8513,79 @@ function notifyFriendsOf(player, message, color = 'brightCyan') {
 }
 
 // ============================================
+// TIER 4.8: SPEEDWALKER (run)
+// ============================================
+//
+// `run <directions>` chains single moves. Stops on missing exit, invalid
+// direction, combat, death, or 50-step cap.
+function handleRun(socket, player, args) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  // Tier 4.8: bare `run` while in combat preserves the legacy flee semantics.
+  // `run <directions>` is always speedwalker.
+  if (!args || !args.trim().length) {
+    if (isInPvpCombat(player))     { handlePvpFlee(socket, player); return; }
+    if (isInMonsterCombat(player)) { handleFlee(socket, player); return; }
+    if (player.inCombat)           { handleFlee(socket, player); return; }
+    socket.write('Usage: run <directions>   (e.g. `run nneess`, `run n e ne`, `run north,east`)\r\n');
+    return;
+  }
+  if (player.inCombat || isInMonsterCombat(player) || isInPvpCombat(player)) {
+    socket.write(colorize("You can't speedwalk while in combat. Use `flee` to escape.\r\n", 'red'));
+    return;
+  }
+
+  const canonicals = new Set(DIRECTIONS);
+  const parsed = speedwalker.parse(args, DIR_SHORTCUTS, canonicals);
+  if (!parsed.ok) {
+    socket.write(colorize(parsed.error + '\r\n', 'red'));
+    return;
+  }
+
+  // Step through the path with a small delay between moves so concurrent
+  // events (combat starts, room broadcasts) can interleave naturally.
+  const steps = parsed.steps;
+  socket.write(colorize(`Running: ${steps.join(' -> ')} (${steps.length} steps)\r\n`, 'gray'));
+
+  // Use a switch to brief mode for the run; restore after.
+  const wasMode = player.displayMode;
+  player.displayMode = 'brief';
+
+  let i = 0;
+  const stepInterval = setInterval(() => {
+    // Stop conditions: combat started, player disconnected, server tearing down
+    if (socket.destroyed) { clearInterval(stepInterval); return; }
+    if (player.inCombat || isInMonsterCombat(player) || isInPvpCombat(player)) {
+      clearInterval(stepInterval);
+      player.displayMode = wasMode;
+      socket.write(colorize('Run aborted: combat started.\r\n', 'red'));
+      return;
+    }
+
+    if (i >= steps.length) {
+      clearInterval(stepInterval);
+      player.displayMode = wasMode;
+      socket.write(colorize(`Arrived after ${steps.length} step(s).\r\n`, 'brightGreen'));
+      // Show final room in their normal mode
+      const room = rooms[player.currentRoom];
+      if (room) showRoom(socket, player);
+      return;
+    }
+
+    const dir = steps[i++];
+    const room = rooms[player.currentRoom];
+    if (!room || !room.exits || !room.exits[dir]) {
+      clearInterval(stepInterval);
+      player.displayMode = wasMode;
+      socket.write(colorize(`Run aborted at step ${i}: no ${dir} exit from this room.\r\n`, 'red'));
+      const here = rooms[player.currentRoom];
+      if (here) showRoom(socket, player);
+      return;
+    }
+    handleMove(socket, player, dir);
+  }, 220);
+}
+
+// ============================================
 // ADMIN INFORMATION COMMANDS
 // ============================================
 
@@ -11606,9 +11680,10 @@ function processCommand(socket, player, input) {
     return true;
   }
 
-  // Handle flee command
-  if (command === 'flee' || command === 'run' || command === 'escape') {
-    // Route to PVP handler if in PVP combat
+  // Handle flee command (Tier 4.8: `run` is now speedwalker — see below — but
+  // we keep it routed to flee here for the bare-`run`-in-combat case before
+  // the speedwalker dispatch).
+  if (command === 'flee' || command === 'escape') {
     if (isInPvpCombat(player)) {
       handlePvpFlee(socket, player);
     } else {
@@ -11729,6 +11804,14 @@ function processCommand(socket, player, input) {
     if (command.startsWith('friend '))        friendArgs = original.slice(7);
     else if (command.startsWith('friends '))  friendArgs = original.slice(8);
     handleFriend(socket, player, friendArgs);
+    return true;
+  }
+
+  // Tier 4.8: speedwalker (run <directions>)
+  if (command === 'run' || command.startsWith('run ')) {
+    const original = input.trim();
+    const runArgs = original.length > 4 ? original.slice(4) : '';
+    handleRun(socket, player, runArgs);
     return true;
   }
 
