@@ -11,7 +11,7 @@
 | 4.3 | **Online creation (OLC, admin-only)** | **DONE (Sprint-1 scope: rooms only)** — see "OLC" below |
 | 4.4 | **MSDP/GMCP protocol** | **DONE** — see "MSDP/GMCP" below |
 | 4.5 | **Server-side triggers** | **DONE** — see "Triggers" below |
-| 4.6 | Goals system | not started |
+| 4.6 | **Goals system** | **DONE** — see "Goals" below |
 | 4.7 | Friend list | not started |
 | 4.8 | Speedwalker | not started |
 
@@ -916,9 +916,185 @@ The smoke test owns its server child — don't run a second instance on `localho
 
 ---
 
-## 4.6 Goals system — NOT STARTED
+## 4.6 Goals system — SHIPPED
 
-Per plan: Aardwolf-style long-term goals layered on quests/achievements (e.g. "Visit all 32 zones", "Hit Tier 5"). New `goals.json` + checker on key events.
+Long-term passive achievements with explicit claim. Distinct from the existing `achievementsUnlocked` (which auto-unlock and have no reward); goals surface progress, require a `goal claim` step, and pay out QP / gold / titles.
+
+### Concepts
+
+- **A goal** is a curated definition in `goals.json` with id, category, name, description, type, key, target, and reward. Definitions are loaded at server boot and validated.
+- **Progress** is stored on the player as `goalProgress` (object: `{ key: counter | bool | string[] }`) plus `goalsClaimed` (array of claimed ids).
+- **Goal types**:
+  - `counter` — accumulator (kills, damage, sales). Complete when `current >= target`.
+  - `boolean` — flag (entered Neo Kyoto). Complete when matches target.
+  - `set` — distinct-membership tracker (zones visited). Complete when set size hits target.
+  - `threshold` — watches a live player attribute (level, gold, remortTier). Complete when `current >= target`.
+- **Categories**: `combat`, `exploration`, `economy`, `progression`. Used for the list-view grouping and the `goal list <category>` filter.
+- **Claim is one-shot** — once claimed, a goal can never be claimed again. Re-completion has no effect.
+
+### Launch goal set
+
+| Category | id | Name | Trigger | Reward |
+| :-- | :-- | :-- | :-- | :-- |
+| combat | `combat_apprentice` | Bloodied Initiate | 100 monster kills | 25 QP |
+| combat | `combat_veteran` | Veteran Warrior | 1000 monster kills | 100 QP + title "the Battle-Hardened" |
+| combat | `combat_boss_crusher` | Boss Crusher | 10 unique named bosses | 50 QP |
+| combat | `combat_demolisher` | Demolisher | 100 000 cumulative damage | 75 QP + 500 gold |
+| combat | `combat_pvp_first` | First Blood | 1 PVP kill | 30 QP |
+| exploration | `explore_wanderer` | Wanderer | 50 unique rooms | 20 QP |
+| exploration | `explore_cartographer` | Cartographer | 200 unique rooms | 50 QP |
+| exploration | `explore_realm_walker` | Realm-Walker | 1 room in every zone (`ALL_ZONES`) | 100 QP + title "the Realm-Walker" |
+| exploration | `explore_neo_kyoto` | Across the Threshold | Enter any room 201-300 | 25 QP |
+| economy | `econ_first_sale` | Open for Business | 1 auction sale | 15 QP |
+| economy | `econ_bullion_hoard` | Bullion Hoard | Hold 10 000 gold at once | 50 QP |
+| economy | `econ_tycoon` | Auction Tycoon | 25 auction sales | 100 QP + title "the Marketmaker" |
+| progression | `prog_adept` | Adept | Reach level 10 | 25 QP |
+| progression | `prog_master` | Master | Reach level 25 | 75 QP + 250 gold |
+| progression | `prog_eternal` | Eternal | Reach remort tier 1 | 100 QP + title "the Reborn" |
+
+The set is curated for launch; new goals can be added by editing `goals.json` and restarting the server. Validation runs at load — malformed entries are warned about and skipped.
+
+### Command surface
+
+| Command | Effect |
+| :-- | :-- |
+| `goals` / `goal list [category]` | List all goals grouped by category, with progress + status badge per goal. Optional filter to a single category. |
+| `goal info <id>` | Detail page: name, category, description, type, current vs target, percent, status, reward breakdown. |
+| `goal claim <id>` | Pay out the reward and mark claimed. Rejects if incomplete or already claimed. |
+| `goal categories` | List the four valid categories. |
+| `goal help` / `goal ?` | Show the command summary. |
+
+Status badges in the list view:
+- `[ ... ]` — in progress
+- `[READY]` — complete and ready to claim
+- `[CLAIMED]` — already claimed (greyed out)
+
+### Special target: `ALL_ZONES`
+
+Goals can use the literal string `"ALL_ZONES"` as their target. At evaluation time the server substitutes the live count of distinct zones in `rooms.json` (cached on first read). This means the `Realm-Walker` goal automatically tracks the right number when zones are added or removed via `redit zone` (Tier 4.3) — no manual goal-file maintenance needed.
+
+The current realm has **33 zones** across both servers (Eldoria + Neo Kyoto).
+
+### Hot-point hooks
+
+The wiring follows the rule that every progress mutation goes through one helper. The hot points and what they update:
+
+| Event | Helper | Goals affected |
+| :-- | :-- | :-- |
+| `handleMonsterDeath` | `goalOnMonsterKilled(player, socket, monster)` | `combat_apprentice`, `combat_veteran`, `combat_boss_crusher` (boss-set tracking via `uniqueBossesKilledList`) |
+| Per-hit damage in `playerAttackMonster` | `goalOnDamageDealt(player, socket, amount)` | `combat_demolisher` |
+| PVP victory in `handlePvpVictory` | `goalOnPvpKill(winner, winnerSocket)` | `combat_pvp_first` |
+| `handleMove` after `currentRoom` updated | `goalOnRoomEntered(player, socket, roomId, room)` | `explore_wanderer`, `explore_cartographer`, `explore_realm_walker`, `explore_neo_kyoto` |
+| `settleAuction` (sold path) | `goalOnAuctionSold(sellerName)` — handles online + offline sellers | `econ_first_sale`, `econ_tycoon` |
+| `checkLevelUp` after auto-save | `goalOnLevelChanged(player, socket)` | `prog_adept`, `prog_master` |
+| Remort confirm path | `goalOnRemort(player, socket)` | `prog_eternal` |
+| `savePlayer` on every save | `goalOnGoldChanged(player, socket)` | `econ_bullion_hoard` (threshold checked on save tick) |
+
+Each helper increments / sets / appends to `goalProgress` then calls `notifyIfNewlyComplete` to print a `[Goal Complete]` line when the goal first becomes claimable. The notification is idempotent against `goalsClaimed`, so it doesn't repeat after the player claims.
+
+Threshold goals (`level`, `currentGold`, `remortTier`) read live values from `ctx.values` rather than `goalProgress`, so they don't need persistent counters — the player attribute IS the counter.
+
+### Module API (`world/goals.js`)
+
+```js
+// Constants
+CATEGORIES, VALID_TYPES, TARGET_ALL_ZONES, GOALS_PATH
+
+// Lifecycle
+loadDefinitions(filePath?) -> { ok, count, errors? }
+getDefinitions() -> [definition]
+getDefinition(id) -> definition | null
+listByCategory(category) -> [definition]
+
+// Progress mutation (mutates player.goalProgress in place)
+ensureProgressShape(player) -> player
+incrementCounter(player, key, n=1) -> new value
+setBoolean(player, key, value=true) -> bool
+addToSet(player, key, member) -> set size
+getProgress(player, key, default) -> value
+
+// Evaluation
+resolveTarget(goal, ctx) -> number
+readCurrent(goal, player, ctx) -> number | bool
+isComplete(goal, player, ctx) -> bool
+progressFor(goal, player, ctx) -> { current, target, percent }
+statusFor(goal, player, ctx) -> 'completed' | 'in_progress' | 'claimed'
+
+// Claim flow
+canClaim(goal, player, ctx) -> { ok, goal } | { ok:false, error, progress? }
+markClaimed(goal, player) -> claimed count
+```
+
+### Persistence schema
+
+Each player save (`players/<name>.json`) gets two new fields:
+
+```json
+{
+  "goalProgress": {
+    "monstersKilled": 1234,
+    "damageDealt": 87650,
+    "uniqueBossesKilledList": ["Throne Wraith", "Ash Dragon", "..."],
+    "uniqueBossesKilled": 3,
+    "roomsVisitedList": ["room_001", "room_002", "..."],
+    "uniqueRoomsVisited": 87,
+    "zonesVisited": ["Starting Chamber", "Crystal Caverns", "..."],
+    "enteredNeoKyoto": false,
+    "auctionSales": 4,
+    "pvpKills": 0
+  },
+  "goalsClaimed": ["combat_apprentice", "explore_wanderer"]
+}
+```
+
+The `*List` arrays back the `*` counters — the counter is a derived integer kept up to date by the helpers. Both formats are persisted so reading the save file directly is straightforward.
+
+`loadPlayer` defaults missing fields to empty values, so old saves work transparently. `createPlayer` initializes them empty. `savePlayer` writes whatever's currently on the player object.
+
+### Verification
+
+**Unit (`_verify_goals.js`)** — 72 checks against the module + the real `goals.json`:
+- Definition validation (all fields, every type, valid ALL_ZONES, malformed/missing/negative reward rejection)
+- Real goals.json loads cleanly with the expected count, every entry validates, no duplicate ids
+- `loadDefinitions` resilient to garbage JSON (returns ok=false but doesn't crash)
+- Progress shape ensured + idempotent
+- `incrementCounter` (default n=1, accumulation, new-key initialization)
+- `setBoolean` / `addToSet` (deduplication, order preservation)
+- `isComplete` for all four types: counter (boundary, past target), boolean, set with ALL_ZONES expansion (zoneCount via ctx, missing ctx graceful), threshold via ctx.values
+- `progressFor` math (counter percent, boolean 0/100, percent capped at 100)
+- `statusFor` transitions (in_progress → completed → claimed)
+- `canClaim` rejects in-progress, accepts when complete, rejects already-claimed, rejects null goal
+- `markClaimed` is idempotent
+- `listByCategory` filters correctly
+- 14 server-side wiring grep checks (import, startup load, handler, dispatcher, all 7 hot-point hooks, save/load integration, createPlayer init)
+
+**Live integration (`_smoke_goals.js`)** — 19 checks against a real spawned server:
+- Spawns `mud_server.js` on port 18890 with the test character pre-added to `admins.json` (restored on exit).
+- Waits for the `Loaded N goal definition` startup log line.
+- Real TCP connect + full registration flow.
+- Exercises every subcommand: `goals`, `goal info <id>`, `goal info <unknown>`, `goal claim <incomplete>`, `goal claim <ready>`, `goal claim <already claimed>`, `goal list <category>`, `goal categories`.
+- Uses admin `set_level` to push to level 10, then claims `prog_adept` and asserts the `+25 QP` payout line.
+- Verifies the list view's status badge transitions (`[ ... ]` → `[CLAIMED]`).
+- Runs `save`, reads the player file from disk, asserts `goalsClaimed` includes `prog_adept`, `goalProgress` is present, `questPoints` ≥ 25.
+- All test artifacts (player file, accounts entry, admins.json modification, .bak files) cleaned up on exit.
+
+Run from repo root:
+
+```
+node _verify_goals.js     # 72/72 unit checks
+node _smoke_goals.js      # 19/19 live-server checks
+```
+
+The smoke harness owns its server child + admins.json patch — don't run a second instance on `localhost:18890` while it's executing.
+
+### Known limitations
+
+- **No goal chains / prerequisites** — every goal is independent. (e.g. you can claim `Veteran Warrior` without first claiming `Bloodied Initiate`.)
+- **No hidden goals** — all goals are visible from list-view immediately.
+- **No daily / weekly resets** — goals are one-shot lifetime achievements. Daily-reset content lives in the campaign system (Tier 2.1).
+- **No achievement→goal cross-linking** — the existing `achievementsUnlocked` and the new `goalsClaimed` are independent ledgers. A goal could in theory be earned via the same event that unlocks an achievement, but they're tracked separately.
+- **Title rewards add to `titlesUnlocked`** but don't auto-equip — the player still needs to use the existing `title` command to switch to a goal title.
+- **Threshold goals fire on the next event tick**, not retroactively — if a player is already level 25 when goals.json adds a goal at that level, they need to trigger any level event (`set_level` or natural level-up) for the in-memory threshold check to print the "ready" notification. The `goal claim` command itself bypasses this since `canClaim` re-evaluates from live attributes.
 
 ---
 
@@ -956,11 +1132,11 @@ The bug was found while implementing the clan channel (Phase 4.1) — the new cl
 Per the approved Tier 4 plan (`audit-against-the-north-sharded-wombat.md`):
 
 - **Sprint 1 — Foundation triad**: 4.1 Clans ✓ → 4.4 MSDP/GMCP ✓ → 4.3 OLC ✓ (rooms only; items/mobs deferred)
-- **Sprint 2 — Economy + social** (in progress): 4.2 Auction ✓ → 4.5 Triggers ✓ → 4.6 Goals
+- **Sprint 2 — Economy + social**: 4.2 Auction ✓ → 4.5 Triggers ✓ → 4.6 Goals ✓
 - **Sprint 3 — QoL bundle**: 4.7 Friend list + 4.8 Speedwalker
 
 Then Tier 5 stretch goals.
 
 ---
 
-*Document revision: Sprint 1 closed; Sprint 2 legs 1-2 (4.2 Auction, 4.5 Triggers) shipped. Sprint 2 next: 4.6 Goals.*
+*Document revision: Sprints 1 + 2 closed (4.1 Clans, 4.4 MSDP/GMCP, 4.3 OLC rooms, 4.2 Auction, 4.5 Triggers, 4.6 Goals). Sprint 3 next: 4.7 Friend list → 4.8 Speedwalker.*

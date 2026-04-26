@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "goals": [
+    {
+      "id": "combat_apprentice",
+      "category": "combat",
+      "name": "Bloodied Initiate",
+      "description": "Kill 100 monsters.",
+      "type": "counter",
+      "key": "monstersKilled",
+      "target": 100,
+      "reward": { "qp": 25 }
+    },
+    {
+      "id": "combat_veteran",
+      "category": "combat",
+      "name": "Veteran Warrior",
+      "description": "Kill 1000 monsters.",
+      "type": "counter",
+      "key": "monstersKilled",
+      "target": 1000,
+      "reward": { "qp": 100, "title": "the Battle-Hardened" }
+    },
+    {
+      "id": "combat_boss_crusher",
+      "category": "combat",
+      "name": "Boss Crusher",
+      "description": "Defeat 10 unique named bosses.",
+      "type": "counter",
+      "key": "uniqueBossesKilled",
+      "target": 10,
+      "reward": { "qp": 50 }
+    },
+    {
+      "id": "combat_demolisher",
+      "category": "combat",
+      "name": "Demolisher",
+      "description": "Deal 100,000 cumulative damage.",
+      "type": "counter",
+      "key": "damageDealt",
+      "target": 100000,
+      "reward": { "qp": 75, "gold": 500 }
+    },
+    {
+      "id": "combat_pvp_first",
+      "category": "combat",
+      "name": "First Blood",
+      "description": "Win your first PVP duel.",
+      "type": "counter",
+      "key": "pvpKills",
+      "target": 1,
+      "reward": { "qp": 30 }
+    },
+    {
+      "id": "explore_wanderer",
+      "category": "exploration",
+      "name": "Wanderer",
+      "description": "Visit 50 unique rooms.",
+      "type": "counter",
+      "key": "uniqueRoomsVisited",
+      "target": 50,
+      "reward": { "qp": 20 }
+    },
+    {
+      "id": "explore_cartographer",
+      "category": "exploration",
+      "name": "Cartographer",
+      "description": "Visit 200 unique rooms.",
+      "type": "counter",
+      "key": "uniqueRoomsVisited",
+      "target": 200,
+      "reward": { "qp": 50 }
+    },
+    {
+      "id": "explore_realm_walker",
+      "category": "exploration",
+      "name": "Realm-Walker",
+      "description": "Visit at least one room in every zone of the realm.",
+      "type": "set",
+      "key": "zonesVisited",
+      "target": "ALL_ZONES",
+      "reward": { "qp": 100, "title": "the Realm-Walker" }
+    },
+    {
+      "id": "explore_neo_kyoto",
+      "category": "exploration",
+      "name": "Across the Threshold",
+      "description": "Set foot in Neo Kyoto.",
+      "type": "boolean",
+      "key": "enteredNeoKyoto",
+      "target": true,
+      "reward": { "qp": 25 }
+    },
+    {
+      "id": "econ_first_sale",
+      "category": "economy",
+      "name": "Open for Business",
+      "description": "Successfully sell an item via the auction house.",
+      "type": "counter",
+      "key": "auctionSales",
+      "target": 1,
+      "reward": { "qp": 15 }
+    },
+    {
+      "id": "econ_bullion_hoard",
+      "category": "economy",
+      "name": "Bullion Hoard",
+      "description": "Hold 10,000 gold at one time.",
+      "type": "threshold",
+      "key": "currentGold",
+      "target": 10000,
+      "reward": { "qp": 50 }
+    },
+    {
+      "id": "econ_tycoon",
+      "category": "economy",
+      "name": "Auction Tycoon",
+      "description": "Sell 25 items via the auction house.",
+      "type": "counter",
+      "key": "auctionSales",
+      "target": 25,
+      "reward": { "qp": 100, "title": "the Marketmaker" }
+    },
+    {
+      "id": "prog_adept",
+      "category": "progression",
+      "name": "Adept",
+      "description": "Reach character level 10.",
+      "type": "threshold",
+      "key": "level",
+      "target": 10,
+      "reward": { "qp": 25 }
+    },
+    {
+      "id": "prog_master",
+      "category": "progression",
+      "name": "Master",
+      "description": "Reach character level 25.",
+      "type": "threshold",
+      "key": "level",
+      "target": 25,
+      "reward": { "qp": 75, "gold": 250 }
+    },
+    {
+      "id": "prog_eternal",
+      "category": "progression",
+      "name": "Eternal",
+      "description": "Complete your first remort (reach remort tier 1).",
+      "type": "threshold",
+      "key": "remortTier",
+      "target": 1,
+      "reward": { "qp": 100, "title": "the Reborn" }
+    }
+  ]
+}

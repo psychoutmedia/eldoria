@@ -10,6 +10,7 @@ const gmcp = require('./protocol/gmcp');
 const olc = require('./world/olc');
 const auctions = require('./world/auctions');
 const triggers = require('./world/triggers');
+const goals = require('./world/goals');
 
 const PORT = parseInt(process.env.MUD_PORT, 10) || 8888;
 const START_ROOM = 'room_001';
@@ -1321,6 +1322,8 @@ function createPlayer(name = null) {
     aliases: {},
     channelSubs: { newbie: true, ooc: true, gossip: true, trade: true },
     triggers: [],
+    goalProgress: {},
+    goalsClaimed: [],
     // === Tier 1 ===
     abilities: { str: 10, dex: 10, con: 10, int: 10, wis: 10 },
     charClass: null, // 'warder' | 'loresinger' | 'echobound'
@@ -1439,6 +1442,8 @@ function checkLevelUp(socket, player) {
       // MSDP mirror — LEVEL/EXPERIENCE/HEALTH all changed, push the full state
       gmcp.emitMsdpPlayerState(socket, player);
     }
+    // Tier 4.6: level-up goal hook (threshold checks)
+    goalOnLevelChanged(player, socket);
 
     // Log activity
     logActivity(`${player.name} reached Level ${newLevel}`);
@@ -1568,6 +1573,9 @@ function savePlayer(player, socket = null, silent = false) {
     aliases: player.aliases || {},
     channelSubs: player.channelSubs || {},
     triggers: Array.isArray(player.triggers) ? player.triggers : [],
+    // Tier 4.6: goals progress + claim history
+    goalProgress: (player.goalProgress && typeof player.goalProgress === 'object') ? player.goalProgress : {},
+    goalsClaimed: Array.isArray(player.goalsClaimed) ? player.goalsClaimed : [],
     // Tier 1
     abilities: player.abilities || { str: 10, dex: 10, con: 10, int: 10, wis: 10 },
     charClass: player.charClass || null,
@@ -1607,6 +1615,9 @@ function savePlayer(player, socket = null, silent = false) {
     // Write save file
     fs.writeFileSync(filePath, JSON.stringify(saveData, null, 2));
     player.lastSaved = Date.now();
+
+    // Tier 4.6: gold-threshold goal hook (cheap; checks bullion-hoard target)
+    if (typeof goalOnGoldChanged === 'function') goalOnGoldChanged(player, socket);
 
     if (socket && !silent) {
       socket.write(colorize('[Auto-saved character data]\r\n', 'dim'));
@@ -1671,6 +1682,9 @@ function loadPlayer(playerName) {
       channelSubs: Object.assign({ newbie: true, ooc: true, gossip: true, trade: true }, data.channelSubs || {}),
       // Tier 4.5: server-side triggers (sanitized on load)
       triggers: triggers.loadTriggers(data.triggers),
+      // Tier 4.6: goals progress + claim history
+      goalProgress: (data.goalProgress && typeof data.goalProgress === 'object') ? data.goalProgress : {},
+      goalsClaimed: Array.isArray(data.goalsClaimed) ? data.goalsClaimed : [],
       gold: data.gold || 0,
       stats: {
         monstersKilled: data.stats?.monstersKilled || 0,
@@ -3418,6 +3432,9 @@ function playerAttackMonster(socket, player, monster) {
   // Track damage dealt
   player.stats.totalDamageDealt += totalDamage;
 
+  // Tier 4.6: per-hit damage goal hook
+  if (totalDamage > 0) goalOnDamageDealt(player, socket, totalDamage);
+
   // Show weapon contribution if equipped
   const weaponText = weaponBonus > 0 ? ` (+${weaponBonus} weapon)` : '';
   const damageMsg = colorize(
@@ -3670,6 +3687,10 @@ function handleMonsterDeath(socket, player, monster) {
   player.sessionMonstersKilled++;
   player.sessionGoldEarned += goldDrop;
   player.sessionXPGained += xpGain;
+
+  // Tier 4.6: goal hook (kill counter + boss-set). Damage-dealt is updated
+  // at the per-hit site in playerAttackMonster, not here.
+  goalOnMonsterKilled(player, socket, monster);
 
   // Tier 1.9: +1 practice per kill
   if (typeof player.practicePoints !== 'number') player.practicePoints = 0;
@@ -4845,6 +4866,8 @@ function handlePvpVictory(combatId, winner, loser) {
   winner.experience += xpGain;
   winner.gold += goldGain;
   winner.stats.pvpKills++;
+  // Tier 4.6: pvp goal hook
+  goalOnPvpKill(winner, winnerSocket);
   unlockAchievement(winnerSocket, winner, 'pvp_first');
   if (winner.stats.pvpKills >= 10) unlockAchievement(winnerSocket, winner, 'pvp_10');
   checkLevelUp(winnerSocket, winner);
@@ -7797,6 +7820,8 @@ function settleAuction(auction, now) {
         `You won "${auction.item.name}" for ${auction.currentBid}g, but your inventory is full. Use \`auction claim\` once you have space.`);
     }
     logActivity(`Auction ${auction.id}: ${auction.seller} sold ${auction.item.name} to ${auction.topBidder} for ${auction.currentBid}g (fee ${fee}g)`);
+    // Tier 4.6: economy goals (auctionSales counter)
+    goalOnAuctionSold(auction.seller);
   } else {
     // Unsold. Item back to seller (or pending queue if their inventory is full).
     auctions.moveToHistory(auctionState, auction, 'unsold', now);
@@ -8168,6 +8193,236 @@ function handleTrigger(socket, player, args) {
   }
 
   socket.write(colorize(`Unknown trigger subcommand: ${sub}. Try \`trigger help\`.\r\n`, 'red'));
+}
+
+// ============================================
+// TIER 4.6: GOALS
+// ============================================
+//
+// Long-term passive achievements with explicit claim. Progress tracked via
+// goal* hooks called from monster-kill, room-enter, level-up, etc. Reward
+// payout (qp, gold, title) lives here; eligibility/progress in world/goals.js.
+
+// Cache the live world's zone count once at boot — this is the runtime
+// substitution for goals with target "ALL_ZONES".
+let _goalZoneCount = 0;
+function recomputeGoalZoneCount() {
+  const zones = new Set();
+  for (const id in rooms) {
+    if (rooms[id] && rooms[id].zone) zones.add(rooms[id].zone);
+  }
+  _goalZoneCount = zones.size;
+  return _goalZoneCount;
+}
+function goalCtx(player) {
+  if (!_goalZoneCount) recomputeGoalZoneCount();
+  return {
+    zoneCount: _goalZoneCount,
+    values: {
+      level: player.level || 1,
+      remortTier: player.remortTier || 0,
+      currentGold: player.gold || 0
+    }
+  };
+}
+
+// Notify a player when a goal becomes ready to claim. Called after every
+// progress mutation; idempotent per goal-completion (we don't repeat the
+// notification once they've claimed).
+function notifyIfNewlyComplete(player, socket, goalIdsAffected) {
+  if (!socket || socket.destroyed) return;
+  const ctx = goalCtx(player);
+  for (const id of goalIdsAffected) {
+    const def = goals.getDefinition(id);
+    if (!def) continue;
+    if (player.goalsClaimed.includes(id)) continue;
+    if (goals.isComplete(def, player, ctx)) {
+      socket.write(colorize(`\r\n[Goal Complete] "${def.name}" — use \`goal claim ${def.id}\` to collect your reward.\r\n`, 'brightYellow'));
+    }
+  }
+}
+
+// === Hot-point helpers ===
+//
+// All call sites use these one-liners; the routing into goals.js lives here.
+
+function goalOnMonsterKilled(player, socket, monster) {
+  goals.incrementCounter(player, 'monstersKilled', 1);
+  // Damage-dealt counter is tracked separately on the kill event below.
+  if (monster && monster.isBoss) {
+    // unique-boss tracking via name set so spawn-respawned bosses don't double-count
+    goals.addToSet(player, 'uniqueBossesKilledList', monster.name || 'unknown');
+    const arr = goals.getProgress(player, 'uniqueBossesKilledList', []);
+    player.goalProgress.uniqueBossesKilled = Array.isArray(arr) ? arr.length : 0;
+  }
+  notifyIfNewlyComplete(player, socket, ['combat_apprentice', 'combat_veteran', 'combat_boss_crusher']);
+}
+
+function goalOnDamageDealt(player, socket, amount) {
+  if (!Number.isFinite(amount) || amount <= 0) return;
+  goals.incrementCounter(player, 'damageDealt', amount);
+  notifyIfNewlyComplete(player, socket, ['combat_demolisher']);
+}
+
+function goalOnPvpKill(player, socket) {
+  goals.incrementCounter(player, 'pvpKills', 1);
+  notifyIfNewlyComplete(player, socket, ['combat_pvp_first']);
+}
+
+function goalOnRoomEntered(player, socket, roomId, room) {
+  if (!roomId || !room) return;
+  goals.addToSet(player, 'roomsVisitedList', roomId);
+  const rArr = goals.getProgress(player, 'roomsVisitedList', []);
+  player.goalProgress.uniqueRoomsVisited = Array.isArray(rArr) ? rArr.length : 0;
+  if (room.zone) {
+    goals.addToSet(player, 'zonesVisited', room.zone);
+  }
+  // Neo Kyoto = rooms 201-300 per the existing convention
+  if (/^room_(2\d\d|300)$/.test(roomId)) {
+    goals.setBoolean(player, 'enteredNeoKyoto', true);
+  }
+  notifyIfNewlyComplete(player, socket, ['explore_wanderer', 'explore_cartographer', 'explore_realm_walker', 'explore_neo_kyoto']);
+}
+
+function goalOnAuctionSold(sellerName) {
+  // Auction reaper is offline-friendly — seller may not have a live socket
+  const target = findPlayerByName(sellerName);
+  let player, sock;
+  if (target) { player = target.player; sock = target.socket; }
+  else {
+    // Offline: load + bump + save
+    const data = loadPlayer(sellerName);
+    if (!data) return;
+    if (!data.goalProgress) data.goalProgress = {};
+    data.goalProgress.auctionSales = (Number(data.goalProgress.auctionSales) || 0) + 1;
+    try {
+      const filePath = getPlayerFilePath(sellerName);
+      const tmp = filePath + '.tmp';
+      fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
+      fs.renameSync(tmp, filePath);
+    } catch (e) { /* best effort */ }
+    return;
+  }
+  goals.incrementCounter(player, 'auctionSales', 1);
+  notifyIfNewlyComplete(player, sock, ['econ_first_sale', 'econ_tycoon']);
+}
+
+function goalOnLevelChanged(player, socket) {
+  notifyIfNewlyComplete(player, socket, ['prog_adept', 'prog_master']);
+}
+
+function goalOnRemort(player, socket) {
+  notifyIfNewlyComplete(player, socket, ['prog_eternal']);
+}
+
+function goalOnGoldChanged(player, socket) {
+  // Threshold-style; check on every save tick. Lightweight enough.
+  notifyIfNewlyComplete(player, socket, ['econ_bullion_hoard']);
+}
+
+// === Command handler ===
+function handleGoals(socket, player, args) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  goals.ensureProgressShape(player);
+
+  const trimmed = (args || '').trim();
+  const tokens = trimmed.length ? trimmed.split(/\s+/) : [];
+  const sub = (tokens[0] || '').toLowerCase();
+
+  // Bare `goals` / `goal list`
+  if (!sub || sub === 'list' || sub === 'ls') {
+    const ctx = goalCtx(player);
+    const all = goals.getDefinitions();
+    if (!all.length) {
+      socket.write(colorize('No goals defined on this server.\r\n', 'gray'));
+      return;
+    }
+    const filter = (tokens[1] || '').toLowerCase();
+    const cats = filter && goals.CATEGORIES.includes(filter) ? [filter] : goals.CATEGORIES;
+    socket.write(colorize(`=== Goals (${all.length} total)${filter ? ` — ${filter}` : ''} ===\r\n`, 'brightYellow'));
+    for (const cat of cats) {
+      const inCat = goals.listByCategory(cat);
+      if (!inCat.length) continue;
+      socket.write(colorize(`\r\n[${cat}]\r\n`, 'brightCyan'));
+      for (const g of inCat) {
+        const status = goals.statusFor(g, player, ctx);
+        const p = goals.progressFor(g, player, ctx);
+        const tag = status === 'claimed'    ? colorize('[CLAIMED]', 'gray')
+                  : status === 'completed'  ? colorize('[READY]  ', 'brightGreen')
+                  :                            colorize('[ ...  ] ', 'yellow');
+        const prog = (g.type === 'boolean')
+          ? (p.current ? '1/1' : '0/1')
+          : `${p.current}/${p.target}`;
+        socket.write(`  ${tag} ${g.id.padEnd(22)} ${g.name.padEnd(28)} ${String(prog).padStart(12)}\r\n`);
+      }
+    }
+    socket.write(colorize('\r\nUse `goal info <id>` for detail; `goal claim <id>` when ready.\r\n', 'gray'));
+    return;
+  }
+
+  if (sub === 'info' || sub === 'show') {
+    if (!tokens[1]) { socket.write('Usage: goal info <id>\r\n'); return; }
+    const def = goals.getDefinition(tokens[1]);
+    if (!def) { socket.write(colorize('No such goal.\r\n', 'red')); return; }
+    const ctx = goalCtx(player);
+    const status = goals.statusFor(def, player, ctx);
+    const p = goals.progressFor(def, player, ctx);
+    socket.write(colorize(`=== ${def.name} (${def.id}) ===\r\n`, 'brightYellow'));
+    socket.write(`Category:    ${def.category}\r\n`);
+    socket.write(`Description: ${def.description}\r\n`);
+    socket.write(`Type:        ${def.type}\r\n`);
+    socket.write(`Progress:    ${p.current}/${p.target} (${p.percent}%)\r\n`);
+    socket.write(`Status:      ${status}\r\n`);
+    const r = def.reward;
+    const parts = [];
+    if (r.qp)    parts.push(`${r.qp} QP`);
+    if (r.gold)  parts.push(`${r.gold} gold`);
+    if (r.title) parts.push(`title "${r.title}"`);
+    socket.write(`Reward:      ${parts.join(', ') || '(none)'}\r\n`);
+    return;
+  }
+
+  if (sub === 'categories') {
+    socket.write(colorize('Goal categories: ' + goals.CATEGORIES.join(', ') + '\r\n', 'gray'));
+    socket.write('Filter the list with `goal list <category>`.\r\n');
+    return;
+  }
+
+  if (sub === 'claim') {
+    if (!tokens[1]) { socket.write('Usage: goal claim <id>\r\n'); return; }
+    const def = goals.getDefinition(tokens[1]);
+    if (!def) { socket.write(colorize('No such goal.\r\n', 'red')); return; }
+    const ctx = goalCtx(player);
+    const c = goals.canClaim(def, player, ctx);
+    if (!c.ok) { socket.write(colorize(c.error + '\r\n', 'red')); return; }
+    // Pay rewards
+    const r = def.reward;
+    const lines = [colorize(`*** Goal claimed: ${def.name} ***`, 'brightYellow')];
+    if (r.qp)    { player.questPoints = (player.questPoints || 0) + r.qp; lines.push(`+${r.qp} QP`); }
+    if (r.gold)  { player.gold = (player.gold || 0) + r.gold; lines.push(`+${r.gold} gold`); }
+    if (r.title) {
+      if (!Array.isArray(player.titlesUnlocked)) player.titlesUnlocked = [];
+      if (!player.titlesUnlocked.includes(r.title)) player.titlesUnlocked.push(r.title);
+      lines.push(`title unlocked: "${r.title}"`);
+    }
+    goals.markClaimed(def, player);
+    savePlayer(player, socket, true);
+    for (const l of lines) socket.write(l + '\r\n');
+    logActivity(`${player.name} claimed goal ${def.id}`);
+    return;
+  }
+
+  if (sub === 'help' || sub === '?') {
+    socket.write(colorize('=== Goals ===\r\n', 'brightYellow'));
+    socket.write('  goals / goal list [category]   List all goals (optional category filter)\r\n');
+    socket.write('  goal info <id>                 Detail page for one goal\r\n');
+    socket.write('  goal claim <id>                Collect reward when complete\r\n');
+    socket.write('  goal categories                List available categories\r\n');
+    socket.write(colorize(`  Categories: ${goals.CATEGORIES.join(', ')}\r\n`, 'gray'));
+    return;
+  }
+
+  socket.write(colorize(`Unknown goal subcommand: ${sub}. Try \`goal help\`.\r\n`, 'red'));
 }
 
 // ============================================
@@ -10741,6 +10996,9 @@ function handleMove(socket, player, direction) {
   msdpRoom(player);
   msdpVitals(player);
 
+  // Tier 4.6: room-enter goal hook (counter + zone set + Neo Kyoto boolean)
+  goalOnRoomEntered(player, socket, newRoomId, rooms[newRoomId]);
+
   // Tier 3.1 Phase 7: Neo Kyoto entry achievements
   const nkMatch = newRoomId.match(/^room_(\d+)$/);
   if (nkMatch) {
@@ -11363,6 +11621,16 @@ function processCommand(socket, player, input) {
     const original = input.trim();
     const triggerArgs = original.length > 8 ? original.slice(8) : '';
     handleTrigger(socket, player, triggerArgs);
+    return true;
+  }
+
+  // Tier 4.6: goals
+  if (command === 'goal' || command === 'goals' || command.startsWith('goal ') || command.startsWith('goals ')) {
+    const original = input.trim();
+    let goalArgs = '';
+    if (command.startsWith('goal '))       goalArgs = original.slice(5);
+    else if (command.startsWith('goals ')) goalArgs = original.slice(6);
+    handleGoals(socket, player, goalArgs);
     return true;
   }
 
@@ -14881,6 +15149,9 @@ function handleRemort(socket, player, args) {
   if (!player.permStatBonuses) player.permStatBonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0 };
   player.permStatBonuses[stat] = (player.permStatBonuses[stat] || 0) + 1;
 
+  // Tier 4.6: remort goal hook
+  goalOnRemort(player, socket);
+
   // Unequip
   if (player.equipped) {
     const slots = ['weapon', 'armor', 'shield', 'head', 'neck', 'hands', 'feet', 'finger'];
@@ -16472,6 +16743,13 @@ server.listen(PORT, '0.0.0.0', () => {
   auctionState = auctions.loadState();
   console.log(`Loaded ${auctionState.active.length} active auction(s), ${auctionState.pending.length} pending claim(s)`);
   setInterval(runAuctionReaper, AUCTION_REAPER_INTERVAL_MS);
+
+  // Tier 4.6: load goals definitions
+  const goalsLoad = goals.loadDefinitions();
+  console.log(`Loaded ${goalsLoad.count} goal definition(s)`);
+  if (goalsLoad.errors && goalsLoad.errors.length) {
+    for (const e of goalsLoad.errors) console.warn(`goal definition error: ${e}`);
+  }
 
   // Start the Wandering Healer NPC
   startHealerWandering();
