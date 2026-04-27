@@ -296,5 +296,29 @@
       { "id": "perform_swap", "type": "custom", "targetId": "first_swap_completed", "count": 1, "description": "Perform your first persona swap at any Sync Terminal" }
     ],
     "rewards": { "xp": 750, "questPoints": 50 }
+  },
+  "orientation_module": {
+    "id": "orientation_module",
+    "title": "Orientation Module",
+    "giver": "concourse_greeter",
+    "description": "The Greeter hands you a small bound notebook and a stylus and explains that on your first Logician shift, you should walk the Refinement Floor 1 perimeter so that the floor recognises you. Visit the Antechamber, the Quota Board, and the North Stair to complete orientation.",
+    "hint": "From the Concourse east-wing junction (room_308), the eastern panel now opens. Walk to room_311, room_314, and room_316 in any order.",
+    "objectives": [
+      { "id": "visit_311", "type": "visit_room", "targetId": "room_311", "count": 1, "description": "Visit the Refinement Floor 1 Antechamber" },
+      { "id": "visit_314", "type": "visit_room", "targetId": "room_314", "count": 1, "description": "Visit the Refinement Floor 1 Quota Board" },
+      { "id": "visit_316", "type": "visit_room", "targetId": "room_316", "count": 1, "description": "Visit the Refinement Floor 1 North Stair" }
+    ],
+    "rewards": { "xp": 1500, "questPoints": 75, "items": ["refinement_stylus", "retort_socratic", "retort_socratic"] }
+  },
+  "first_refinement_quota": {
+    "id": "first_refinement_quota",
+    "title": "First Refinement Quota",
+    "giver": "concourse_greeter",
+    "description": "The Greeter explains that no Logician is fully credentialed until they have personally addressed at least three Corrupted Queries on the floor. Defeat any three Corrupted Queries on Refinement Floor 1 or 2.",
+    "hint": "Corrupted Queries spawn on the work floors (rooms 312-322). They drain your Coherence, not your HP - keep an eye on the Coherence pool while you fight.",
+    "objectives": [
+      { "id": "kill_queries", "type": "monster_kill_any", "targetIds": ["query_dangling_pointer","query_null_referent","query_recursive_loop","query_off_by_one","query_race_condition","query_cache_miss","query_segfault_phantom","query_orphaned_handle"], "count": 3, "description": "Defeat any 3 Corrupted Queries on the Refinement Floors" }
+    ],
+    "rewards": { "xp": 2500, "questPoints": 100, "items": ["retort_modus_ponens", "retort_reductio"] }
   }
 }

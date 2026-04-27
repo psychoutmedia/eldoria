@@ -240,7 +240,7 @@ function legacyPlayer() {
   check('REALM_GATES has room_301 entry', /room_301:[\s\S]{0,200}requiresQuest: 'paging_oncall'/.test(src));
   check('isRealmGateOpen honors requiresQuest', /isRealmGateOpen[\s\S]{0,400}requiresQuest[\s\S]{0,200}questManager\.listCompleted/.test(src));
   check('handleSwap requires sync terminal room', /handleSwap[\s\S]{0,400}isSyncTerminal/.test(src));
-  check('handleSwap blocks if first_swap quest not complete', /handleSwap[\s\S]{0,800}first_swap/.test(src));
+  check('handleSwap blocks if first_swap quest not complete', /handleSwap[\s\S]{0,1500}first_swap/.test(src));
 }
 
 // === Summary ===

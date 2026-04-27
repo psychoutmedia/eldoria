@@ -1,5 +1,25 @@
 {
   "weapons": {
+    "refinement_stylus": {
+      "name": "Refinement Stylus",
+      "type": "weapon",
+      "levelReq": 25,
+      "damageBonus": 28,
+      "damageType": "data",
+      "value": 220,
+      "personaTag": "logic",
+      "description": "A graphite-and-titanium stylus issued to certified Logicians. Used in Logic-State to physically prod a Corrupted Query into legibility. The casing carries a small Saint-Reed Institute pin."
+    },
+    "refinement_chalk": {
+      "name": "Refinement Chalk Block",
+      "type": "weapon",
+      "levelReq": 27,
+      "damageBonus": 34,
+      "damageType": "data",
+      "value": 320,
+      "personaTag": "logic",
+      "description": "A blocky stick of institutional chalk, dense as compressed argument. Two-handed by reputation but wieldable solo. Each strike leaves a small line of dust on the room's reasoning."
+    },
     "rusty_dagger": {
       "name": "Rusty Dagger",
       "type": "weapon",
@@ -586,6 +606,48 @@
     }
   },
   "consumables": {
+    "retort_socratic": {
+      "name": "Socratic Retort",
+      "type": "consumable",
+      "coherenceRestore": 25,
+      "value": 30,
+      "description": "A small folded card preprinted with a single, irritating, well-aimed question. Restores 25 Coherence in Logic-State combat."
+    },
+    "retort_reductio": {
+      "name": "Reductio Retort",
+      "type": "consumable",
+      "coherenceRestore": 35,
+      "value": 45,
+      "description": "A logical reductio printed on heavy stock. The conclusion it implies is so embarrassing that the holder feels visibly more lucid. Restores 35 Coherence."
+    },
+    "retort_modus_ponens": {
+      "name": "Modus Ponens Retort",
+      "type": "consumable",
+      "coherenceRestore": 30,
+      "value": 38,
+      "description": "A short, perfect chain of inference. P. P implies Q. Therefore Q. The Q is you, briefly, restored. Restores 30 Coherence."
+    },
+    "retort_ad_absurdum": {
+      "name": "Ad Absurdum Retort",
+      "type": "consumable",
+      "coherenceRestore": 40,
+      "value": 55,
+      "description": "An accelerant for any conversation that has already gone wrong. Drops you on the other side of the wrongness with a slightly smaller deficit. Restores 40 Coherence."
+    },
+    "retort_occams_razor": {
+      "name": "Occam's Razor Retort",
+      "type": "consumable",
+      "coherenceRestore": 45,
+      "value": 70,
+      "description": "A small, clean blade that simplifies. Whatever you were holding before will, briefly, be the simplest thing in the room. Restores 45 Coherence."
+    },
+    "retort_godel_strike": {
+      "name": "Godel Strike Retort",
+      "type": "consumable",
+      "coherenceRestore": 60,
+      "value": 110,
+      "description": "An incompleteness theorem in fountain-pen ink. The retort makes the room briefly admit that it cannot prove all its own properties. The room concedes. The Logician recovers. Restores 60 Coherence."
+    },
     "minor_healing_potion": {
       "name": "Minor Healing Potion",
       "type": "consumable",

@@ -164,6 +164,21 @@
       "roomRange": ["room_304", "room_305", "room_306", "room_307", "room_308", "room_310"],
       "spawnChance": 0.30,
       "monsters": ["concourse_orderly", "procedure_screener"]
+    },
+    "Refinement Floor 1": {
+      "roomRange": ["room_312", "room_313", "room_314", "room_315", "room_316"],
+      "spawnChance": 0.55,
+      "monsters": ["query_dangling_pointer", "query_null_referent", "query_off_by_one", "query_cache_miss"]
+    },
+    "Refinement Floor 2": {
+      "roomRange": ["room_317", "room_318", "room_319", "room_320", "room_321", "room_322"],
+      "spawnChance": 0.65,
+      "monsters": ["query_recursive_loop", "query_race_condition", "query_segfault_phantom", "query_orphaned_handle"]
+    },
+    "Optics and Drafting": {
+      "roomRange": ["room_326", "room_327", "room_328", "room_329", "room_330"],
+      "spawnChance": 0.40,
+      "monsters": ["query_off_by_one", "query_orphaned_handle"]
     }
   },
   "templates": {
@@ -1098,6 +1113,94 @@
       "description": "A clipboard-bearer in branded scrubs, expression assembled from a kit. They check things against your file. Whatever the file is.",
       "movementVerbs": { "depart": "moves on, clipboard in hand", "arrive": "arrives, ticks a box" },
       "presenceVerb": "ticks a box, then another"
+    },
+    "query_dangling_pointer": {
+      "name": "Dangling Pointer",
+      "type": "Aggressive",
+      "level": 30,
+      "hp": 240,
+      "str": 35,
+      "combatType": "coherence",
+      "description": "An accusing finger of pale light. It points somewhere it should not be allowed to point - the room expects you to look there and you cannot, quite, do it.",
+      "movementVerbs": { "depart": "drifts to the next address", "arrive": "phases in pointing at nothing" },
+      "presenceVerb": "points sharply at the empty air"
+    },
+    "query_null_referent": {
+      "name": "Null Referent",
+      "type": "Aggressive",
+      "level": 30,
+      "hp": 220,
+      "str": 32,
+      "combatType": "coherence",
+      "description": "A void-shaped placeholder that insists on being addressed by name. It does not have one. That is the whole problem.",
+      "movementVerbs": { "depart": "is no longer here", "arrive": "asserts itself, namelessly" },
+      "presenceVerb": "demands to be addressed"
+    },
+    "query_recursive_loop": {
+      "name": "Recursive Loop",
+      "type": "Aggressive",
+      "level": 32,
+      "hp": 320,
+      "str": 38,
+      "combatType": "coherence",
+      "description": "A figure that re-enters the room every time you look away. It is the same figure each time. It is also a different one. It is sometimes wearing your shoes.",
+      "movementVerbs": { "depart": "exits, then re-enters, then exits", "arrive": "arrives, arrives, arrives" },
+      "presenceVerb": "loops in and out of itself"
+    },
+    "query_off_by_one": {
+      "name": "Off-by-One",
+      "type": "Aggressive",
+      "level": 31,
+      "hp": 260,
+      "str": 36,
+      "combatType": "coherence",
+      "description": "A tally mark that always counts one more or one fewer than there are. It is currently insisting on a number you cannot accept.",
+      "movementVerbs": { "depart": "miscounts itself away", "arrive": "miscounts itself in" },
+      "presenceVerb": "miscounts the room aloud"
+    },
+    "query_race_condition": {
+      "name": "Race Condition",
+      "type": "Aggressive",
+      "level": 33,
+      "hp": 280,
+      "str": 41,
+      "combatType": "coherence",
+      "description": "Two of itself, identical, doing the same thing in different orders. Whichever order you pay attention to first will be wrong.",
+      "movementVerbs": { "depart": "wins its own race away", "arrive": "arrives twice, simultaneously" },
+      "presenceVerb": "races itself, vibrating with disagreement"
+    },
+    "query_cache_miss": {
+      "name": "Cache Miss",
+      "type": "Aggressive",
+      "level": 30,
+      "hp": 230,
+      "str": 33,
+      "combatType": "coherence",
+      "description": "A memory of a thing you should know perfectly well, refusing to load. The shape it has now is the shape of the unloaded thing.",
+      "movementVerbs": { "depart": "evicts itself", "arrive": "demands a fresh fetch" },
+      "presenceVerb": "stalls, waiting for memory"
+    },
+    "query_segfault_phantom": {
+      "name": "Segfault Phantom",
+      "type": "Aggressive",
+      "level": 34,
+      "hp": 360,
+      "str": 44,
+      "combatType": "coherence",
+      "description": "A figure made of unauthorised access. It is reaching into a piece of you that you did not own. Politely, but persistently.",
+      "movementVerbs": { "depart": "core-dumps elsewhere", "arrive": "violates an address" },
+      "presenceVerb": "reaches into permissions you did not grant"
+    },
+    "query_orphaned_handle": {
+      "name": "Orphaned Handle",
+      "type": "Aggressive",
+      "level": 32,
+      "hp": 300,
+      "str": 39,
+      "combatType": "coherence",
+      "description": "A latch in the air looking for the door it was attached to. It is, alas, attached to you now.",
+      "movementVerbs": { "depart": "drifts toward a more familiar door", "arrive": "latches onto your sleeve" },
+      "presenceVerb": "swings, latched onto nothing"
     }
   },
   "bosses": {
@@ -1288,6 +1391,19 @@
       "damageType": "data",
       "resists": { "harmonic": 75, "data": -25 },
       "loot": { "item": "SYSADMIN.EXE's Root Key", "type": "Legendary" }
+    },
+    "floor_supervisor_alterio": {
+      "name": "Floor Supervisor Alterio",
+      "type": "Boss",
+      "level": 35,
+      "hp": 2200,
+      "str": 75,
+      "combatType": "coherence",
+      "description": "The Refinement Floor 2 Supervisor: a tall, calm figure in a soft-grey suit, wearing the institute's ALTERIO nameplate without irony. Their job is to ensure quotas are met. Yours, it appears, is to challenge that.",
+      "fixedRoom": "room_320",
+      "isWandering": false,
+      "presenceVerb": "stands very still, watching",
+      "loot": { "item": "Supervisor's Spare Key", "type": "Treasure" }
     }
   }
 }

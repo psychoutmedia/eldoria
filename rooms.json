@@ -2386,9 +2386,9 @@
   "room_308": {
     "name": "Theta Concourse - East Wing Junction",
     "zone": "Theta Arrivals",
-    "shortDescription": "A junction where three corridors meet. Each is unmarked.",
-    "longDescription": "Three corridors meet here under another of the institution's discreet GIA SAINT-REED portraits. None of the corridors are signed. By next phase, the eastern corridor will lead toward the Refinement Floors; the northern toward the staff dormitory shuttle; the western back the way you came. For now they are all closed by polite sliding panels of frosted glass.",
-    "exits": { "south": "room_307", "west": "room_309" }
+    "shortDescription": "A junction where three corridors meet. The eastern panel has slid open.",
+    "longDescription": "Three corridors meet here under another of the institution's discreet GIA SAINT-REED portraits. The eastern panel - frosted glass marked REFINEMENT FLOORS - is now open and warm with a soft, working light. The northern and western panels remain closed for now.",
+    "exits": { "south": "room_307", "west": "room_309", "east": "room_311" }
   },
   "room_309": {
     "name": "Theta Concourse - Sync Annex",
@@ -2404,6 +2404,164 @@
     "shortDescription": "A bench, a polite greeter, and a tray of paper cups.",
     "longDescription": "A young person in pale grey is seated on a bench with two trays beside them: one of paper cups of water, one of small folded paper handkerchiefs. They are clearly the Concourse Greeter, by the lanyard, and they are clearly tasked with reassuring people who have just walked through the Procedure Theatre. They watch you arrive with the practised, steady, slightly sad gaze of someone who has practised steady, slightly sad gazes professionally for some time.",
     "exits": { "south": "room_309" }
+  },
+  "room_311": {
+    "name": "Refinement Floor 1 - Antechamber",
+    "zone": "Refinement Floor 1",
+    "shortDescription": "A pale corridor of polished stone leading toward the work floors. A Sync Terminal hums beside the door.",
+    "longDescription": "The corridor smells of fresh paint and very quiet anxiety. The wall on your left displays an institutional poster: A LOGICIAN AT REST IS A LOGICIAN AT WORK. A small chrome plinth marked SYNC TERMINAL stands by the door back to the Concourse. The next door, eastward, is labelled FLOOR 1 - INTAKE.",
+    "exits": { "west": "room_308", "north": "room_312", "east": "room_323" },
+    "isSyncTerminal": true,
+    "isLogicState": true
+  },
+  "room_312": {
+    "name": "Refinement Floor 1 - Intake",
+    "zone": "Refinement Floor 1",
+    "shortDescription": "A long room of pale workstations. Each is identical. None are occupied.",
+    "longDescription": "Workstations stretch in two even rows toward a horizon that may or may not be a wall. Each station carries a refinement console (dark, waiting) and an institutional tablet bearing the day's quota. The lighting is the kind of fluorescent that feels like permission. Somewhere in the air-conditioning hum, a Corrupted Query may be drifting.",
+    "exits": { "south": "room_311", "north": "room_313" },
+    "isLogicState": true
+  },
+  "room_313": {
+    "name": "Refinement Floor 1 - Console Cluster A",
+    "zone": "Refinement Floor 1",
+    "shortDescription": "A cluster of eight refinement consoles arranged in a polite octagon.",
+    "longDescription": "Eight consoles face inward. The screens cycle through patterns of unfamiliar numbers, sometimes pausing as if waiting for a Logician to recognise them. The carpet under your feet is pale grey, brand-new, and faintly tacky from the warm liquid the cleaners use. Above each console is the Saint-Reed Institute logo, embossed into the ceiling tile.",
+    "exits": { "south": "room_312", "north": "room_314", "east": "room_326" },
+    "isLogicState": true
+  },
+  "room_314": {
+    "name": "Refinement Floor 1 - Quota Board",
+    "zone": "Refinement Floor 1",
+    "shortDescription": "A wall-sized monitor displays the floor's day-shift quota in a tasteful infographic.",
+    "longDescription": "The monitor displays a chart that looks decorative but isn't. Today's quota for FLOOR 1 is written in a font called CONFIDENCE: a number that is not large but is conspicuously not small. Beside the chart, a row of laminated cards each headed by a Saint-Reed Institute slogan: REFINEMENT IS A KINDNESS, MISSORTED SHARDS DO NOT REMEMBER, THE WOMAN IN THE CHART IS YOU IF YOU WANT HER TO BE.",
+    "exits": { "south": "room_313", "north": "room_315" },
+    "isLogicState": true
+  },
+  "room_315": {
+    "name": "Refinement Floor 1 - Console Cluster B",
+    "zone": "Refinement Floor 1",
+    "shortDescription": "A second cluster of consoles, slightly older, slightly louder.",
+    "longDescription": "Cluster B is functionally identical to Cluster A but is rumoured (in pamphlets you cannot remember reading) to be where new Logicians are tested. The chairs are subtly less comfortable. The displays cycle slightly faster. A janitor's bucket has been left in the corner; the water in it ripples on a frequency that doesn't quite match the room's hum.",
+    "exits": { "south": "room_314", "north": "room_316" },
+    "isLogicState": true
+  },
+  "room_316": {
+    "name": "Refinement Floor 1 - North Stair",
+    "zone": "Refinement Floor 1",
+    "shortDescription": "A sealed stairwell leading up to Floor 2. The door is propped open with a coffee cup.",
+    "longDescription": "The stair is poured concrete painted a calming taupe, lit by an emergency strip along each step. A coffee cup props the upper door open: the cup is empty but the smell is recent. A clipboard hangs by the rail with one line filled in: 'NO COMPLAINTS THIS QUARTER, MOSTLY.'",
+    "exits": { "south": "room_315", "up": "room_317" },
+    "isLogicState": true
+  },
+  "room_317": {
+    "name": "Refinement Floor 2 - Inner Hall",
+    "zone": "Refinement Floor 2",
+    "shortDescription": "A more austere version of Floor 1. The chairs face away from each other.",
+    "longDescription": "Floor 2 is laid out as the negative of Floor 1: the same workstations, but reversed, the chairs angled to face the walls instead of one another. The ceiling tiles are the same brand of acoustic foam. A row of supervisors' offices line the eastern wall, their doors all identical, their nameplates all reading FLOOR SUPERVISOR.",
+    "exits": { "down": "room_316", "north": "room_318" },
+    "isLogicState": true
+  },
+  "room_318": {
+    "name": "Refinement Floor 2 - The Long Hall",
+    "zone": "Refinement Floor 2",
+    "shortDescription": "A hallway whose end you cannot quite see, even with the lights on.",
+    "longDescription": "The Long Hall is exactly as long as institutional architecture allows a hall to be without seeming threatening. The ceiling lights are warm. The carpet is forgiving. Periodic plaques on the wall describe the Founder's various achievements: GIA SAINT-REED INTRODUCES THE TEMPER GRID; GIA SAINT-REED OPTIMISES THE COFFEE; GIA SAINT-REED SOLVES THE BIRD PROBLEM.",
+    "exits": { "south": "room_317", "north": "room_319" },
+    "isLogicState": true
+  },
+  "room_319": {
+    "name": "Refinement Floor 2 - Console Cluster C",
+    "zone": "Refinement Floor 2",
+    "shortDescription": "A cluster identical to those on Floor 1, but everyone here is wearing softer shoes.",
+    "longDescription": "Cluster C is rated for senior Logicians and the carpet is correspondingly thicker. The displays have a slightly higher refresh rate. Rubber footrests sigh under the chairs as if they too are decompressing. There is no clock anywhere.",
+    "exits": { "south": "room_318", "north": "room_320" },
+    "isLogicState": true
+  },
+  "room_320": {
+    "name": "Refinement Floor 2 - Supervisor's Office",
+    "zone": "Refinement Floor 2",
+    "shortDescription": "A small, immaculately clean office. The supervisor is, allegedly, somewhere.",
+    "longDescription": "The Floor 2 Supervisor's office is tidy in the way that suggests it has been very recently tidied. A half-eaten apple sits on the blotter. A nameplate on the desk reads ALTERIO. Through the slats of the venetian blind you glimpse the consoles outside, and the patient empty backs of the senior Logicians, and somewhere up the hall a pacing silhouette that may or may not be the Supervisor on a productive afternoon.",
+    "exits": { "south": "room_319", "north": "room_321" },
+    "isLogicState": true
+  },
+  "room_321": {
+    "name": "Refinement Floor 2 - Quiet Aisle",
+    "zone": "Refinement Floor 2",
+    "shortDescription": "A line of empty workstations under hood-style downlights.",
+    "longDescription": "The Quiet Aisle is what passes for solemnity in the Saint-Reed Institute: the lights are dimmed an extra ten percent, the carpet absorbs sound noticeably better, the keyboard clatter from the rest of the floor reaches you as if through cotton. Logicians sometimes use the Quiet Aisle when they need to sort something difficult. Sometimes they don't come back.",
+    "exits": { "south": "room_320", "north": "room_322" },
+    "isLogicState": true
+  },
+  "room_322": {
+    "name": "Refinement Floor 2 - Vault Antechamber",
+    "zone": "Refinement Floor 2",
+    "shortDescription": "A reinforced doorway, currently locked, leading to the Macrodata Vault.",
+    "longDescription": "The Macrodata Vault door is a slab of brushed steel set into a wall of older, paler concrete. A reader plate beside the handle is dark. A small placard reads: 'VAULT ACCESS BY APPOINTMENT.' (You will be granted access in a later phase of your time here. Please do not test the door with your shoulder.)",
+    "exits": { "south": "room_321" },
+    "isLogicState": true
+  },
+  "room_323": {
+    "name": "Break Room - Common",
+    "zone": "Break Room",
+    "shortDescription": "A break room with mismatched chairs and a kettle that whistles its own opinion.",
+    "longDescription": "The Break Room is the only room on the Refinement Floors that admits to being slightly worn. The chairs do not match. The kettle whistles when it is upset. A poster on the noticeboard reminds you: BREAK ROOMS ARE FOR BREAKS - PLEASE DO NOT BRING WORK INSIDE. Logicians go here to do specifically nothing for thirty minutes at a time, and then return to their consoles fractionally less uneasy than before.",
+    "exits": { "west": "room_311", "north": "room_324" }
+  },
+  "room_324": {
+    "name": "Break Room - Vending",
+    "zone": "Break Room",
+    "shortDescription": "A wall of vending machines. Most of the items inside have your name on them.",
+    "longDescription": "Six vending machines occupy this wall, dispensing snack packs, neutral-flavoured drinks, and bound notebooks. A close inspection shows that some of the wrappers carry your initials, hand-written by what is clearly a different hand each time. The machine hums. The hand presumably moved on. The food is, to be clear, completely safe to eat.",
+    "exits": { "south": "room_323", "north": "room_325" }
+  },
+  "room_325": {
+    "name": "Break Room - Quiet Corner",
+    "zone": "Break Room",
+    "shortDescription": "A small alcove with one armchair and one window. The view is disputed.",
+    "longDescription": "The Quiet Corner is for serious sitting. There is one armchair, deep, soft, well-loved. There is one window. The window's view changes very slowly: sometimes it shows the township far below, sometimes a hallway you have never seen, sometimes a hallway you absolutely have. There is no schedule. The armchair was designed to encourage you not to mind.",
+    "exits": { "south": "room_324" }
+  },
+  "room_326": {
+    "name": "Optics & Drafting - Foyer",
+    "zone": "Optics and Drafting",
+    "shortDescription": "A foyer with smudged drafting tables and a chalk smell that won't quite leave.",
+    "longDescription": "Optics & Drafting are the in-house design wing - they make the slogans, the posters, the in-flight magazines for the Concourse. The foyer is dimmer than the Refinement Floors and smells faintly of pencil shavings, despite there being no visible pencils. Drafting tables along the walls hold half-finished posters in stages of approval, all variations on the same theme: a portrait of GIA SAINT-REED smiling at slightly different angles.",
+    "exits": { "west": "room_313", "north": "room_327" },
+    "isLogicState": true
+  },
+  "room_327": {
+    "name": "Optics & Drafting - Layout Room",
+    "zone": "Optics and Drafting",
+    "shortDescription": "Long tables, fluorescent lamps, and a faint smell of solvent.",
+    "longDescription": "The layout room is where institutional materials are pasted up by hand: a discipline most companies abandoned decades ago, but here the Founder is said to prefer the texture. A half-finished broadsheet reads, beneath your hand: WELCOME, NEW LOGICIAN. WE WANT YOU TO FEEL RIGHT AS RAIN.",
+    "exits": { "south": "room_326", "north": "room_328" },
+    "isLogicState": true
+  },
+  "room_328": {
+    "name": "Optics & Drafting - Light Box",
+    "zone": "Optics and Drafting",
+    "shortDescription": "A room dominated by a flat illuminated table the size of a coffin.",
+    "longDescription": "The light-box is a slab of milk-glass underlit by a steady cool fluorescent. Logicians with drafting privileges sometimes lay personal sketches on it to verify the sketches' alignment. There are scuff marks on the floor in patterns that, if you stand at the door and tilt your head, look unsettlingly like footsteps practising a route.",
+    "exits": { "south": "room_327", "north": "room_329" },
+    "isLogicState": true
+  },
+  "room_329": {
+    "name": "Optics & Drafting - Closed Stack",
+    "zone": "Optics and Drafting",
+    "shortDescription": "A row of locked filing cabinets. One drawer is, you note, not locked.",
+    "longDescription": "Closed Stack is where Optics & Drafting filed their archives and then forgot which key opened which lock. Most cabinets remain shut. One drawer in the middle of the third cabinet is ajar by the width of a fingernail. The label on the drawer reads, in fading marker, MISCELLANEOUS WALL TREATMENTS - FOR LATER.",
+    "exits": { "south": "room_328", "north": "room_330" },
+    "isLogicState": true
+  },
+  "room_330": {
+    "name": "Optics & Drafting - The Editor's Desk",
+    "zone": "Optics and Drafting",
+    "shortDescription": "A small office at the end of the hall. The Editor is not here.",
+    "longDescription": "The Editor's Desk holds a single typewriter, a single pencil, and a single coffee ring exactly the diameter of an institutional mug. Nothing on the desk is dated. The Editor is presumably out, possibly forever. A lamp hums steadily, lighting nothing in particular.",
+    "exits": { "south": "room_329" },
+    "isLogicState": true
   },
   "room_999": {
     "name": "Nomagio's Office",

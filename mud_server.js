@@ -2498,6 +2498,22 @@ const BOSS_SIGNATURES = {
         broadcastToRoom(player.currentRoom, colorize("SYSADMIN.EXE pages the on-call rotation - the player's spells may not respond!", 'yellow'), socket);
       }
     }
+  },
+
+  // Tier 6.2: Floor Supervisor Alterio. At 50% Coherence, locks `swap`
+  // for 60 seconds with a stern message ("you cannot leave during a
+  // quota period"). The lock is realised via player.effects.quota_lock,
+  // checked by handleSwap.
+  floor_supervisor_alterio: {
+    onPlayerHit: (socket, player, monster) => {
+      if (!monster.bossState.quotaLocked && monster.hp <= monster.maxHp * 0.5 && monster.hp > 0) {
+        monster.bossState.quotaLocked = true;
+        player.effects = player.effects || {};
+        player.effects['quota_lock'] = { expiresAt: Date.now() + 60000 };
+        socket.write(colorize("\r\nALTERIO straightens their nameplate. 'You cannot leave during a quota period.' Sync access locked for 60s.\r\n", 'brightRed'));
+        broadcastToRoom(player.currentRoom, colorize("Floor Supervisor Alterio locks the Sync Terminals against the room.", 'yellow'), socket);
+      }
+    }
   }
 };
 
@@ -3581,6 +3597,44 @@ function monsterAttackPlayer(socket, player, monster) {
       delete player.effects['shield'];
       socket.write(colorize('Your magical shield shatters!\r\n', 'yellow'));
     }
+  }
+
+  // Tier 6.2: Logic-State combat drains Coherence, not HP, when the
+  // monster is a Corrupted Query (combatType=='coherence') and the
+  // player is the Logician. At Coherence 0, eject to Life-State.
+  if (monster.combatType === 'coherence'
+      && syncState.getActivePersona(player) === 'logic'
+      && player.personas && player.personas.logic) {
+    const before = player.personas.logic.coherence || 0;
+    const after  = Math.max(0, before - totalDamage);
+    player.personas.logic.coherence = after;
+    player.stats.totalDamageTaken += totalDamage;
+    const coherenceMsg = colorize(
+      `${monster.name} fractures your reasoning for ${totalDamage} coherence damage. (Coherence: ${after}/${player.personas.logic.maxCoherence || 100})`,
+      'brightMagenta'
+    );
+    socket.write(`${coherenceMsg}\r\n`);
+    if (after <= 0) {
+      socket.write(colorize('\r\n=== YOUR COHERENCE COLLAPSES ===\r\n', 'brightRed'));
+      socket.write(colorize('Your Logician self loses internal consistency. The room rejects you.\r\n', 'red'));
+      // Force-end any active monster combat before ejecting (mirror of player death path)
+      if (typeof cleanupMonsterCombat === 'function' && player.monsterCombatId) {
+        try { cleanupMonsterCombat(player.monsterCombatId); } catch (e) {}
+      }
+      player.inCombat = false;
+      player.combatTarget = null;
+      const ej = syncState.ejectToLifeState(player);
+      if (ej && ej.ok) {
+        socket.write(colorize('You wake on the Citizen side, ears ringing. Neural Hangover applied (5 minutes).\r\n', 'yellow'));
+        // Show new room
+        if (typeof showRoom === 'function') showRoom(socket, player);
+        // Reset coherence to full so the next Logician shift has a fresh pool
+        if (player.personas && player.personas.logic) {
+          player.personas.logic.coherence = player.personas.logic.maxCoherence || 100;
+        }
+      }
+    }
+    return false; // monster did not "kill" the player; coherence loss is its own thing
   }
 
   player.currentHP -= totalDamage;
@@ -6000,9 +6054,26 @@ function handleUse(socket, player, itemName) {
   // Apply healing
   const healAmount = item.healAmount || 0;
   const manaAmount = item.manaAmount || 0;
+  const coherenceAmount = item.coherenceRestore || 0;
 
   let healMessage = '';
   let manaMessage = '';
+  let coherenceMessage = '';
+
+  // Tier 6.2: Logical Retorts restore Coherence in Logic-State.
+  // Outside Logic-State they're inert (the message reflects that).
+  if (coherenceAmount > 0) {
+    if (syncState.getActivePersona(player) === 'logic' && player.personas && player.personas.logic) {
+      const before = player.personas.logic.coherence || 0;
+      const cap = player.personas.logic.maxCoherence || 100;
+      const after = Math.min(cap, before + coherenceAmount);
+      player.personas.logic.coherence = after;
+      const restored = after - before;
+      coherenceMessage = colorize(`You recover ${restored} Coherence. (${after}/${cap})\r\n`, 'brightMagenta');
+    } else {
+      coherenceMessage = colorize('The Retort dissolves on your tongue without effect; you are not currently in Logic-State.\r\n', 'gray');
+    }
+  }
 
   if (healAmount > 0) {
     const oldHP = player.currentHP;
@@ -6029,6 +6100,7 @@ function handleUse(socket, player, itemName) {
   socket.write(colorize(`You use ${item.name}.\r\n`, 'green'));
   if (healMessage) socket.write(healMessage);
   if (manaMessage) socket.write(manaMessage);
+  if (coherenceMessage) socket.write(coherenceMessage);
 
   // Tier 4.4: GMCP vitals after consumable applied
   gmcp.emitCharVitals(socket, player);
@@ -6042,7 +6114,7 @@ function handleUse(socket, player, itemName) {
   }
 
   // If no other effect fired, generic message
-  if (!healMessage && !manaMessage && item.id !== 'static_tea') {
+  if (!healMessage && !manaMessage && !coherenceMessage && item.id !== 'static_tea') {
     socket.write("The item seems to have no effect.\r\n");
   }
 }
@@ -7656,6 +7728,13 @@ function handleSwap(socket, player) {
   const room = rooms[player.currentRoom];
   if (!syncState.isSyncTerminal(room)) {
     socket.write(colorize('There is no Sync Terminal here. Find a Severance Layer terminal to swap personas.\r\n', 'red'));
+    return;
+  }
+  // Tier 6.2: Floor Supervisor Alterio's quota_lock effect prevents
+  // mid-shift swap, even at a Sync Terminal.
+  if (player.effects && player.effects.quota_lock && player.effects.quota_lock.expiresAt > Date.now()) {
+    const remaining = Math.ceil((player.effects.quota_lock.expiresAt - Date.now()) / 1000);
+    socket.write(colorize(`Sync access denied: a quota period is in effect. ${remaining}s remaining.\r\n`, 'red'));
     return;
   }
   // The player must have completed the Partition Procedure before the
