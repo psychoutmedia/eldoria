@@ -159,6 +159,11 @@
       "roomRange": ["room_291", "room_292", "room_293", "room_294", "room_295", "room_296", "room_297", "room_298", "room_299", "room_300"],
       "spawnChance": 0.80,
       "monsters": ["cron_daemon", "oncall_wight", "memory_leak_wraith", "security_subroutine"]
+    },
+    "Theta Arrivals": {
+      "roomRange": ["room_304", "room_305", "room_306", "room_307", "room_308", "room_310"],
+      "spawnChance": 0.30,
+      "monsters": ["concourse_orderly", "procedure_screener"]
     }
   },
   "templates": {
@@ -1073,6 +1078,26 @@
       "presenceVerb": "groans, paging itself",
       "resists": { "harmonic": 75, "data": -25 },
       "loot": { "item": "System Log Page", "type": "Treasure" }
+    },
+    "concourse_orderly": {
+      "name": "Concourse Orderly",
+      "type": "Passive",
+      "level": 28,
+      "hp": 320,
+      "str": 38,
+      "description": "An attendant in pale grey coveralls who moves with the calm authority of someone whose job description has never once been written down. They are not currently angry, but the manual says they can be.",
+      "movementVerbs": { "depart": "drifts on past on rounds", "arrive": "arrives, pushing a cart of brochures" },
+      "presenceVerb": "stands quietly, watching"
+    },
+    "procedure_screener": {
+      "name": "Procedure Screener",
+      "type": "Passive",
+      "level": 29,
+      "hp": 360,
+      "str": 42,
+      "description": "A clipboard-bearer in branded scrubs, expression assembled from a kit. They check things against your file. Whatever the file is.",
+      "movementVerbs": { "depart": "moves on, clipboard in hand", "arrive": "arrives, ticks a box" },
+      "presenceVerb": "ticks a box, then another"
     }
   },
   "bosses": {

@@ -274,5 +274,27 @@
       }
     ],
     "rewards": { "gold": 5000, "xp": 8000, "relationship": 50, "suffix": "the Arbiter", "questPoints": 250 }
+  },
+  "partition_intake": {
+    "id": "partition_intake",
+    "title": "Partition Intake",
+    "giver": "dr_caldera",
+    "description": "Dr. Caldera has scheduled you for the Partition Procedure. The Saint-Reed Institute requires every Severance Layer Theta arrival to be split into two cooperating personas - a Logician for shift-side work and a Citizen for the off-hours - before they may proceed past the Recovery Suite.",
+    "hint": "Walk south from the Recovery Suite to the Procedure Theatre and back. Caldera will mark intake complete when you accept the assignment.",
+    "objectives": [
+      { "id": "visit_clinic", "type": "visit_room", "targetId": "room_303", "count": 1, "description": "Report to Dr. Caldera in the Recovery Suite" }
+    ],
+    "rewards": { "xp": 500, "questPoints": 25 }
+  },
+  "first_swap": {
+    "id": "first_swap",
+    "title": "First Swap",
+    "giver": "concourse_greeter",
+    "description": "The Concourse Greeter explains that you must use a Sync Terminal to swap personas at least once before the Logician persona is fully activated. The plinth at the Sync Annex (room_309) is the closest one, but any of 301, 303 or 309 will do. Type `swap` while standing on a terminal.",
+    "hint": "Stand at any of the Sync Terminal plinths (rooms 301, 303, 309) and type `swap`.",
+    "objectives": [
+      { "id": "perform_swap", "type": "custom", "targetId": "first_swap_completed", "count": 1, "description": "Perform your first persona swap at any Sync Terminal" }
+    ],
+    "rewards": { "xp": 750, "questPoints": 50 }
   }
 }

@@ -1,0 +1,8 @@
+{
+  "npcId": "concourse_greeter",
+  "conversationHistory": {},
+  "memory": {
+    "episodes": []
+  },
+  "relationships": {}
+}

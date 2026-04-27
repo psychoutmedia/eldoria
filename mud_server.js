@@ -13,6 +13,7 @@ const triggers = require('./world/triggers');
 const goals = require('./world/goals');
 const friends = require('./world/friends');
 const speedwalker = require('./world/speedwalker');
+const syncState = require('./world/sync_state');
 
 const PORT = parseInt(process.env.MUD_PORT, 10) || 8888;
 const START_ROOM = 'room_001';
@@ -1224,7 +1225,7 @@ function getInventoryCap(player) {
 // Create a new player object
 function createPlayer(name = null) {
   const levelData = getLevelData(1);
-  return {
+  const _p = {
     name: name || `Adventurer${Math.floor(Math.random() * 9000) + 1000}`,
     suffix: '', // Custom suffix set by admins (e.g., "the Charming")
     currentRoom: START_ROOM,
@@ -1355,6 +1356,11 @@ function createPlayer(name = null) {
     permStatBonuses: { str: 0, dex: 0, con: 0, int: 0, wis: 0 },
     unlockedZones: []
   };
+  // Tier 6.1: seed the dual-persona schema. Citizen is the default
+  // active persona; Logician is empty until the player completes the
+  // Partition Procedure quest at Severance Layer Theta.
+  syncState.initializePersonas(_p);
+  return _p;
 }
 
 // Get player's display name (includes suffix if set)
@@ -1551,6 +1557,9 @@ function isValidPlayerName(name) {
 
 // Save player data to file
 function savePlayer(player, socket = null, silent = false) {
+  // Tier 6.1: mirror live persona-fields back into the active persona block
+  // before serialising, so a crash between writes doesn't desync.
+  syncState.syncLiveToActivePersona(player);
   if (!player.isRegistered) return false;
 
   const filePath = getPlayerFilePath(player.name);
@@ -1581,6 +1590,12 @@ function savePlayer(player, socket = null, silent = false) {
     goalsClaimed: Array.isArray(player.goalsClaimed) ? player.goalsClaimed : [],
     // Tier 4.7: friends list (lowercase, ≤50)
     friends: Array.isArray(player.friends) ? player.friends : [],
+    // Tier 6.1: dual-persona schema
+    schemaVersion: player.schemaVersion || syncState.SCHEMA_VERSION,
+    activePersona: player.activePersona || 'life',
+    personas: player.personas || null,
+    pocketArtifacts: Array.isArray(player.pocketArtifacts) ? player.pocketArtifacts : [],
+    subliminalBuffs: player.subliminalBuffs || { fromLogic: {}, fromLife: {} },
     // Tier 1
     abilities: player.abilities || { str: 10, dex: 10, con: 10, int: 10, wis: 10 },
     charClass: player.charClass || null,
@@ -1766,8 +1781,30 @@ function loadPlayer(playerName) {
       clanRank: data.clanRank || null,
       remortTier: data.remortTier || 0,
       permStatBonuses: Object.assign({ str: 0, dex: 0, con: 0, int: 0, wis: 0 }, data.permStatBonuses || {}),
-      unlockedZones: Array.isArray(data.unlockedZones) ? data.unlockedZones : []
+      unlockedZones: Array.isArray(data.unlockedZones) ? data.unlockedZones : [],
+      // Tier 6.1: dual-persona schema fields hydrated from disk if present.
+      // The migrateLegacySave call below normalises old saves that don't
+      // carry these yet.
+      personas: data.personas || null,
+      activePersona: data.activePersona || 'life',
+      pocketArtifacts: Array.isArray(data.pocketArtifacts) ? data.pocketArtifacts : [],
+      subliminalBuffs: data.subliminalBuffs && typeof data.subliminalBuffs === 'object'
+        ? data.subliminalBuffs
+        : { fromLogic: {}, fromLife: {} },
+      schemaVersion: data.schemaVersion || 0
     };
+
+    // Tier 6.1: idempotent dual-persona migration. Pre-Tier-6 saves get
+    // their flat fields lifted into a Citizen (life) block + a fresh,
+    // empty Logician (logic) block. Subsequent loads are no-ops.
+    syncState.migrateLegacySave(player);
+
+    // If the active persona is logic but combat state is clean, treat
+    // it as a server-crash mid-Logician shift: snap to the Citizen's
+    // anchor room with a Neural Hangover. Idempotent.
+    if (syncState.getActivePersona(player) === 'logic' && !player.inCombat) {
+      syncState.recoverFromCrashIfNeeded(player);
+    }
 
     return player;
   } catch (err) {
@@ -7602,6 +7639,60 @@ function handleModifyRoom(socket, player, args) {
 }
 
 // ============================================
+// TIER 6.1: SYNC-STATE — SWAP COMMAND
+// ============================================
+//
+// `swap` flips the player between Logician (Logic-State, work) and
+// Citizen (Life-State, home). Legal only at flagged Sync Terminals,
+// blocked during combat, and requires the player to have completed
+// the Partition Procedure (their `personas.logic` block must exist
+// and have been "activated" via the first_swap quest).
+function handleSwap(socket, player) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  // Make sure the dual-persona schema is in place (paranoia for any
+  // pre-Tier-6 path that bypassed loadPlayer).
+  if (!player.personas) syncState.initializePersonas(player);
+
+  const room = rooms[player.currentRoom];
+  if (!syncState.isSyncTerminal(room)) {
+    socket.write(colorize('There is no Sync Terminal here. Find a Severance Layer terminal to swap personas.\r\n', 'red'));
+    return;
+  }
+  // The player must have completed the Partition Procedure before the
+  // Logician persona is "alive".  We check via the first_swap quest.
+  let unlocked = false;
+  try {
+    const completed = questManager.listCompleted(player.name) || [];
+    unlocked = completed.some(q => q && (q.questId === 'first_swap' || q.id === 'first_swap'));
+  } catch (e) {}
+  // Also allow swap if the Logician block has any prior session activity
+  // (we don't gate forever — once you've swapped once you can keep swapping).
+  if (!unlocked && player.personas && player.personas.logic && player.personas.logic.lastActiveAt) {
+    unlocked = true;
+  }
+  if (!unlocked) {
+    socket.write(colorize('Your Logician persona has not been initialised yet. Complete the Partition Procedure first.\r\n', 'red'));
+    return;
+  }
+
+  const r = syncState.swapPersona(player);
+  if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
+  // Mark the persona as having been active (used to keep swap unlocked
+  // even if questManager state is somehow lost)
+  if (player.personas && player.personas[r.to]) {
+    player.personas[r.to].lastActiveAt = Date.now();
+  }
+
+  socket.write(colorize('\r\n=== Sync Terminal Engaged ===\r\n', 'brightCyan'));
+  socket.write(colorize('Your awareness lifts, splits, settles.\r\n', 'gray'));
+  socket.write(colorize(`You are now the ${r.to === 'logic' ? 'Logician' : 'Citizen'}.\r\n\r\n`, 'brightYellow'));
+  // Show the new room
+  showRoom(socket, player);
+  // Persist immediately so a crash now doesn't desync
+  savePlayer(player, socket, true);
+}
+
+// ============================================
 // TIER 4.3: ONLINE CREATION (OLC) — REDIT
 // ============================================
 //
@@ -11815,6 +11906,12 @@ function processCommand(socket, player, input) {
     return true;
   }
 
+  // Tier 6.1: sync-state swap
+  if (command === 'swap') {
+    handleSwap(socket, player);
+    return true;
+  }
+
   // Eldoria 2.0: play [instrument] for the Shattered Symphony finale
   if (command === 'play' || command.startsWith('play ')) {
     const rest = input.trim().length > 5 ? input.trim().slice(5).trim() : '';
@@ -14596,14 +14693,28 @@ function isZoneUnlocked(player, roomId) {
 // Neo Kyoto lives on the Nomagios server farm alongside Eldoria. The shuttle
 // terminal at room_201 is the only entry point, and it is strictly staff-only
 // until the traveller has rebooted (remorted) at least once.
+//
+// Tier 6.1: Severance Layer Theta gates at room_301 and additionally requires
+// the Neo Kyoto capstone quest (`paging_oncall`) to be completed — the
+// shuttle "knows when you are ready" only after Nomagio's distress call has
+// been triggered.
 const REALM_GATES = {
-  room_201: { minRemortTier: 1, label: 'Neo Kyoto (Nomagios Transit Terminal)' }
+  room_201: { minRemortTier: 1, label: 'Neo Kyoto (Nomagios Transit Terminal)' },
+  room_301: { minRemortTier: 2, requiresQuest: 'paging_oncall', label: 'Severance Layer Theta (Shuttle Dock)' }
 };
 
 function isRealmGateOpen(player, roomId) {
   const gate = REALM_GATES[roomId];
   if (!gate) return true; // not gated
-  return (player.remortTier || 0) >= gate.minRemortTier;
+  if ((player.remortTier || 0) < gate.minRemortTier) return false;
+  if (gate.requiresQuest) {
+    // questManager.listCompleted returns [{questId, ...}] for the named player
+    let completed = [];
+    try { completed = questManager.listCompleted(player.name) || []; } catch (e) {}
+    const ok = completed.some(q => (q && (q.questId === gate.requiresQuest || q.id === gate.requiresQuest)));
+    if (!ok) return false;
+  }
+  return true;
 }
 
 // ---------- 2.1 Campaign system ----------

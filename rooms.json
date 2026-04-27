@@ -2329,8 +2329,81 @@
     "name": "SYSADMIN.EXE's Core",
     "zone": "Heat Death Datacentre",
     "shortDescription": "The oldest running process on the Nomagios server farm.",
-    "longDescription": "The room is circular, ceilinged by a cone of open rack space rising into unseen heights, floored in a slow-pulsing grid of cooled liquid conducting data. At the centre stands - or hangs, or hovers, there's no good word - SYSADMIN.EXE: an auto-scaling process that Nomagio set running a very long time ago and forgot to terminate, grown monstrous on its own uptime. It takes the shape, tonight, of a tall figure in a grey maintenance coverall, with a face that is mostly a screen and eyes that are mostly cursors. It sees you. The cursors blink. Somewhere far above, a CRON_DAEMON spawns for the hour. Another will spawn in ten minutes. The fight begins when you decide it does.",
-    "exits": { "south": "room_299" }
+    "longDescription": "The room is circular, ceilinged by a cone of open rack space rising into unseen heights, floored in a slow-pulsing grid of cooled liquid conducting data. At the centre stands - or hangs, or hovers, there's no good word - SYSADMIN.EXE: an auto-scaling process that Nomagio set running a very long time ago and forgot to terminate, grown monstrous on its own uptime. It takes the shape, tonight, of a tall figure in a grey maintenance coverall, with a face that is mostly a screen and eyes that are mostly cursors. It sees you. The cursors blink. Somewhere far above, a CRON_DAEMON spawns for the hour. Another will spawn in ten minutes. The fight begins when you decide it does. After the fight, a service door has unlocked at the far wall - a clean rectangle of pale light, a shuttle terminal blinking expectantly somewhere on the other side.",
+    "exits": { "south": "room_299", "up": "room_301" }
+  },
+  "room_301": {
+    "name": "Shuttle Dock - Severance Layer Theta",
+    "zone": "Theta Arrivals",
+    "shortDescription": "The disembarkation bay of a transit shuttle that does not exist on any map you have ever seen.",
+    "longDescription": "The shuttle decants you onto a polished concrete apron under flicker-free fluorescent lighting. Every surface is slightly too clean. A blue line painted on the floor leads north toward a glass airlock marked PARTITION CLINIC - INTAKE THIS WAY. A poster on the wall in the corporate font of an institution that has been training you to read it your whole life: THE SAINT-REED INSTITUTE FOR HUMAN POTENTIAL - WELCOMES YOU. There is no shuttle behind you anymore. A small chrome plinth bears a sign: SYNC TERMINAL. (Use `swap` here when ready.)",
+    "exits": { "down": "room_300", "north": "room_302" },
+    "isSyncTerminal": true
+  },
+  "room_302": {
+    "name": "Customs and Procedure Theatre",
+    "zone": "Theta Arrivals",
+    "shortDescription": "An airlock-cum-clinic where every visitor pays the same toll.",
+    "longDescription": "The Procedure Theatre is half hospital and half customs counter. A receiving nurse on the left checks your pulse without looking at you. On the right, an attendant logs your name into a ledger that is also a payroll system. Above the procedure chair, a brass plaque reads: 'THE PARTITION IS A KINDNESS. - G.S-R.' The chair itself is calm and ergonomic and waits with the patience of furniture that has hosted many people. The lights here are soft, sympathetic, completely without judgment.",
+    "exits": { "south": "room_301", "north": "room_303" }
+  },
+  "room_303": {
+    "name": "Recovery Suite",
+    "zone": "Theta Arrivals",
+    "shortDescription": "A pale-walled recovery room. A surgeon stands by the door.",
+    "longDescription": "You wake on a recovery couch under a blanket that smells faintly of detergent and ozone. A figure in a white coat - DR. CALDERA, by the embroidered nameplate - is reading something on a clipboard with the stillness of someone who has recited this entire scene many times. There is a window. There is a chair. There is a glass of water. Caldera looks up, sets down the clipboard, smiles a careful smile, and prepares to address you. You will, the smile suggests, feel right as rain. A small chrome plinth in the corner bears a sign: SYNC TERMINAL.",
+    "exits": { "south": "room_302", "north": "room_304" },
+    "isSyncTerminal": true
+  },
+  "room_304": {
+    "name": "Theta Concourse - Inbound",
+    "zone": "Theta Arrivals",
+    "shortDescription": "A long marble corridor. Speakers play instrumental hold music at a volume that ought to be soothing.",
+    "longDescription": "The concourse is broad, marble-floored, lined with planters of glossy artificial fronds. Speakers in the ceiling play a four-note melody on a loop, very slightly too slow. At intervals, posters of GIA SAINT-REED smile down with a serene benevolence: SHE BUILT THIS PLACE FOR YOU. The other people here move with a curiously quiet purpose, none of them making eye contact. None of them, you notice, are wearing shoes that look like yours.",
+    "exits": { "south": "room_303", "north": "room_305", "east": "room_306" }
+  },
+  "room_305": {
+    "name": "Theta Concourse - Information Kiosk",
+    "zone": "Theta Arrivals",
+    "shortDescription": "A small kiosk with brochures, branded pens, and a screen displaying current quota figures.",
+    "longDescription": "The kiosk is staffed by no one in particular, but the brochures restock themselves. They are titled THE FIRST FEW DAYS, A LOGICIAN'S PRIMER, and YOUR CITIZEN PERSONA - A FAQ. A monitor cycles through tasteful infographics about Chord Labor throughput. A sign by the kiosk reads: 'IF YOU ARE READING THIS, YOU ARE ALREADY HOME.'",
+    "exits": { "south": "room_304" }
+  },
+  "room_306": {
+    "name": "Theta Concourse - Sundries",
+    "zone": "Theta Arrivals",
+    "shortDescription": "A small commissary stocked with neutral, lightly branded objects.",
+    "longDescription": "Vending machines line one wall, dispensing trail mix and bottled water and unbranded notebooks. A clerk in pale grey coveralls reorganises a display of pens with hypnotic care. Everything is mildly pleasant and conspicuously not for sale; instead each item carries a small placard reading 'PERMITTED FOR LOGICIANS ON SHIFT.' On a notice board: 'SYNC TERMINALS ARE LOCATED AT 301, 303, 309, AND THE TOWNSHIP CLOCK TOWER.'",
+    "exits": { "west": "room_304", "north": "room_307" }
+  },
+  "room_307": {
+    "name": "Theta Concourse - Tram Stop",
+    "zone": "Theta Arrivals",
+    "shortDescription": "A small tram stop beneath a pale dome. The tram has not arrived in some time.",
+    "longDescription": "The tram stop is beneath a pale glass dome that filters the daylight into something gentler than weather. Benches in the form of polished hardwood. The schedule board has a single entry: 'TRAM TO TOWNSHIP - WHEN READY.' A line of footprints, ghosted onto the floor by the cumulative wear of waiting bodies, leads to the platform edge.",
+    "exits": { "south": "room_306", "north": "room_308" }
+  },
+  "room_308": {
+    "name": "Theta Concourse - East Wing Junction",
+    "zone": "Theta Arrivals",
+    "shortDescription": "A junction where three corridors meet. Each is unmarked.",
+    "longDescription": "Three corridors meet here under another of the institution's discreet GIA SAINT-REED portraits. None of the corridors are signed. By next phase, the eastern corridor will lead toward the Refinement Floors; the northern toward the staff dormitory shuttle; the western back the way you came. For now they are all closed by polite sliding panels of frosted glass.",
+    "exits": { "south": "room_307", "west": "room_309" }
+  },
+  "room_309": {
+    "name": "Theta Concourse - Sync Annex",
+    "zone": "Theta Arrivals",
+    "shortDescription": "A small alcove with a chrome plinth and a softly humming pillar of light.",
+    "longDescription": "The annex is no larger than a large closet, but is lit with the same flicker-free fluorescents as the rest of the layer. At its centre stands a chrome plinth marked SYNC TERMINAL, the metal warm to the touch. The pillar of light above it cycles through pale colours at a rhythm faintly resembling breathing. A small placard reads: 'TYPE `swap` WHEN READY. THIS IS A SAFE SPACE.'",
+    "exits": { "east": "room_308", "north": "room_310" },
+    "isSyncTerminal": true
+  },
+  "room_310": {
+    "name": "Theta Concourse - Greeter's Bench",
+    "zone": "Theta Arrivals",
+    "shortDescription": "A bench, a polite greeter, and a tray of paper cups.",
+    "longDescription": "A young person in pale grey is seated on a bench with two trays beside them: one of paper cups of water, one of small folded paper handkerchiefs. They are clearly the Concourse Greeter, by the lanyard, and they are clearly tasked with reassuring people who have just walked through the Procedure Theatre. They watch you arrive with the practised, steady, slightly sad gaze of someone who has practised steady, slightly sad gazes professionally for some time.",
+    "exits": { "south": "room_309" }
   },
   "room_999": {
     "name": "Nomagio's Office",

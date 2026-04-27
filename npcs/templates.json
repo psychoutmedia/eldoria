@@ -201,5 +201,45 @@
       "*smiles, distantly* Tell Thessarian I said the cycle is shorter than he thinks. Tell him to be patient. He always is, the dear."
     ],
     "questsOffered": []
+  },
+  "dr_caldera": {
+    "id": "dr_caldera",
+    "name": "Dr. Caldera",
+    "shortName": "Caldera",
+    "aliases": ["caldera", "doctor", "surgeon"],
+    "homeRoom": "room_303",
+    "wanders": false,
+    "personality": {
+      "traits": ["careful", "rehearsed", "kind in a procedural way", "never quite looks at the patient's eyes"],
+      "mood": "professionally serene",
+      "goals": "process intake. Process intake. Process intake.",
+      "backstory": "The Partition Surgeon attached to the Saint-Reed Institute's Theta clinic. Performs the Procedure many times a shift. Has not personally taken it. Refuses to clarify whether that is a perk or a requirement of the post."
+    },
+    "fallbackLines": [
+      "*sets down the clipboard, smiles a careful smile* You're awake. Good. Your vitals are well within tolerance. You will, I assure you, feel right as rain.",
+      "*offers the glass of water* Hydrate. The Procedure leaves a brief dryness. The Logician you may dream of in the next few minutes is, technically, you - just the part of you that will be working from now on. You needn't reach for them yet.",
+      "*gestures gently south* When you are ready, the Concourse is through the Procedure Theatre. Take your time. Time on the Concourse is not deducted from your shifts."
+    ],
+    "questsOffered": ["partition_intake"]
+  },
+  "concourse_greeter": {
+    "id": "concourse_greeter",
+    "name": "Concourse Greeter",
+    "shortName": "Greeter",
+    "aliases": ["greeter", "young person", "lanyard"],
+    "homeRoom": "room_310",
+    "wanders": false,
+    "personality": {
+      "traits": ["practised reassurance", "professionally sad", "knows everyone's first day looks the same", "has a paper cup of water ready"],
+      "mood": "steady",
+      "goals": "explain the Sync Terminal procedure. Hand out paper cups of water. Do not editorialise.",
+      "backstory": "An employee whose only role is to be the first person who looks directly at a new arrival. The lanyard reads GREETER. They have been doing this for an unknowable number of intakes."
+    },
+    "fallbackLines": [
+      "*holds out a paper cup of water* You're going to be fine. Most people are. Drink this slowly. Welcome to Theta.",
+      "*indicates the chrome plinth in the next alcove* That's a Sync Terminal. Type `swap` while standing on one and your awareness lifts and settles into your other persona. The first time is the most disorienting. The thousandth time is the most disorienting.",
+      "*smiles, professionally sad* If you find anything odd in your pockets that you don't remember picking up, write it down in the Pocket Artifact Journal. It's important. Don't ask me why. They never tell us why."
+    ],
+    "questsOffered": ["first_swap"]
   }
 }

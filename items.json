@@ -760,6 +760,24 @@
     }
   },
   "treasure": {
+    "partition_chip": {
+      "name": "Partition Chip",
+      "type": "treasure",
+      "value": 0,
+      "description": "A small, flat ceramic chip embedded in the back of your wrist after the Procedure. It allows the Sync Terminals to find you. Removing it is contraindicated."
+    },
+    "pocket_artifact_journal": {
+      "name": "Pocket Artifact Journal",
+      "type": "treasure",
+      "value": 5,
+      "description": "A pocket-sized notebook the Concourse Greeter handed you, bound in pale grey cloth. The first page reads: 'The other persona will leave things in your pockets. Write them down. They are speaking.'"
+    },
+    "theta_visa": {
+      "name": "Theta Visa",
+      "type": "treasure",
+      "value": 0,
+      "description": "A laminated card, your photo printed too cleanly, your name spelled correctly, the words THE SAINT-REED INSTITUTE FOR HUMAN POTENTIAL embossed in pale silver across the bottom. It is a permission slip and a leash."
+    },
     "memory_fragment": {
       "name": "Memory Fragment",
       "type": "treasure",
