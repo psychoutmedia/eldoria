@@ -2386,9 +2386,9 @@
   "room_308": {
     "name": "Theta Concourse - East Wing Junction",
     "zone": "Theta Arrivals",
-    "shortDescription": "A junction where three corridors meet. The eastern panel has slid open.",
-    "longDescription": "Three corridors meet here under another of the institution's discreet GIA SAINT-REED portraits. The eastern panel - frosted glass marked REFINEMENT FLOORS - is now open and warm with a soft, working light. The northern and western panels remain closed for now.",
-    "exits": { "south": "room_307", "west": "room_309", "east": "room_311" }
+    "shortDescription": "A junction where three corridors meet. The eastern and northern panels have slid open.",
+    "longDescription": "Three corridors meet here under another of the institution's discreet GIA SAINT-REED portraits. The eastern panel - REFINEMENT FLOORS - is open and warm. The northern panel - DORMITORY SHUTTLE & TOWNSHIP - has unlocked since intake, smelling faintly of outside air. The western panel back to the Concourse remains, of course, where you came from.",
+    "exits": { "south": "room_307", "west": "room_309", "east": "room_311", "north": "room_331" }
   },
   "room_309": {
     "name": "Theta Concourse - Sync Annex",
@@ -2562,6 +2562,166 @@
     "longDescription": "The Editor's Desk holds a single typewriter, a single pencil, and a single coffee ring exactly the diameter of an institutional mug. Nothing on the desk is dated. The Editor is presumably out, possibly forever. A lamp hums steadily, lighting nothing in particular.",
     "exits": { "south": "room_329" },
     "isLogicState": true
+  },
+  "room_331": {
+    "name": "Theta Township - Tram Drop-off",
+    "zone": "Theta Township",
+    "shortDescription": "The tram unloads onto a covered platform at the edge of the Township. Cool air, low buildings, a slow sky.",
+    "longDescription": "The tram huffs once and lets you off onto a platform of pale concrete under a corrugated awning. The Township spreads out before you in low pastels: identical pale-grey townhouses to the north, a green to the east, the low brick frontage of a bar called THE WAX LILY to the west. Above it all, the sky is a colour the brochures called 'restful.' A laminated map nailed to the awning's pillar invites you to choose your own first walk.",
+    "exits": { "south": "room_308", "north": "room_332", "east": "room_337", "west": "room_341" },
+    "isLifeState": true
+  },
+  "room_332": {
+    "name": "Dormitory Block - East Lane",
+    "zone": "Dormitory Block",
+    "shortDescription": "A long lane of identical pale-grey townhouses, each with a matching potted hedge.",
+    "longDescription": "The Dormitory Block stretches in both directions. Each townhouse is identical: pale-grey clapboard, a number on the door, a single potted hedge beside the step, a brown welcome mat. The lane is unnervingly quiet. A few hedge clippings drift along the gutter as if the maintenance team passed through twenty seconds ago.",
+    "exits": { "south": "room_331", "north": "room_333" },
+    "isLifeState": true
+  },
+  "room_333": {
+    "name": "Dormitory Block - Numbered House",
+    "zone": "Dormitory Block",
+    "shortDescription": "Townhouse #4. The door is, unaccountably, yours.",
+    "longDescription": "Townhouse #4 carries the same pale-grey clapboard as its neighbours, but the welcome mat at this door reads, in fresh marker, your last name. (Your real last name. Whichever one of those it is.) The key was in your pocket without your noticing. The door is presumably yours to open. Whether anything inside is yours is, as the Greeter implied, an open question.",
+    "exits": { "south": "room_332", "north": "room_334" },
+    "isLifeState": true
+  },
+  "room_334": {
+    "name": "Dormitory Block - Common Yard",
+    "zone": "Dormitory Block",
+    "shortDescription": "A small square of lawn between four townhouses. A clothesline hangs, currently empty.",
+    "longDescription": "The Common Yard is a square of slightly-too-green grass between four townhouses. A clothesline strung between two posts is empty but moves faintly, as if just-unpinned. A small pile of pebbles in the corner has been arranged into a shape that means something, possibly. There is no wind today. The clothesline keeps moving anyway.",
+    "exits": { "south": "room_333", "north": "room_335", "east": "room_336" },
+    "isLifeState": true
+  },
+  "room_335": {
+    "name": "Dormitory Block - Quiet End",
+    "zone": "Dormitory Block",
+    "shortDescription": "The quiet end of the lane, where the houses are slightly older and the welcome mats slightly more worn.",
+    "longDescription": "At the quiet end of the lane the houses are subtly older, the paint faintly cooler, the welcome mats imprinted with the gentle muscle-memory of feet that have come home a thousand times. One house's door is propped open by a brick. You will be told later that this is for the airflow. The brick is suspiciously clean.",
+    "exits": { "south": "room_334" },
+    "isLifeState": true
+  },
+  "room_336": {
+    "name": "Dormitory Block - Maintenance Shed",
+    "zone": "Dormitory Block",
+    "shortDescription": "A small wooden shed that smells of motor oil and detergent.",
+    "longDescription": "The shed holds the institutional necessities: a push-mower, a ring of master-keys, a stack of folded tarps, a bag of rock-salt for winter that has sat there for years. A clipboard lists the day's maintenance complaints, all signed by the same hand. A single line of laundry detergent has been spilled on the floor and forgotten.",
+    "exits": { "west": "room_334" },
+    "isLifeState": true
+  },
+  "room_337": {
+    "name": "Town Green - Central Plaza",
+    "zone": "Town Green",
+    "shortDescription": "A circular green with a broken fountain at its centre and benches around the perimeter.",
+    "longDescription": "The Town Green is, in plan, a circle. In practice it is more an oval, due to one of the benches having been pulled out by an inconsiderate truck some years ago. The fountain at the centre is dry and the basin holds a brown leaf and a coin. A bronze plaque beneath the fountain reads: 'GIA SAINT-REED IS WITH YOU.' The benches face inward.",
+    "exits": { "west": "room_331", "north": "room_338", "east": "room_339", "south": "room_340" },
+    "isLifeState": true
+  },
+  "room_338": {
+    "name": "Town Green - North Path",
+    "zone": "Town Green",
+    "shortDescription": "A flagstone path leading toward the post office and the Township proper.",
+    "longDescription": "The path is uneven, recently re-laid. The smell of fresh mortar lingers. A signpost at the path's middle reads POST OFFICE / TOWNSHIP HIGH STREET. A bee-loud bush of lavender at the path's edge has been carefully placed for the benefit of someone who was not previously consulted. You walk on.",
+    "exits": { "south": "room_337", "north": "room_346" },
+    "isLifeState": true
+  },
+  "room_339": {
+    "name": "Town Green - Reading Bench",
+    "zone": "Town Green",
+    "shortDescription": "A long wooden bench with a small lending library on either end.",
+    "longDescription": "The Reading Bench holds two miniature lending-libraries: a glass-fronted box on each end, each stocked with paperbacks. Most of the paperbacks are biographies of GIA SAINT-REED, written by writers who appear, on inspection, to be GIA SAINT-REED. One paperback at the back of the leftmost library is a thin, unmarked volume bound in a different colour. You don't quite reach for it.",
+    "exits": { "west": "room_337" },
+    "isLifeState": true
+  },
+  "room_340": {
+    "name": "Town Green - South Pasture",
+    "zone": "Town Green",
+    "shortDescription": "A scrubby pasture with a dry-stone wall, beyond which a goat is, technically, not staring.",
+    "longDescription": "The pasture is a low scrubby field beyond the southern bench. A dry-stone wall separates the green from the field. A single goat occupies the field. The goat is, technically, looking at the horizon. Functionally it is looking at you. The bell on the goat's collar has been muffled with cloth.",
+    "exits": { "north": "room_337" },
+    "isLifeState": true
+  },
+  "room_341": {
+    "name": "The Wax Lily - Front Door",
+    "zone": "Wax Lily Tavern",
+    "shortDescription": "The front door of a low-ceilinged tavern, propped open with a doorstop.",
+    "longDescription": "The Wax Lily is the Township's only bar. The front door is propped open with a wedge of plaster. The tavern smells of hops, polish, and something else - faintly herbal, faintly nostalgic, as though someone keeps a bunch of dried wax-lily flowers in the rafters. A chalkboard inside the threshold reads, in unforced handwriting: SPECIAL TODAY - QUIET.",
+    "exits": { "east": "room_331", "north": "room_342" },
+    "isLifeState": true
+  },
+  "room_342": {
+    "name": "The Wax Lily - The Bar",
+    "zone": "Wax Lily Tavern",
+    "shortDescription": "A long wooden bar staffed by a calm, watchful man with a name-pin reading OSLO.",
+    "longDescription": "The bar runs the full length of the Wax Lily's front room: warm hardwood, polished by sleeves and patience. A small chalkboard above the till lists six beers and one cocktail named, with no apparent irony, THE PARTITION. A man in his late fifties stands behind the bar, polishing a glass with the air of someone who has practised polishing glasses as a way of practising not being asked questions. His name-pin reads OSLO. He looks up at you, mildly.",
+    "exits": { "south": "room_341", "north": "room_343" },
+    "isLifeState": true
+  },
+  "room_343": {
+    "name": "The Wax Lily - Booths",
+    "zone": "Wax Lily Tavern",
+    "shortDescription": "A row of wooden booths along the north wall. The third one is taken.",
+    "longDescription": "Four booths line the north wall of the Wax Lily. The first three are empty; the fourth is taken by a man in pale grey, sitting alone, drinking with the studied dignity of someone whose drinking is a practised craft. The name-tag pinned to his coat reads DONOVAN. His shoes are very, very clean.",
+    "exits": { "south": "room_342", "north": "room_344" },
+    "isLifeState": true
+  },
+  "room_344": {
+    "name": "The Wax Lily - Kitchen",
+    "zone": "Wax Lily Tavern",
+    "shortDescription": "A small kitchen where one of the burners is on for no clear reason.",
+    "longDescription": "The Wax Lily kitchen is one cook's worth of space, one chef's worth of equipment, and currently zero chefs. One burner on the gas stove is lit at low blue and a battered kettle sits on it, just below a boil. The wall behind the stove is hung with a calendar. The calendar is on the wrong month. Nobody seems to mind.",
+    "exits": { "south": "room_343", "north": "room_345" },
+    "isLifeState": true
+  },
+  "room_345": {
+    "name": "The Wax Lily - Back Office",
+    "zone": "Wax Lily Tavern",
+    "shortDescription": "A small back office where the books are kept and the ledger smells faintly of pipe smoke.",
+    "longDescription": "The back office holds a roll-top desk, a filing cabinet, and the smell of pipe smoke despite a clearly-marked NO SMOKING sign on the inside of the door. The ledger on the desk is open to a row of figures whose totals do not add up by exactly the same amount each line. A pipe rests in a bowl beside the ledger. The bowl is cool. The pipe is warm.",
+    "exits": { "south": "room_344" },
+    "isLifeState": true
+  },
+  "room_346": {
+    "name": "Theta Township - High Street",
+    "zone": "Theta Township",
+    "shortDescription": "A small high street with three shopfronts. Two of them sell variations on the same notebook.",
+    "longDescription": "The High Street is one block long. To the right is a stationer (selling, you note, four different brands of refinement notebook). To the left is a hardware store (selling, you note, a single brand of hammer). Straight ahead is the Post Office. None of the shops are particularly busy. The pavement has been swept very recently.",
+    "exits": { "south": "room_338", "north": "room_347", "east": "room_348" },
+    "isLifeState": true
+  },
+  "room_347": {
+    "name": "Theta Township - Post Office",
+    "zone": "Theta Township",
+    "shortDescription": "A small post office with a single clerk and a wall of named pigeonholes.",
+    "longDescription": "The Post Office is a long counter, a single clerk who is currently busy elsewhere, and a wall of named pigeonholes behind her counter. Most of the pigeonholes are empty. One of them, halfway down on the third row, has your last name on it. There is, as far as you can tell, nothing inside it. There is, as far as you can tell, no way to be sure of that.",
+    "exits": { "south": "room_346" },
+    "isLifeState": true
+  },
+  "room_348": {
+    "name": "Theta Township - Hardware Store",
+    "zone": "Theta Township",
+    "shortDescription": "A small hardware store stocked entirely in beige and grey.",
+    "longDescription": "The hardware store is run by a quiet man whose name-tag is missing. He stocks one shelf of paint (in 'institutional taupe'), one wall of small tools, and one corner of canned goods that ought, by rights, not to be in a hardware store. There is one of every variety of brush. There is no broom. The man watches you the way a chess player watches a piece they have decided not to take yet.",
+    "exits": { "west": "room_346", "north": "room_349" },
+    "isLifeState": true
+  },
+  "room_349": {
+    "name": "Theta Township - Bus Stop",
+    "zone": "Theta Township",
+    "shortDescription": "A bus stop with a real-looking timetable and a long bench. No bus has come today.",
+    "longDescription": "The bus stop has a timetable, a bench, and a small acrylic shelter against the local weather (which is, today, restful). The timetable lists six buses a day to destinations whose names you don't quite recognise: STAGE 2, FOLLOW-UP, RECONCILIATION, FOLLOW-UP B, EXIT INTERVIEW, OTHER. None of these buses have, by the timestamps on the placards, come today, or yesterday. The bench has been waited on enough that the wood is, in a small place, slightly polished by trousers.",
+    "exits": { "south": "room_348", "north": "room_350" },
+    "isLifeState": true
+  },
+  "room_350": {
+    "name": "Theta Township - Edge of Town",
+    "zone": "Theta Township",
+    "shortDescription": "The road simply ends here, in fresh tarmac and a low painted line.",
+    "longDescription": "The road ends. Where it ends is not yet a wall but a low white line painted across the tarmac, and beyond it more tarmac that goes on briefly and then goes on briefly more. There is no signage. There is, faintly, the suggestion that the road goes somewhere you have not yet earned the right to walk. The tarmac beyond the line is darker than the tarmac before it.",
+    "exits": { "south": "room_349" },
+    "isLifeState": true
   },
   "room_999": {
     "name": "Nomagio's Office",

@@ -320,5 +320,28 @@
       { "id": "kill_queries", "type": "monster_kill_any", "targetIds": ["query_dangling_pointer","query_null_referent","query_recursive_loop","query_off_by_one","query_race_condition","query_cache_miss","query_segfault_phantom","query_orphaned_handle"], "count": 3, "description": "Defeat any 3 Corrupted Queries on the Refinement Floors" }
     ],
     "rewards": { "xp": 2500, "questPoints": 100, "items": ["retort_modus_ponens", "retort_reductio"] }
+  },
+  "townhouse_assignment": {
+    "id": "townhouse_assignment",
+    "title": "Townhouse Assignment",
+    "giver": "concourse_greeter",
+    "description": "Every Citizen at Theta is assigned a townhouse in the Dormitory Block, and is expected to find it on their first walk-through. Yours is Townhouse #4. Walk to it from the Tram Drop-off and lay eyes on the door. (You will not be asked to enter it. Yet.)",
+    "hint": "From room_331 (Tram Drop-off) walk north twice to reach Townhouse #4 at room_333.",
+    "objectives": [
+      { "id": "visit_331", "type": "visit_room", "targetId": "room_331", "count": 1, "description": "Arrive at the Tram Drop-off" },
+      { "id": "visit_333", "type": "visit_room", "targetId": "room_333", "count": 1, "description": "Lay eyes on Townhouse #4" }
+    ],
+    "rewards": { "xp": 800, "questPoints": 30, "items": ["townhouse_key"] }
+  },
+  "the_local_who_drinks_alone": {
+    "id": "the_local_who_drinks_alone",
+    "title": "The Local Who Drinks Alone",
+    "giver": "barkeep_oslo",
+    "description": "Barkeep Oslo at the Wax Lily mentions, between polishings, that there's a regular in the fourth booth who has been drinking the same drink alone for some weeks. Look in on them. Don't speak to them. Just put yourself in the room.",
+    "hint": "Walk into the Wax Lily (room_341), through the bar (room_342), and into the booths (room_343).",
+    "objectives": [
+      { "id": "visit_343", "type": "visit_room", "targetId": "room_343", "count": 1, "description": "Look in on the lone drinker in the booths" }
+    ],
+    "rewards": { "xp": 400, "questPoints": 20 }
   }
 }

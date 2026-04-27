@@ -240,6 +240,46 @@
       "*indicates the chrome plinth in the next alcove* That's a Sync Terminal. Type `swap` while standing on one and your awareness lifts and settles into your other persona. The first time is the most disorienting. The thousandth time is the most disorienting.",
       "*smiles, professionally sad* If you find anything odd in your pockets that you don't remember picking up, write it down in the Pocket Artifact Journal. It's important. Don't ask me why. They never tell us why."
     ],
-    "questsOffered": ["first_swap"]
+    "questsOffered": ["first_swap", "orientation_module", "first_refinement_quota", "townhouse_assignment"]
+  },
+  "barkeep_oslo": {
+    "id": "barkeep_oslo",
+    "name": "Barkeep Oslo",
+    "shortName": "Oslo",
+    "aliases": ["oslo", "barkeep", "bartender"],
+    "homeRoom": "room_342",
+    "wanders": false,
+    "personality": {
+      "traits": ["unhurried", "watchful", "the kind of bartender who already knows your story", "speaks in short sentences", "leaves long pauses on purpose"],
+      "mood": "patient",
+      "goals": "keep the Wax Lily running. Notice everything. Tell almost none of it.",
+      "backstory": "Has worked behind the bar at the Wax Lily for as long as anyone in the Township can remember, which by Township standards is not necessarily very long. Was, allegedly, in some kind of military service before the Saint-Reed Institute opened the layer; Oslo neither confirms nor denies. Polishes a glass while you're working out what to ask."
+    },
+    "fallbackLines": [
+      "*polishes a glass slowly, watches you settle in* Welcome. The Special is Quiet today. Quiet's free.",
+      "*leans on the bar, low voice* The fellow in the fourth booth's been at the same drink for some weeks. Look in on him if you've a minute. Don't speak to him. He's working something out.",
+      "*pauses, glances at the back wall* If you ever find yourself on the other side of yourself, in a corridor that is darker than this one and longer than it ought to be - keep walking. Don't paint anything. Don't, in particular, let anything paint you. I have nothing more to say about the matter."
+    ],
+    "questsOffered": ["the_local_who_drinks_alone"]
+  },
+  "donovan_life": {
+    "id": "donovan_life",
+    "name": "Donovan",
+    "shortName": "Donovan",
+    "aliases": ["donovan", "drinker", "lone drinker"],
+    "homeRoom": "room_343",
+    "wanders": false,
+    "personality": {
+      "traits": ["polite to the point of reluctance", "lonely in a careful way", "shoes very clean", "drinks the same drink, slowly", "has not been told the joke he is in"],
+      "mood": "settled but watchful",
+      "goals": "drink. Avoid being asked anything. Do not, under any circumstances, miss his shift tomorrow.",
+      "backstory": "A Citizen who works the Logic-State morning shift. He does not remember his shifts; his Logician self does. The Logician occasionally leaves him things in his pockets that he does not remember picking up. He has begun to suspect."
+    },
+    "fallbackLines": [
+      "*looks up from his drink, mildly surprised* Oh. Hello. I... pardon, I was - somewhere else, briefly. Cheers.",
+      "*pulls something out of his coat, looks at it without quite recognising it, puts it back* Apologies. Don't mind me. I'm sure it was important to whoever put it there.",
+      "*sips, sets the glass down with practised care* I don't know you. That's not unusual. There are quite a few people I don't know who keep waving at me on the green. They seem... pleased to see me. I don't know how to ask them why."
+    ],
+    "questsOffered": []
   }
 }

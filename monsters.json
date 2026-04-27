@@ -179,6 +179,26 @@
       "roomRange": ["room_326", "room_327", "room_328", "room_329", "room_330"],
       "spawnChance": 0.40,
       "monsters": ["query_off_by_one", "query_orphaned_handle"]
+    },
+    "Theta Township": {
+      "roomRange": ["room_331", "room_337", "room_346", "room_347", "room_348", "room_349", "room_350"],
+      "spawnChance": 0.20,
+      "monsters": ["hollow_neighbor", "manager_off_duty", "wellness_counselor"]
+    },
+    "Dormitory Block": {
+      "roomRange": ["room_332", "room_333", "room_334", "room_335", "room_336"],
+      "spawnChance": 0.15,
+      "monsters": ["hollow_neighbor"]
+    },
+    "Town Green": {
+      "roomRange": ["room_338", "room_339", "room_340"],
+      "spawnChance": 0.15,
+      "monsters": ["town_dog_wrong", "goat_disquiet"]
+    },
+    "Wax Lily Tavern": {
+      "roomRange": ["room_342", "room_343", "room_344", "room_345"],
+      "spawnChance": 0.10,
+      "monsters": ["townie_drunk"]
     }
   },
   "templates": {
@@ -1201,6 +1221,66 @@
       "description": "A latch in the air looking for the door it was attached to. It is, alas, attached to you now.",
       "movementVerbs": { "depart": "drifts toward a more familiar door", "arrive": "latches onto your sleeve" },
       "presenceVerb": "swings, latched onto nothing"
+    },
+    "hollow_neighbor": {
+      "name": "Hollow Neighbor",
+      "type": "Passive",
+      "level": 28,
+      "hp": 180,
+      "str": 22,
+      "description": "A neighbour you do not recognise but who waves at you with the practised affection of a daily acquaintance. They will not become hostile unless you misread the script.",
+      "movementVerbs": { "depart": "waves and ambles away", "arrive": "rounds the corner with a wave" },
+      "presenceVerb": "waves, mildly"
+    },
+    "townie_drunk": {
+      "name": "Off-Duty Townie",
+      "type": "Neutral",
+      "level": 27,
+      "hp": 200,
+      "str": 28,
+      "description": "A Townie at the wrong end of the same drink they have been at for some time. Friendly until corrected.",
+      "movementVerbs": { "depart": "wanders off, talking to nobody", "arrive": "ambles in, mid-monologue" },
+      "presenceVerb": "leans against the wall, talking faintly"
+    },
+    "town_dog_wrong": {
+      "name": "Town Dog (Wrong)",
+      "type": "Neutral",
+      "level": 26,
+      "hp": 220,
+      "str": 30,
+      "description": "A dog. The dog is wrong about something. The dog knows. You will, in a moment, also know.",
+      "movementVerbs": { "depart": "trots off with a small tilt", "arrive": "trots in tilted at the wrong angle" },
+      "presenceVerb": "watches, head slightly off-axis"
+    },
+    "manager_off_duty": {
+      "name": "Manager (Off-Duty)",
+      "type": "Neutral",
+      "level": 30,
+      "hp": 260,
+      "str": 35,
+      "description": "Someone in mid-grade institutional casuals who, it transpires, manages people you have never met. They have the warm efficiency of a person paid to defuse you.",
+      "movementVerbs": { "depart": "moves on, smiling professionally", "arrive": "arrives, recognises you, smiles warmly" },
+      "presenceVerb": "stands, hands clasped, listening"
+    },
+    "wellness_counselor": {
+      "name": "Wellness Counselor",
+      "type": "Aggressive",
+      "level": 32,
+      "hp": 320,
+      "str": 38,
+      "description": "A practitioner of an in-house therapy that, on closer inspection, is more often a debrief than a session. They wear pale slacks and a kind of gentle persistence.",
+      "movementVerbs": { "depart": "schedules a follow-up and excuses themselves", "arrive": "arrives, clipboard at the ready" },
+      "presenceVerb": "smiles, professionally, takes a small note"
+    },
+    "goat_disquiet": {
+      "name": "Disquiet Goat",
+      "type": "Neutral",
+      "level": 25,
+      "hp": 240,
+      "str": 32,
+      "description": "A goat. The goat is one component of the Saint-Reed Institute's official disquiet quota. You will not be told why the quota exists.",
+      "movementVerbs": { "depart": "wanders to the next interesting fence-post", "arrive": "arrives, judging the room" },
+      "presenceVerb": "stares with the deep philosophical irritation of goats"
     }
   },
   "bosses": {

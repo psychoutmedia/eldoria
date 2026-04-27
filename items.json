@@ -828,6 +828,18 @@
       "value": 0,
       "description": "A small, flat ceramic chip embedded in the back of your wrist after the Procedure. It allows the Sync Terminals to find you. Removing it is contraindicated."
     },
+    "townhouse_key": {
+      "name": "Townhouse Key",
+      "type": "treasure",
+      "value": 0,
+      "description": "A small brass key cut for Townhouse #4. The key was in your pocket the first time you reached for it. The cut is fresh; the brass has only just been touched."
+    },
+    "pocket_finger_trap": {
+      "name": "Finger Trap",
+      "type": "treasure",
+      "value": 5,
+      "description": "A small woven paper finger-trap, faintly stained. You cannot remember picking it up. Your Logician self, presumably, can. Or could, if your Logician self could remember being asked."
+    },
     "pocket_artifact_journal": {
       "name": "Pocket Artifact Journal",
       "type": "treasure",

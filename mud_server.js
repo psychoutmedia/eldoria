@@ -14,6 +14,7 @@ const goals = require('./world/goals');
 const friends = require('./world/friends');
 const speedwalker = require('./world/speedwalker');
 const syncState = require('./world/sync_state');
+const echoesModule = require('./world/echoes');
 
 const PORT = parseInt(process.env.MUD_PORT, 10) || 8888;
 const START_ROOM = 'room_001';
@@ -7754,6 +7755,12 @@ function handleSwap(socket, player) {
     return;
   }
 
+  // Tier 6.3: capture shift start/end before swap so we can compute
+  // credits earned during the just-ending Logician shift.
+  const wasLogic = (syncState.getActivePersona(player) === 'logic');
+  let shiftStartedAt = wasLogic && player.personas && player.personas.logic
+    ? player.personas.logic.shiftStartedAt : null;
+
   const r = syncState.swapPersona(player);
   if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
   // Mark the persona as having been active (used to keep swap unlocked
@@ -7761,14 +7768,81 @@ function handleSwap(socket, player) {
   if (player.personas && player.personas[r.to]) {
     player.personas[r.to].lastActiveAt = Date.now();
   }
+  // Tier 6.3: if we just left a Logician shift, accrue credits to the Citizen
+  let creditsEarned = 0;
+  if (wasLogic && r.to === 'life' && shiftStartedAt) {
+    const minutes = Math.floor((Date.now() - shiftStartedAt) / 60000);
+    creditsEarned = Math.max(0, minutes) * 5;
+    if (player.personas.life) {
+      player.personas.life.credits = (player.personas.life.credits || 0) + creditsEarned;
+    }
+  }
+  // Tier 6.3: stamp the start of any new Logician shift
+  if (r.to === 'logic' && player.personas && player.personas.logic) {
+    player.personas.logic.shiftStartedAt = Date.now();
+  } else if (player.personas && player.personas.logic) {
+    // We're leaving Logic-State; clear the stamp so the next shift starts fresh
+    player.personas.logic.shiftStartedAt = null;
+  }
+  // Tier 6.3: surface up to 3 pocket artifacts that the OTHER persona left in their pockets
+  const surfaced = syncState.drainPocketArtifacts(player, 3);
 
   socket.write(colorize('\r\n=== Sync Terminal Engaged ===\r\n', 'brightCyan'));
   socket.write(colorize('Your awareness lifts, splits, settles.\r\n', 'gray'));
-  socket.write(colorize(`You are now the ${r.to === 'logic' ? 'Logician' : 'Citizen'}.\r\n\r\n`, 'brightYellow'));
+  socket.write(colorize(`You are now the ${r.to === 'logic' ? 'Logician' : 'Citizen'}.\r\n`, 'brightYellow'));
+  if (creditsEarned > 0) {
+    socket.write(colorize(`Logician shift earnings credited: ${creditsEarned} Theta credits.\r\n`, 'green'));
+  }
+  if (surfaced.length > 0) {
+    socket.write(colorize(`In your pocket, you find:\r\n`, 'magenta'));
+    for (const a of surfaced) {
+      const text = (a && typeof a === 'object' && a.name) ? a.name : String(a);
+      socket.write(colorize(`  - ${text}\r\n`, 'magenta'));
+      // Add object-shaped artifacts directly to inventory; strings stay narrative-only
+      if (a && typeof a === 'object' && a.id) {
+        if (player.inventory.length < getInventoryCap(player)) player.inventory.push(a);
+      }
+    }
+  }
+  socket.write('\r\n');
   // Show the new room
   showRoom(socket, player);
   // Persist immediately so a crash now doesn't desync
   savePlayer(player, socket, true);
+}
+
+// ============================================
+// TIER 6.3: ECHOES — non-linguistic signs
+// ============================================
+//
+// `arrange <text>` and `stack <text>` leave a sign at the current room
+// that other players (across sessions) discover when they enter. Signs
+// expire 24h after creation and are capped at 5 per room.
+function handleEcho(kind, socket, player, args) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  const text = (args || '').trim();
+  if (!text) {
+    socket.write(`Usage: ${kind} <short text>\r\n`);
+    return;
+  }
+  const r = echoesModule.addSign(echoesState, player.currentRoom, player.name, kind, text);
+  if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
+  persistEchoes();
+  socket.write(colorize(`You ${kind} ${r.sign.text}. The room remembers.\r\n`, 'magenta'));
+  broadcastToRoom(player.currentRoom,
+    colorize(`${getDisplayName(player)} ${kind === 'arrange' ? 'arranges something carefully' : 'stacks something with deliberate care'} and steps back.`, 'gray'),
+    socket);
+}
+
+// Render any active echoes for a room. Used by showRoom.
+function renderEchoesForRoom(socket, roomId) {
+  const list = echoesModule.listForRoom(echoesState, roomId);
+  if (!list.length) return;
+  socket.write(colorize('Echoes here:\r\n', 'magenta'));
+  for (const s of list) {
+    const left = echoesModule.formatRemaining(s.expiresAt - Date.now());
+    socket.write(colorize(`  [${s.kind}] ${s.text} (left by ${s.leftBy}, ${left} left)\r\n`, 'magenta'));
+  }
 }
 
 // ============================================
@@ -7888,6 +7962,12 @@ function handleRedit(socket, player, args) {
 // Live state pointer — populated on server start by `auctions.loadState()`.
 // All gold/inventory mutation lives here; world/auctions.js is pure data.
 let auctionState = auctions.emptyState();
+// Tier 6.3: in-memory echoes state, populated from world/echoes.json on startup.
+let echoesState = echoesModule.emptyState();
+function persistEchoes() {
+  const r = echoesModule.saveState(echoesState);
+  if (!r.ok) console.error(`echoes.json save failed: ${r.error}`);
+}
 const AUCTION_REAPER_INTERVAL_MS = 60 * 1000;  // settle expired auctions every minute
 
 // Persist state and log to console on failure (admins can inspect via `logs`).
@@ -11235,6 +11315,11 @@ function showRoom(socket, player) {
     socket.write('There are no exits.\r\n');
   }
 
+  // Tier 6.3: render any echoes (non-linguistic signs) left in this room
+  if (typeof renderEchoesForRoom === 'function') {
+    try { renderEchoesForRoom(socket, player.currentRoom); } catch (e) {}
+  }
+
   // Show combat status if in combat
   if (player.inCombat) {
     const monster = getMonsterById(player.combatTarget);
@@ -11988,6 +12073,20 @@ function processCommand(socket, player, input) {
   // Tier 6.1: sync-state swap
   if (command === 'swap') {
     handleSwap(socket, player);
+    return true;
+  }
+
+  // Tier 6.3: echoes (non-linguistic signs)
+  if (command === 'arrange' || command.startsWith('arrange ')) {
+    const original = input.trim();
+    const args = original.length > 8 ? original.slice(8) : '';
+    handleEcho('arrange', socket, player, args);
+    return true;
+  }
+  if (command === 'stack' || command.startsWith('stack ')) {
+    const original = input.trim();
+    const args = original.length > 6 ? original.slice(6) : '';
+    handleEcho('stack', socket, player, args);
     return true;
   }
 
@@ -17128,6 +17227,11 @@ server.listen(PORT, '0.0.0.0', () => {
   if (goalsLoad.errors && goalsLoad.errors.length) {
     for (const e of goalsLoad.errors) console.warn(`goal definition error: ${e}`);
   }
+
+  // Tier 6.3: load echoes (multiplayer non-linguistic signs); prune expired
+  echoesState = echoesModule.loadState();
+  echoesModule.pruneExpired(echoesState);
+  console.log(`Loaded ${echoesModule.totalActive(echoesState)} active echo sign(s)`);
 
   // Start the Wandering Healer NPC
   startHealerWandering();
