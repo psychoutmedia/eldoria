@@ -162,7 +162,7 @@ function check(label, pass, detail) {
   check('coherence branch calls ejectToLifeState at 0',
     /after <= 0[\s\S]{0,1200}ejectToLifeState\(player\)/.test(src));
   check('coherence branch returns false (no death) early',
-    /coherence damage[\s\S]{0,1500}return false/.test(src));
+    /coherence damage[\s\S]{0,2500}return false/.test(src));
   check('coherence branch resets coherence after eject for next shift',
     /player\.personas\.logic\.coherence = player\.personas\.logic\.maxCoherence/.test(src));
 }

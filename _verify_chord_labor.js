@@ -207,7 +207,7 @@ function check(label, pass, detail) {
   check('cycleLeaderboard.batchesCompleted reset on world reset',
     /cycleLeaderboard\.batchesCompleted = \{ name: null, value: 0 \};/.test(src));
   check('handleSwap drops activeTask when leaving Logic',
-    /We're leaving Logic-State[\s\S]{0,400}activeTask = null/.test(src));
+    /We're leaving Logic-State[\s\S]{0,1200}activeTask = null/.test(src));
   check('handleSwap resets shiftBatchesCompleted on entering Logic',
     /r\.to === 'logic'[\s\S]{0,400}shiftBatchesCompleted = 0/.test(src));
   check('Coherence eject path drops activeTask',

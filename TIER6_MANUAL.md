@@ -13,9 +13,8 @@ gold, equipped gear, and effects. The split is enforced at the **Sync
 Terminal** rooms; outside those rooms `swap` is illegal.
 
 > **Scope of this pass.** Tier 6 ships in incremental phases. As of this
-> document, **6.1, 6.2, 6.3, and 6.4** are live. **6.5** (muscle-memory
-> unlocks across personas) and **6.6** (the Macrodata Vault capstone)
-> are stubbed but not implemented — see §10.
+> document, **6.1, 6.2, 6.3, 6.4, and 6.5** are live. **6.6** (the
+> Macrodata Vault capstone) is stubbed but not implemented — see §10.
 
 Target audience: maintainers who need to understand the dual-persona
 schema and its hooks, and players who want to know what the new verbs
@@ -30,12 +29,13 @@ do.
 3. [6.2 Logic-State Refinement Floors & Coherence combat](#3-62-logic-state-refinement-floors--coherence-combat)
 4. [6.3 Life-State Theta Township & Echoes](#4-63-life-state-theta-township--echoes)
 5. [6.4 Chord Labor (the work loop)](#5-64-chord-labor-the-work-loop)
-6. [Save-file schema & migration](#6-save-file-schema--migration)
-7. [Hooks the Tier 6 modules install](#7-hooks-the-tier-6-modules-install)
-8. [Smoke / verify suites](#8-smoke--verify-suites)
-9. [Tuning constants reference](#9-tuning-constants-reference)
-10. [Known limitations & deferred work](#10-known-limitations--deferred-work)
-11. [Severance naming policy](#11-severance-naming-policy)
+6. [6.5 Muscle Memory (cross-persona one-shot abilities)](#6-65-muscle-memory-cross-persona-one-shot-abilities)
+7. [Save-file schema & migration](#7-save-file-schema--migration)
+8. [Hooks the Tier 6 modules install](#8-hooks-the-tier-6-modules-install)
+9. [Smoke / verify suites](#9-smoke--verify-suites)
+10. [Tuning constants reference](#10-tuning-constants-reference)
+11. [Known limitations & deferred work](#11-known-limitations--deferred-work)
+12. [Severance naming policy](#12-severance-naming-policy)
 
 ---
 
@@ -56,6 +56,8 @@ command router so they don't collide with Tier 0–4 verbs.
 | `bind <row#>`                 | Apply *bind* to a row                                                   |
 | `refine <row#>`               | Apply *refine* to a row                                                 |
 | `quota`                       | Show current shift's batch count + the floor's quota target             |
+| `memory` / `memories`         | List your earned Muscle Memory charges                                  |
+| `memory <id>`                 | Spend one charge of a Muscle Memory (Citizen only)                      |
 | (Citizen-side) `look`         | Renders any active Echoes at the room                                   |
 
 **Room flags introduced by Tier 6** (in `rooms.json`):
@@ -370,7 +372,79 @@ reset by `executeWorldReset`.
 
 ---
 
-## 6. Save-file schema & migration
+## 6. 6.5 Muscle Memory (cross-persona one-shot abilities)
+
+The mechanical payoff for the dual-persona "amnesia." A Logician on
+shift accumulates muscle memory the Citizen later spends as one-shot
+abilities. The two personas can't talk, but the body remembers — and
+the better the shift, the more it remembers.
+
+### How charges are earned
+
+When the player swaps **out** of Logic-State (deliberately or via a
+forced eject), the Logician's `shiftBatchesCompleted` is consumed by
+`muscleMemory.creditShiftMemories(player, batchesThisShift)`. Each
+memory has its own `earnEvery` rate — every N batches in that single
+shift earns +1 charge of that memory. Charges are added on top of any
+the Citizen already had; nothing decays.
+
+| Memory id           | Label              | Earn rate (per shift) | Effect                                                        |
+|---------------------|--------------------|------------------------|---------------------------------------------------------------|
+| `refinement_reflex` | Refinement Reflex  | every 3 batches        | One-shot: cancel the next monster attack against you          |
+| `quota_grit`        | Quota Grit         | every 5 batches        | One-shot: your next melee attack deals +25% damage            |
+| `console_calm`      | Console Calm       | every 8 batches        | Instant: restore 50 HP (capped at maxHP)                      |
+| `floor_finesse`     | Floor Finesse      | every 12 batches       | One-shot: your next flee attempt automatically succeeds       |
+
+Example — a 12-batch shift credits **4× Reflex, 2× Grit, 1× Calm,
+1× Finesse**. A 7-batch shift credits **2× Reflex, 1× Grit**.
+
+### How charges are spent
+
+The `memory` verb (or `memories`) lists charges; `memory <id>` (or
+any unique prefix, or the labelled form) consumes one. Charges are
+stored on `personas.life.muscleMemory[id]` and only the Citizen can
+spend them — the Logician sees the same list with a "swap to
+Life-State to spend them" hint.
+
+| Spend guard                                              | Reject reason                                            |
+|----------------------------------------------------------|----------------------------------------------------------|
+| `activePersona !== 'life'`                               | "Muscle memory belongs to the Citizen."                  |
+| Charges = 0                                              | "You have no <Label> charges."                           |
+| Unknown id (no prefix match)                             | "Unknown memory: <token>."                               |
+| Refinement Reflex / Quota Grit / Floor Finesse outside combat | "No incoming attack / swing / flight to ___. Save it." |
+
+The "outside combat" guard is deliberate — these three memories arm
+a one-shot effect (`effects.muscle_<key> = { armed: true }`), and an
+armed effect that never fires would silently waste a charge. Console
+Calm has no such guard because it's an instant heal.
+
+### Where the effects hook into combat
+
+| Memory              | Hook                                              | What it does                                                                |
+|---------------------|---------------------------------------------------|-----------------------------------------------------------------------------|
+| `refinement_reflex` | `monsterAttackPlayer` (after divine_protection)   | If `effects.muscle_refinement_reflex` set: clear it, narrate the dodge, **return false** (no damage)|
+| `quota_grit`        | `playerAttackMonster` (after spell bonus, before resist) | If `effects.muscle_quota_grit` set: clear it, multiply damage ×1.25 |
+| `floor_finesse`     | `handleFlee` and `handleMonsterCombatFlee`        | If `effects.muscle_floor_finesse` set: clear it, force flee success         |
+| `console_calm`      | `handleMemory` directly                           | Instant heal: `currentHP = min(maxHP, currentHP + 50)`                      |
+
+All four effects clear themselves on use (`delete player.effects[key]`)
+so a primed memory can't double-fire on a subsequent action.
+
+### Forced-eject hand-off
+
+The same credit hook fires when the player is force-ejected from
+Logic-State by a Coherence collapse — both via the combat path
+(`monsterAttackPlayer` Coherence ≤ 0) and the work-path wrong-verb
+chain (`handleApplyVerb`). In both cases, `shiftBatchesCompleted` is
+captured **before** the eject resets it, the credit is applied, and
+the swap report renders an "Even from collapse, your hands remember:"
+line listing the earned charges. This means a Logician who eats
+their last 5 Coherence on a wrong refine doesn't lose the labour —
+it's already in the Citizen's body.
+
+---
+
+## 7. Save-file schema & migration
 
 ### Persona block layout
 
@@ -392,7 +466,7 @@ player = {
       inventory, equipped, gold, effects, affects, spellCooldowns,
       coherence: 100,                   // 6.2
       maxCoherence: 100,                // 6.2
-      muscleUnlocks: [],                // 6.5 stub
+      muscleUnlocks: [],                // 6.5 (still scaffolded; reverse channel)
       activeTask: null,                 // 6.4
       shiftBatchesCompleted: 0,         // 6.4
       lifetimeBatches: 0,               // 6.4
@@ -402,9 +476,18 @@ player = {
     hybrid: null                        // 6.6 reserved
   },
   pocketArtifacts: [],                  // 6.3
-  subliminalBuffs: { fromLogic: {}, fromLife: {} },  // 6.5 stub
+  subliminalBuffs: { fromLogic: {}, fromLife: {} },  // reserved (no live writers yet)
   cycleBatchesCompleted: 0              // 6.4 (resets on world reset)
 }
+
+// personas.life.muscleMemory shape (Tier 6.5):
+//   { refinement_reflex: 0, quota_grit: 0, console_calm: 0, floor_finesse: 0 }
+// Empty object initially; ids are written lazily as charges are credited.
+// Effects on the live player object while a memory is primed (Tier 6.5):
+//   player.effects.muscle_refinement_reflex = { armed: true, armedAt: ms }
+//   player.effects.muscle_quota_grit        = { armed: true, armedAt: ms }
+//   player.effects.muscle_floor_finesse     = { armed: true, armedAt: ms }
+// All three clear themselves on first fire.
 ```
 
 ### Migration
@@ -444,7 +527,7 @@ headache, never stranded mid-floor.
 
 ---
 
-## 7. Hooks the Tier 6 modules install
+## 8. Hooks the Tier 6 modules install
 
 ### `world/sync_state.js`
 
@@ -465,7 +548,7 @@ headache, never stranded mid-floor.
 | `arrange` / `stack` verb                  | `addSign` + `persistEchoes`                         |
 | `showRoom`                                | `renderEchoesForRoom` after the exits line          |
 
-### `world/chord_labor.js` (6.4 — new)
+### `world/chord_labor.js` (6.4)
 
 | Hook point                                | What runs                                           |
 |-------------------------------------------|-----------------------------------------------------|
@@ -477,9 +560,21 @@ headache, never stranded mid-floor.
 | `executeWorldReset`                       | Reset `cycleBatchesCompleted` per player + clear    |
 |                                           | `cycleLeaderboard.batchesCompleted`                 |
 
+### `world/muscle_memory.js` (6.5)
+
+| Hook point                                | What runs                                                   |
+|-------------------------------------------|-------------------------------------------------------------|
+| `swap` out of Logic-State (deliberate)    | `creditShiftMemories(player, batchesThisShift)` before reset|
+| Coherence ≤ 0 in `monsterAttackPlayer`    | Same credit, captured **before** ejectToLifeState           |
+| Coherence ≤ 0 in `handleApplyVerb`        | Same credit, captured **before** eject                      |
+| `memory` / `memory <id>` verb             | `listMemories` / `consumeMemory` + effect application       |
+| `playerAttackMonster` (after spell bonus) | Quota Grit ×1.25 multiplier consumes `muscle_quota_grit`    |
+| `monsterAttackPlayer` (after divine)      | Refinement Reflex consumes `muscle_refinement_reflex`, returns false |
+| `handleFlee` / `handleMonsterCombatFlee`  | Floor Finesse consumes `muscle_floor_finesse`, forces success|
+
 ---
 
-## 8. Smoke / verify suites
+## 9. Smoke / verify suites
 
 Every Tier 6 phase ships two test files at the repo root, following
 the convention established in earlier tiers.
@@ -494,15 +589,17 @@ the convention established in earlier tiers.
 | `_smoke_life_state.js`         | Live                          | Township + Echoes (`arrange`/`stack` happy path, dialogue rejection, persisted echoes round-trip) |
 | `_verify_chord_labor.js`       | Unit (6.4)                    | Batch generation per terminal, apply-verb correctness, completion rewards, abandon, quota counters, rapid bonus |
 | `_smoke_chord_labor.js`        | Live (6.4)                    | Pull → sort/bind/refine → complete → quota update, then swap-out clears `activeTask`, then verify cycleLeaderboard |
+| `_verify_muscle_memory.js`     | Unit (6.5)                    | Defs, `chargesForShift` math at all thresholds, credit/consume guards, listMemories shape, name resolution (id/prefix/label), and server-side wiring greps for every effect hook + the swap announcement |
+| `_smoke_muscle_memory.js`      | Live (6.5)                    | Run a 12-batch shift end-to-end, swap out, parse the announcement (4× Reflex, 2× Grit, 1× Calm, 1× Finesse), spend Console Calm, confirm Refinement Reflex is rejected outside combat, and confirm Logician-side spend is blocked |
 
 The cumulative count line at the bottom of each Tier 6 commit
-message (e.g. "631 unit checks + 53 live = 684") is the running total.
-Tier 6.4 should add at the order of ~80 unit checks + ~15 live to
-that.
+message is the running total. As of Tier 6.5 the unit total is **779**
+checks (Tier 6.5 contributes 57); the live total includes
+**24 muscle-memory** checks on top of all earlier suites.
 
 ---
 
-## 9. Tuning constants reference
+## 10. Tuning constants reference
 
 ### Sync-State (`world/sync_state.js`)
 
@@ -551,32 +648,43 @@ that.
 |---------------------------------|-------------------------------------------------------|
 | Credits per minute of shift     | 5                                                     |
 
+### Muscle Memory (`world/muscle_memory.js`)
+
+| Memory id           | `earnEvery` | Effect key                       | Instant heal |
+|---------------------|-------------|----------------------------------|--------------|
+| `refinement_reflex` | 3           | `muscle_refinement_reflex`       | 0            |
+| `quota_grit`        | 5           | `muscle_quota_grit`              | 0            |
+| `console_calm`      | 8           | (none — instant)                 | 50 HP        |
+| `floor_finesse`     | 12          | `muscle_floor_finesse`           | 0            |
+
+| Combat hook constant            | Value                                                 |
+|---------------------------------|-------------------------------------------------------|
+| Quota Grit damage multiplier    | ×1.25 (`Math.floor(totalDamage * 1.25)`)              |
+| Console Calm heal               | +50 HP, capped at `maxHP`                             |
+| Floor Finesse flee success      | 1.0 (forced)                                          |
+| Refinement Reflex attack cancel | 100% (the monster turn returns false; no damage rolls)|
+
 ---
 
-## 10. Known limitations & deferred work
-
-### Deferred to 6.5 — Muscle memory
-
-`personas.logic.muscleUnlocks` and `personas.life.muscleMemory` are
-seeded but unused. The plan: Logician achievements (e.g., "1000
-batches sorted") leave a faint **muscle memory** that the Citizen can
-trigger as a one-shot ability (e.g., a free flee, a cooldown-skip, a
-+10% damage round). Designed to make the cross-persona "amnesia"
-mechanically meaningful instead of pure flavour.
+## 11. Known limitations & deferred work
 
 ### Deferred to 6.6 — Macrodata Vault
 
 room_322 (Vault Antechamber) is intentionally a dead-end with a locked
 door. Tier 6.6 opens it: a Logic-State capstone instance with phase
-mechanics, gated by completing both 6.4's quota run and an optional
-6.5 muscle-memory unlock. The reward closes the Tier 6 arc and feeds
-into the Tier 3 north-star content.
+mechanics, gated by completing 6.4's quota run and likely consuming
+specific 6.5 muscle-memory charges to defuse phases. The reward
+closes the Tier 6 arc and feeds into the Tier 3 north-star content.
 
 ### Other known gaps
 
 - `subliminalBuffs.fromLogic / fromLife` are seeded empty and never
-  written. They're the planned 6.5 carrier for "the Logician's gym
-  habit gives the Citizen +5 max HP" -style passives.
+  written. The Tier 6.5 ship intentionally scoped only to one-shot
+  charges; passive stat trickle (e.g. "the Logician's gym habit gives
+  the Citizen +5 max HP") was deferred to keep the 6.5 diff focused.
+- `personas.logic.muscleUnlocks` is still a stub. It's the reserved
+  reverse channel — Citizen achievements that grant the Logician
+  passive perks. Same deferral reasoning as the subliminal buffs.
 - The Wax Lily Tavern back office (room_350) is currently scenery
   only; intended as a quest hub for a future Donovan continuation.
 - Hybrid persona slot (`personas.hybrid: null`) is reserved for a
@@ -584,12 +692,11 @@ into the Tier 3 north-star content.
 - The `pocketArtifacts` first-class id-tagged objects route into the
   Citizen's inventory directly. There is currently no equivalent on
   the Logician side — only the Logician → Citizen direction is
-  populated by 6.3. The 6.5 muscle-memory work is expected to add the
-  reverse channel.
+  populated by 6.3.
 
 ---
 
-## 11. Severance naming policy
+## 12. Severance naming policy
 
 Tier 6 draws on the *Severance* (Apple TV+) corporate-horror register
 without using any character names from the show. The Saint-Reed
@@ -607,6 +714,6 @@ See also: `memory/project_severance_naming_policy.md`.
 
 ---
 
-_Last updated: Tier 6.4 ship. Reviewed against `world/sync_state.js`,
-`world/echoes.js`, `world/chord_labor.js`, and `rooms.json` rooms
-301–350._
+_Last updated: Tier 6.5 ship. Reviewed against `world/sync_state.js`,
+`world/echoes.js`, `world/chord_labor.js`, `world/muscle_memory.js`,
+and `rooms.json` rooms 301–350._

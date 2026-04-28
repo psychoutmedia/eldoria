@@ -16,6 +16,7 @@ const speedwalker = require('./world/speedwalker');
 const syncState = require('./world/sync_state');
 const echoesModule = require('./world/echoes');
 const chordLabor = require('./world/chord_labor');
+const muscleMemory = require('./world/muscle_memory');
 
 const PORT = parseInt(process.env.MUD_PORT, 10) || 8888;
 const START_ROOM = 'room_001';
@@ -3480,6 +3481,14 @@ function playerAttackMonster(socket, player, monster) {
     totalDamage = Math.floor(totalDamage * (1 + spellBonus / 100));
   }
 
+  // Tier 6.5: Quota Grit muscle memory - one-shot +25% on this swing
+  let quotaGritFired = false;
+  if (player.effects && player.effects.muscle_quota_grit && player.effects.muscle_quota_grit.armed) {
+    totalDamage = Math.floor(totalDamage * 1.25);
+    delete player.effects.muscle_quota_grit;
+    quotaGritFired = true;
+  }
+
   // Tier 1.4: apply monster resistance against weapon damage type
   const weaponType = (player.equipped && player.equipped.weapon && player.equipped.weapon.damageType) || 'physical';
   totalDamage = applyMonsterResist(totalDamage, weaponType, monster);
@@ -3508,6 +3517,9 @@ function playerAttackMonster(socket, player, monster) {
     'green'
   );
   socket.write(`${damageMsg}\r\n`);
+  if (quotaGritFired) {
+    socket.write(colorize('Quota Grit fires - muscle memory drives the swing.\r\n', 'brightMagenta'));
+  }
 
   // Broadcast to other players in room (replace "your" with "their" for spectators)
   const spectatorVerb = attackVerb.replace('your', 'their');
@@ -3539,6 +3551,17 @@ function monsterAttackPlayer(socket, player, monster) {
     socket.write(colorize(`${monster.name} ${monsterVerb} you but divine light shields you completely!\r\n`, 'brightMagenta'));
     const combatMsg = colorize(`${monster.name} ${monsterVerb} ${getDisplayName(player)} but divine magic protects them!`, 'yellow');
     broadcastToRoom(player.currentRoom, combatMsg, socket);
+    return false;
+  }
+
+  // Tier 6.5: Refinement Reflex muscle memory - one-shot, cancel this attack
+  if (player.effects && player.effects.muscle_refinement_reflex && player.effects.muscle_refinement_reflex.armed) {
+    delete player.effects.muscle_refinement_reflex;
+    const monsterVerb = getRandomMonsterAttackMessage();
+    socket.write(colorize(`${monster.name} ${monsterVerb} you, but Refinement Reflex steers your body clear.\r\n`, 'brightMagenta'));
+    broadcastToRoom(player.currentRoom,
+      colorize(`${monster.name} ${monsterVerb} ${getDisplayName(player)} but they slip the strike with eerie precision.`, 'yellow'),
+      socket);
     return false;
   }
 
@@ -3629,9 +3652,26 @@ function monsterAttackPlayer(socket, player, monster) {
       }
       player.inCombat = false;
       player.combatTarget = null;
+      // Tier 6.5: capture batch count BEFORE we reset, so muscle memory still credits
+      const batchesAtCollapse = (player.personas && player.personas.logic
+        && player.personas.logic.shiftBatchesCompleted) || 0;
       const ej = syncState.ejectToLifeState(player);
       if (ej && ej.ok) {
         socket.write(colorize('You wake on the Citizen side, ears ringing. Neural Hangover applied (5 minutes).\r\n', 'yellow'));
+        // Tier 6.5: even on a forced eject, the work-already-done credits muscle memory
+        if (batchesAtCollapse > 0) {
+          const credited = muscleMemory.creditShiftMemories(player, batchesAtCollapse);
+          if (credited.anyEarned) {
+            const lines = [];
+            for (const [id, count] of Object.entries(credited.earned)) {
+              if (count > 0) lines.push(`  + ${count}x ${muscleMemory.MEMORY_DEFS[id].label}`);
+            }
+            if (lines.length) {
+              socket.write(colorize('Even from collapse, your hands remember:\r\n', 'brightMagenta'));
+              socket.write(colorize(lines.join('\r\n') + '\r\n', 'magenta'));
+            }
+          }
+        }
         // Show new room
         if (typeof showRoom === 'function') showRoom(socket, player);
         // Reset coherence to full so the next Logician shift has a fresh pool
@@ -4133,8 +4173,15 @@ function handleFlee(socket, player) {
 
   socket.write(colorize('You attempt to flee!\r\n', 'yellow'));
 
-  // 60% success chance
-  if (Math.random() < getFleeChance(player)) {
+  // Tier 6.5: Floor Finesse muscle memory forces flee success
+  let finesseFired = false;
+  if (player.effects && player.effects.muscle_floor_finesse && player.effects.muscle_floor_finesse.armed) {
+    delete player.effects.muscle_floor_finesse;
+    finesseFired = true;
+  }
+
+  // 60% success chance (or 100% with Floor Finesse)
+  if (finesseFired || Math.random() < getFleeChance(player)) {
     // SUCCESS - Pick random exit and move there
     const [direction, targetRoomId] = exits[Math.floor(Math.random() * exits.length)];
     const oldRoom = player.currentRoom;
@@ -4144,6 +4191,9 @@ function handleFlee(socket, player) {
     player.experience = Math.max(0, player.experience - xpLoss);
 
     socket.write(colorize(`SUCCESS! You flee ${direction}!\r\n`, 'green'));
+    if (finesseFired) {
+      socket.write(colorize('Floor Finesse fires - your feet move before your mind decides.\r\n', 'brightMagenta'));
+    }
     socket.write(colorize(`Your hasty retreat costs you ${xpLoss} experience!\r\n`, 'yellow'));
 
     // Broadcast to old room
@@ -4551,8 +4601,15 @@ function handleMonsterCombatFlee(socket, player) {
 
   socket.write(colorize('You attempt to flee!\r\n', 'yellow'));
 
-  // 60% success chance
-  if (Math.random() < getFleeChance(player)) {
+  // Tier 6.5: Floor Finesse muscle memory forces flee success
+  let finesseFired = false;
+  if (player.effects && player.effects.muscle_floor_finesse && player.effects.muscle_floor_finesse.armed) {
+    delete player.effects.muscle_floor_finesse;
+    finesseFired = true;
+  }
+
+  // 60% success chance (or 100% with Floor Finesse)
+  if (finesseFired || Math.random() < getFleeChance(player)) {
     // SUCCESS - Pick random exit and move there
     const [direction, targetRoomId] = exits[Math.floor(Math.random() * exits.length)];
     const oldRoom = player.currentRoom;
@@ -4562,6 +4619,9 @@ function handleMonsterCombatFlee(socket, player) {
     player.experience = Math.max(0, player.experience - xpLoss);
 
     socket.write(colorize(`SUCCESS! You flee ${direction}!\r\n`, 'green'));
+    if (finesseFired) {
+      socket.write(colorize('Floor Finesse fires - your feet move before your mind decides.\r\n', 'brightMagenta'));
+    }
     socket.write(colorize(`Your hasty retreat costs you ${xpLoss} experience!\r\n`, 'yellow'));
 
     // Broadcast to old room
@@ -7794,6 +7854,7 @@ function handleSwap(socket, player) {
     }
   }
   // Tier 6.3: stamp the start of any new Logician shift
+  let memoryCredit = null;
   if (r.to === 'logic' && player.personas && player.personas.logic) {
     player.personas.logic.shiftStartedAt = Date.now();
     // Tier 6.4: shift counter resets at the start of each Logician shift
@@ -7801,6 +7862,12 @@ function handleSwap(socket, player) {
   } else if (player.personas && player.personas.logic) {
     // We're leaving Logic-State; clear the stamp so the next shift starts fresh
     player.personas.logic.shiftStartedAt = null;
+    // Tier 6.5: capture the shift's batch count BEFORE we reset the counter,
+    // and credit muscle-memory charges to the Citizen.
+    const batchesThisShift = player.personas.logic.shiftBatchesCompleted || 0;
+    if (batchesThisShift > 0) {
+      memoryCredit = muscleMemory.creditShiftMemories(player, batchesThisShift);
+    }
     // Tier 6.4: drop any in-progress batch (no Coherence penalty); reset shift counter
     player.personas.logic.activeTask = null;
     player.personas.logic.shiftBatchesCompleted = 0;
@@ -7813,6 +7880,20 @@ function handleSwap(socket, player) {
   socket.write(colorize(`You are now the ${r.to === 'logic' ? 'Logician' : 'Citizen'}.\r\n`, 'brightYellow'));
   if (creditsEarned > 0) {
     socket.write(colorize(`Logician shift earnings credited: ${creditsEarned} Theta credits.\r\n`, 'green'));
+  }
+  // Tier 6.5: announce muscle-memory charges earned by the just-ended shift
+  if (memoryCredit && memoryCredit.anyEarned) {
+    const lines = [];
+    for (const [id, count] of Object.entries(memoryCredit.earned)) {
+      if (count > 0) {
+        const def = muscleMemory.MEMORY_DEFS[id];
+        lines.push(`  + ${count}x ${def.label}`);
+      }
+    }
+    if (lines.length) {
+      socket.write(colorize('Muscle memory carries through:\r\n', 'brightMagenta'));
+      socket.write(colorize(lines.join('\r\n') + '\r\n', 'magenta'));
+    }
   }
   if (surfaced.length > 0) {
     socket.write(colorize(`In your pocket, you find:\r\n`, 'magenta'));
@@ -8037,9 +8118,24 @@ function handleApplyVerb(verb, socket, player, args) {
   if (after <= 0) {
     socket.write(colorize('\r\n=== YOUR COHERENCE COLLAPSES ===\r\n', 'brightRed'));
     socket.write(colorize('Your Logician self loses internal consistency. The room rejects you.\r\n', 'red'));
+    // Tier 6.5: capture batch count BEFORE eject so muscle memory still credits
+    const batchesAtCollapse = logic.shiftBatchesCompleted || 0;
     const ej = syncState.ejectToLifeState(player);
     if (ej && ej.ok) {
       socket.write(colorize('You wake on the Citizen side, ears ringing. Neural Hangover applied (5 minutes).\r\n', 'yellow'));
+      if (batchesAtCollapse > 0) {
+        const credited = muscleMemory.creditShiftMemories(player, batchesAtCollapse);
+        if (credited.anyEarned) {
+          const lines = [];
+          for (const [id, count] of Object.entries(credited.earned)) {
+            if (count > 0) lines.push(`  + ${count}x ${muscleMemory.MEMORY_DEFS[id].label}`);
+          }
+          if (lines.length) {
+            socket.write(colorize('Even from collapse, your hands remember:\r\n', 'brightMagenta'));
+            socket.write(colorize(lines.join('\r\n') + '\r\n', 'magenta'));
+          }
+        }
+      }
       if (player.personas && player.personas.logic) {
         player.personas.logic.coherence = player.personas.logic.maxCoherence || 100;
         player.personas.logic.activeTask = null;
@@ -8049,6 +8145,82 @@ function handleApplyVerb(verb, socket, player, args) {
       if (typeof showRoom === 'function') showRoom(socket, player);
     }
   }
+}
+
+// ============================================
+// TIER 6.5: MUSCLE MEMORY — Citizen-side one-shot abilities
+// ============================================
+//
+// `memory` lists the player's available memory charges. `memory <id>`
+// consumes one charge and applies its effect: queued combat hooks
+// (refinement_reflex / quota_grit / floor_finesse) or instant heal
+// (console_calm). Memories are earned by the Logician on shift-end
+// and stored on personas.life.muscleMemory.
+
+function handleMemory(socket, player, args) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  const trimmed = (args || '').trim();
+  if (!trimmed) {
+    // List
+    const list = muscleMemory.listMemories(player);
+    socket.write(colorize('Muscle Memories:\r\n', 'brightMagenta'));
+    for (const m of list) {
+      const charges = m.charges > 0 ? colorize(`${m.charges}`, 'brightGreen') : colorize('0', 'gray');
+      socket.write(`  [${charges}] ${colorize(m.label, 'magenta')} - ${m.description} ` +
+                   colorize(`(earn 1 per ${m.earnEvery} batches)\r\n`, 'gray'));
+    }
+    if (syncState.getActivePersona(player) === 'logic') {
+      socket.write(colorize('Note: charges are stored as the Citizen. Swap to Life-State to spend them.\r\n', 'yellow'));
+    }
+    return;
+  }
+
+  const id = muscleMemory.resolveMemoryName(trimmed);
+  if (!id) {
+    socket.write(colorize(`Unknown memory: ${trimmed}\r\n`, 'red'));
+    return;
+  }
+  // Memories spend from the Citizen pool; they only fire if you ARE the Citizen.
+  if (syncState.getActivePersona(player) !== 'life') {
+    socket.write(colorize('Muscle memory belongs to the Citizen. Swap to Life-State first.\r\n', 'yellow'));
+    return;
+  }
+
+  const def = muscleMemory.MEMORY_DEFS[id];
+
+  // Pre-flight check: queued combat-hook memories should be deferred until
+  // they have something to act on. Refinement Reflex outside combat is wasted.
+  if (def.effectKey === 'muscle_refinement_reflex' && !player.inCombat) {
+    socket.write(colorize('No incoming attack to cancel. Save it for combat.\r\n', 'gray'));
+    return;
+  }
+  if (def.effectKey === 'muscle_quota_grit' && !player.inCombat) {
+    socket.write(colorize('No melee swing to empower. Save it for combat.\r\n', 'gray'));
+    return;
+  }
+  if (def.effectKey === 'muscle_floor_finesse' && !player.inCombat) {
+    socket.write(colorize('No flight to assure. Save it for combat.\r\n', 'gray'));
+    return;
+  }
+
+  const r = muscleMemory.consumeMemory(player, id);
+  if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
+
+  // Apply effect
+  if (def.instantHeal && def.instantHeal > 0) {
+    const before = player.currentHP;
+    const after = Math.min(player.maxHP || before + def.instantHeal, before + def.instantHeal);
+    const restored = after - before;
+    player.currentHP = after;
+    socket.write(colorize(`${def.label} fires. You recover ${restored} HP. (${after}/${player.maxHP} HP)\r\n`, 'brightGreen'));
+  } else if (def.effectKey) {
+    if (!player.effects) player.effects = {};
+    player.effects[def.effectKey] = { armed: true, armedAt: Date.now() };
+    socket.write(colorize(`${def.label} primed. ${def.description}\r\n`, 'brightMagenta'));
+  } else {
+    socket.write(colorize(`${def.label} fires.\r\n`, 'brightMagenta'));
+  }
+  socket.write(colorize(`(Charges remaining: ${r.remaining})\r\n`, 'gray'));
 }
 
 // ============================================
@@ -12323,6 +12495,14 @@ function processCommand(socket, player, input) {
     const original = input.trim();
     const args = original.length > 7 ? original.slice(7) : '';
     handleApplyVerb('refine', socket, player, args);
+    return true;
+  }
+
+  // Tier 6.5: muscle memory (Citizen-side one-shot abilities)
+  if (command === 'memory' || command === 'memories' || command.startsWith('memory ')) {
+    const original = input.trim();
+    const args = command.startsWith('memory ') ? original.slice(7) : '';
+    handleMemory(socket, player, args);
     return true;
   }
 
