@@ -2428,7 +2428,8 @@
     "shortDescription": "A cluster of eight refinement consoles arranged in a polite octagon.",
     "longDescription": "Eight consoles face inward. The screens cycle through patterns of unfamiliar numbers, sometimes pausing as if waiting for a Logician to recognise them. The carpet under your feet is pale grey, brand-new, and faintly tacky from the warm liquid the cleaners use. Above each console is the Saint-Reed Institute logo, embossed into the ceiling tile.",
     "exits": { "south": "room_312", "north": "room_314", "east": "room_326" },
-    "isLogicState": true
+    "isLogicState": true,
+    "isChordTerminal": true
   },
   "room_314": {
     "name": "Refinement Floor 1 - Quota Board",
@@ -2444,7 +2445,8 @@
     "shortDescription": "A second cluster of consoles, slightly older, slightly louder.",
     "longDescription": "Cluster B is functionally identical to Cluster A but is rumoured (in pamphlets you cannot remember reading) to be where new Logicians are tested. The chairs are subtly less comfortable. The displays cycle slightly faster. A janitor's bucket has been left in the corner; the water in it ripples on a frequency that doesn't quite match the room's hum.",
     "exits": { "south": "room_314", "north": "room_316" },
-    "isLogicState": true
+    "isLogicState": true,
+    "isChordTerminal": true
   },
   "room_316": {
     "name": "Refinement Floor 1 - North Stair",
@@ -2476,7 +2478,8 @@
     "shortDescription": "A cluster identical to those on Floor 1, but everyone here is wearing softer shoes.",
     "longDescription": "Cluster C is rated for senior Logicians and the carpet is correspondingly thicker. The displays have a slightly higher refresh rate. Rubber footrests sigh under the chairs as if they too are decompressing. There is no clock anywhere.",
     "exits": { "south": "room_318", "north": "room_320" },
-    "isLogicState": true
+    "isLogicState": true,
+    "isChordTerminal": true
   },
   "room_320": {
     "name": "Refinement Floor 2 - Supervisor's Office",
@@ -2537,7 +2540,8 @@
     "shortDescription": "Long tables, fluorescent lamps, and a faint smell of solvent.",
     "longDescription": "The layout room is where institutional materials are pasted up by hand: a discipline most companies abandoned decades ago, but here the Founder is said to prefer the texture. A half-finished broadsheet reads, beneath your hand: WELCOME, NEW LOGICIAN. WE WANT YOU TO FEEL RIGHT AS RAIN.",
     "exits": { "south": "room_326", "north": "room_328" },
-    "isLogicState": true
+    "isLogicState": true,
+    "isChordTerminal": true
   },
   "room_328": {
     "name": "Optics & Drafting - Light Box",

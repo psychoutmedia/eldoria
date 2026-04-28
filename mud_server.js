@@ -15,6 +15,7 @@ const friends = require('./world/friends');
 const speedwalker = require('./world/speedwalker');
 const syncState = require('./world/sync_state');
 const echoesModule = require('./world/echoes');
+const chordLabor = require('./world/chord_labor');
 
 const PORT = parseInt(process.env.MUD_PORT, 10) || 8888;
 const START_ROOM = 'room_001';
@@ -952,7 +953,9 @@ const cycleLeaderboard = {
   xpGained: { name: null, value: 0 },
   monstersKilled: { name: null, value: 0 },
   goldEarned: { name: null, value: 0 },
-  bossesDefeated: []
+  bossesDefeated: [],
+  // Tier 6.4
+  batchesCompleted: { name: null, value: 0 }
 };
 
 // Wandering Healer NPC State
@@ -1294,6 +1297,7 @@ function createPlayer(name = null) {
     cycleMonstersKilled: 0,
     cycleGoldEarned: 0,
     cycleBossesDefeated: [],
+    cycleBatchesCompleted: 0,
     // Chapel healing cooldown
     lastChapelHeal: 0,
     // PVP State
@@ -1741,6 +1745,7 @@ function loadPlayer(playerName) {
       cycleMonstersKilled: 0,
       cycleGoldEarned: 0,
       cycleBossesDefeated: [],
+      cycleBatchesCompleted: 0,
       // Chapel healing cooldown
       lastChapelHeal: 0,
       // PVP State (resets on load)
@@ -3632,6 +3637,10 @@ function monsterAttackPlayer(socket, player, monster) {
         // Reset coherence to full so the next Logician shift has a fresh pool
         if (player.personas && player.personas.logic) {
           player.personas.logic.coherence = player.personas.logic.maxCoherence || 100;
+          // Tier 6.4: forced eject also drops any active batch and resets the shift counter
+          player.personas.logic.activeTask = null;
+          player.personas.logic.shiftBatchesCompleted = 0;
+          player.personas.logic.shiftStartedAt = null;
         }
       }
     }
@@ -5329,6 +5338,8 @@ function updateCycleLeaderboard(playerName, category, value) {
     if (!cycleLeaderboard.bossesDefeated.includes(playerName)) {
       cycleLeaderboard.bossesDefeated.push(playerName);
     }
+  } else if (category === 'batches' && value > cycleLeaderboard.batchesCompleted.value) {
+    cycleLeaderboard.batchesCompleted = { name: playerName, value: value };
   }
 }
 
@@ -5350,6 +5361,9 @@ function displayCycleLeaderboard() {
   }
   if (cycleLeaderboard.bossesDefeated.length > 0) {
     leaderboardMsg += colorize(`Boss Slayers: ${cycleLeaderboard.bossesDefeated.join(', ')}\r\n`, 'magenta');
+  }
+  if (cycleLeaderboard.batchesCompleted.name) {
+    leaderboardMsg += colorize(`Refinement Champion: ${cycleLeaderboard.batchesCompleted.name} (${cycleLeaderboard.batchesCompleted.value} batches)\r\n`, 'brightCyan');
   }
 
   if (!cycleLeaderboard.xpGained.name && !cycleLeaderboard.monstersKilled.name && !cycleLeaderboard.goldEarned.name) {
@@ -5411,6 +5425,7 @@ function executeWorldReset() {
       player.cycleMonstersKilled = 0;
       player.cycleGoldEarned = 0;
       player.cycleBossesDefeated = [];
+      player.cycleBatchesCompleted = 0;
 
       // Re-arm cycle-scoped endgame abilities
       player.cursorJumpUsedThisCycle = false;
@@ -5427,6 +5442,7 @@ function executeWorldReset() {
   cycleLeaderboard.monstersKilled = { name: null, value: 0 };
   cycleLeaderboard.goldEarned = { name: null, value: 0 };
   cycleLeaderboard.bossesDefeated = [];
+  cycleLeaderboard.batchesCompleted = { name: null, value: 0 };
 
   // Start new cycle
   cycleNumber++;
@@ -7780,9 +7796,14 @@ function handleSwap(socket, player) {
   // Tier 6.3: stamp the start of any new Logician shift
   if (r.to === 'logic' && player.personas && player.personas.logic) {
     player.personas.logic.shiftStartedAt = Date.now();
+    // Tier 6.4: shift counter resets at the start of each Logician shift
+    player.personas.logic.shiftBatchesCompleted = 0;
   } else if (player.personas && player.personas.logic) {
     // We're leaving Logic-State; clear the stamp so the next shift starts fresh
     player.personas.logic.shiftStartedAt = null;
+    // Tier 6.4: drop any in-progress batch (no Coherence penalty); reset shift counter
+    player.personas.logic.activeTask = null;
+    player.personas.logic.shiftBatchesCompleted = 0;
   }
   // Tier 6.3: surface up to 3 pocket artifacts that the OTHER persona left in their pockets
   const surfaced = syncState.drainPocketArtifacts(player, 3);
@@ -7842,6 +7863,191 @@ function renderEchoesForRoom(socket, roomId) {
   for (const s of list) {
     const left = echoesModule.formatRemaining(s.expiresAt - Date.now());
     socket.write(colorize(`  [${s.kind}] ${s.text} (left by ${s.leftBy}, ${left} left)\r\n`, 'magenta'));
+  }
+}
+
+// ============================================
+// TIER 6.4: CHORD LABOR — the Logician's work loop
+// ============================================
+//
+// `task` shows the active batch. `task pull` pulls a fresh batch at a
+// Chord Terminal. `task abandon` drops it. `sort`/`bind`/`refine`
+// apply verbs against rows. `quota` reports the shift counter against
+// the per-floor target.
+//
+// Reward delivery is owned here: XP through the standard
+// `experience += ; checkLevelUp` path, credits onto
+// player.personas.life.credits, practice points onto
+// player.practicePoints, and the cycle leaderboard via
+// updateCycleLeaderboard('batches', ...).
+
+function getLogicTaskBlock(player) {
+  if (!player || !player.personas || !player.personas.logic) return null;
+  return player.personas.logic;
+}
+
+function isPlayerInLogicState(player) {
+  return !!(player && player.personas && syncState.getActivePersona(player) === 'logic');
+}
+
+function handleTask(socket, player, args) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  if (!isPlayerInLogicState(player)) {
+    socket.write(colorize('Chord Labor is a Logician duty. Swap into Logic-State at a Sync Terminal first.\r\n', 'red'));
+    return;
+  }
+  const logic = getLogicTaskBlock(player);
+  if (!logic) { socket.write(colorize('No Logician persona registered.\r\n', 'red')); return; }
+  const sub = (args || '').trim().toLowerCase();
+
+  if (sub === '' || sub === 'show' || sub === 'status') {
+    if (!logic.activeTask) {
+      socket.write(colorize('No active task. Find a Refinement Console (`task pull`) to begin.\r\n', 'gray'));
+      return;
+    }
+    socket.write(colorize(chordLabor.describeBatch(logic.activeTask) + '\r\n', 'cyan'));
+    return;
+  }
+
+  if (sub === 'pull') {
+    if (logic.activeTask) {
+      socket.write(colorize('You already have an active task. Finish it or `task abandon` first.\r\n', 'yellow'));
+      return;
+    }
+    const room = rooms[player.currentRoom];
+    if (!chordLabor.isChordTerminal(room, player.currentRoom)) {
+      socket.write(colorize('There is no Refinement Console here. Stand at a console cluster.\r\n', 'red'));
+      return;
+    }
+    if (player.effects && player.effects.quota_lock && player.effects.quota_lock.expiresAt > Date.now()) {
+      const remaining = Math.ceil((player.effects.quota_lock.expiresAt - Date.now()) / 1000);
+      socket.write(colorize(`The console refuses you. A quota period is in effect. ${remaining}s remaining.\r\n`, 'red'));
+      return;
+    }
+    const batch = chordLabor.generateBatch(player.currentRoom);
+    if (!batch) {
+      socket.write(colorize('This console refuses to dispense a batch.\r\n', 'red'));
+      return;
+    }
+    logic.activeTask = batch;
+    socket.write(colorize(`The console hums and presents a batch.\r\n`, 'brightCyan'));
+    socket.write(colorize(chordLabor.describeBatch(batch) + '\r\n', 'cyan'));
+    return;
+  }
+
+  if (sub === 'abandon' || sub === 'drop' || sub === 'cancel') {
+    if (!logic.activeTask) {
+      socket.write(colorize('No active task to abandon.\r\n', 'gray'));
+      return;
+    }
+    logic.activeTask = null;
+    socket.write(colorize('You step back from the console. The batch is reabsorbed without comment.\r\n', 'gray'));
+    return;
+  }
+
+  socket.write('Usage: task | task pull | task abandon\r\n');
+}
+
+function handleQuota(socket, player) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  if (!isPlayerInLogicState(player)) {
+    socket.write(colorize('Quotas apply to Logicians on shift. Swap into Logic-State first.\r\n', 'red'));
+    return;
+  }
+  const logic = getLogicTaskBlock(player);
+  if (!logic) { socket.write(colorize('No Logician persona registered.\r\n', 'red')); return; }
+  const completed = logic.shiftBatchesCompleted || 0;
+  const target = chordLabor.FLOOR_QUOTA_TARGET;
+  const lifetime = logic.lifetimeBatches || 0;
+  socket.write(colorize(`Shift: ${completed}/${target} batches refined`, 'brightYellow') + '\r\n');
+  if (completed >= target) {
+    socket.write(colorize('  Quota: MET. Continue at your own discretion.\r\n', 'green'));
+  } else {
+    socket.write(colorize(`  Quota: ${target - completed} more batches to meet today's target.\r\n`, 'yellow'));
+  }
+  socket.write(colorize(`Lifetime batches refined: ${lifetime}\r\n`, 'gray'));
+}
+
+function handleApplyVerb(verb, socket, player, args) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  if (!isPlayerInLogicState(player)) {
+    socket.write(colorize(`The verb \`${verb}\` does nothing here. It is a Logician operation.\r\n`, 'gray'));
+    return;
+  }
+  const logic = getLogicTaskBlock(player);
+  if (!logic) { socket.write(colorize('No Logician persona registered.\r\n', 'red')); return; }
+  if (!logic.activeTask) {
+    socket.write(colorize('You have no active task. Try `task pull` at a Refinement Console.\r\n', 'red'));
+    return;
+  }
+
+  const trimmed = (args || '').trim();
+  if (!trimmed) { socket.write(`Usage: ${verb} <row#>\r\n`); return; }
+  const n = parseInt(trimmed, 10);
+  if (!Number.isFinite(n)) { socket.write(`Usage: ${verb} <row#>\r\n`); return; }
+  const rowIndex = n - 1; // 1-indexed in UI
+
+  const r = chordLabor.applyVerb(logic.activeTask, verb, rowIndex);
+  if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
+
+  if (r.cleared) {
+    socket.write(colorize(`Row ${n} (${r.rowType}) clears. The console accepts the operation.\r\n`, 'green'));
+    if (r.complete) {
+      // Award the batch
+      const reward = chordLabor.computeReward(logic.activeTask, player.level);
+      // XP — standard path
+      player.experience = (player.experience || 0) + reward.xp;
+      player.cycleXPGained = (player.cycleXPGained || 0) + reward.xp;
+      updateCycleLeaderboard(player.name, 'xp', player.cycleXPGained);
+      checkLevelUp(socket, player);
+      // Theta-credits to the Citizen
+      if (player.personas && player.personas.life) {
+        player.personas.life.credits = (player.personas.life.credits || 0) + reward.credits;
+      }
+      // Practice point
+      if (typeof player.practicePoints !== 'number') player.practicePoints = 0;
+      player.practicePoints += reward.practicePoints;
+      // Counters
+      logic.shiftBatchesCompleted = (logic.shiftBatchesCompleted || 0) + 1;
+      logic.lifetimeBatches = (logic.lifetimeBatches || 0) + 1;
+      player.cycleBatchesCompleted = (player.cycleBatchesCompleted || 0) + 1;
+      updateCycleLeaderboard(player.name, 'batches', player.cycleBatchesCompleted);
+      // Drop the batch
+      logic.activeTask = null;
+
+      socket.write(colorize('\r\n=== Batch Refined ===\r\n', 'brightCyan'));
+      socket.write(colorize(`+${reward.xp} XP, +${reward.credits} Theta-credits, +${reward.practicePoints} practice point.\r\n`, 'green'));
+      if (reward.isRapid) {
+        socket.write(colorize('Rapid refinement bonus applied (x1.5 credits).\r\n', 'brightYellow'));
+      }
+      // Quota celebratory beat
+      if (logic.shiftBatchesCompleted === chordLabor.FLOOR_QUOTA_TARGET) {
+        socket.write(colorize('The floor monitor pulses softly: QUOTA MET.\r\n', 'brightGreen'));
+      }
+    }
+    return;
+  }
+
+  // Wrong verb: drain Coherence
+  const cost = r.coherenceCost || 0;
+  const before = logic.coherence || 0;
+  const after = Math.max(0, before - cost);
+  logic.coherence = after;
+  socket.write(colorize(`The console rejects ${verb} on row ${n}. Expected ${r.expected}. Coherence -${cost} (${after}/${logic.maxCoherence || 100}).\r\n`, 'red'));
+  if (after <= 0) {
+    socket.write(colorize('\r\n=== YOUR COHERENCE COLLAPSES ===\r\n', 'brightRed'));
+    socket.write(colorize('Your Logician self loses internal consistency. The room rejects you.\r\n', 'red'));
+    const ej = syncState.ejectToLifeState(player);
+    if (ej && ej.ok) {
+      socket.write(colorize('You wake on the Citizen side, ears ringing. Neural Hangover applied (5 minutes).\r\n', 'yellow'));
+      if (player.personas && player.personas.logic) {
+        player.personas.logic.coherence = player.personas.logic.maxCoherence || 100;
+        player.personas.logic.activeTask = null;
+        player.personas.logic.shiftBatchesCompleted = 0;
+        player.personas.logic.shiftStartedAt = null;
+      }
+      if (typeof showRoom === 'function') showRoom(socket, player);
+    }
   }
 }
 
@@ -12087,6 +12293,36 @@ function processCommand(socket, player, input) {
     const original = input.trim();
     const args = original.length > 6 ? original.slice(6) : '';
     handleEcho('stack', socket, player, args);
+    return true;
+  }
+
+  // Tier 6.4: chord labor (the Logician's work loop)
+  if (command === 'task' || command.startsWith('task ')) {
+    const original = input.trim();
+    const args = original.length > 5 ? original.slice(5) : '';
+    handleTask(socket, player, args);
+    return true;
+  }
+  if (command === 'quota') {
+    handleQuota(socket, player);
+    return true;
+  }
+  if (command === 'sort' || command.startsWith('sort ')) {
+    const original = input.trim();
+    const args = original.length > 5 ? original.slice(5) : '';
+    handleApplyVerb('sort', socket, player, args);
+    return true;
+  }
+  if (command === 'bind' || command.startsWith('bind ')) {
+    const original = input.trim();
+    const args = original.length > 5 ? original.slice(5) : '';
+    handleApplyVerb('bind', socket, player, args);
+    return true;
+  }
+  if (command === 'refine' || command.startsWith('refine ')) {
+    const original = input.trim();
+    const args = original.length > 7 ? original.slice(7) : '';
+    handleApplyVerb('refine', socket, player, args);
     return true;
   }
 
