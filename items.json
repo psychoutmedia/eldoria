@@ -852,6 +852,18 @@
       "value": 0,
       "description": "A laminated card, your photo printed too cleanly, your name spelled correctly, the words THE SAINT-REED INSTITUTE FOR HUMAN POTENTIAL embossed in pale silver across the bottom. It is a permission slip and a leash."
     },
+    "vault_cipher": {
+      "name": "Vault Cipher",
+      "type": "treasure",
+      "value": 0,
+      "description": "A small steel disc the size of a thumbnail, stamped with a six-digit number that is, you suspect, the only six-digit number that has ever mattered. Reading it is a quiet kind of victory. Carrying it is a louder one."
+    },
+    "personal_file": {
+      "name": "Personal File",
+      "type": "treasure",
+      "value": 0,
+      "description": "A manila folder labelled, in a font called CONFIDENCE, with your name. The pages inside describe things about you that are true and that you have never said out loud. The file is not heavy. The file is, and remains, yours."
+    },
     "memory_fragment": {
       "name": "Memory Fragment",
       "type": "treasure",

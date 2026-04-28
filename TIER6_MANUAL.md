@@ -12,9 +12,12 @@ single character file but isolate their location, HP/mana, inventory,
 gold, equipped gear, and effects. The split is enforced at the **Sync
 Terminal** rooms; outside those rooms `swap` is illegal.
 
-> **Scope of this pass.** Tier 6 ships in incremental phases. As of this
-> document, **6.1, 6.2, 6.3, 6.4, and 6.5** are live. **6.6** (the
-> Macrodata Vault capstone) is stubbed but not implemented — see §10.
+> **Scope of this pass.** Tier 6 is now feature-complete. **6.1–6.6**
+> are all live. The roadmap arc — Sync-State foundation, Logic-State
+> Refinement Floors, Life-State Township, the Chord Labor work loop,
+> Muscle Memory cross-persona abilities, and the Macrodata Vault
+> capstone — closes with the Founder's Echo and the title "the
+> Severed."
 
 Target audience: maintainers who need to understand the dual-persona
 schema and its hooks, and players who want to know what the new verbs
@@ -30,12 +33,13 @@ do.
 4. [6.3 Life-State Theta Township & Echoes](#4-63-life-state-theta-township--echoes)
 5. [6.4 Chord Labor (the work loop)](#5-64-chord-labor-the-work-loop)
 6. [6.5 Muscle Memory (cross-persona one-shot abilities)](#6-65-muscle-memory-cross-persona-one-shot-abilities)
-7. [Save-file schema & migration](#7-save-file-schema--migration)
-8. [Hooks the Tier 6 modules install](#8-hooks-the-tier-6-modules-install)
-9. [Smoke / verify suites](#9-smoke--verify-suites)
-10. [Tuning constants reference](#10-tuning-constants-reference)
-11. [Known limitations & deferred work](#11-known-limitations--deferred-work)
-12. [Severance naming policy](#12-severance-naming-policy)
+7. [6.6 The Macrodata Vault (capstone)](#7-66-the-macrodata-vault-capstone)
+8. [Save-file schema & migration](#8-save-file-schema--migration)
+9. [Hooks the Tier 6 modules install](#9-hooks-the-tier-6-modules-install)
+10. [Smoke / verify suites](#10-smoke--verify-suites)
+11. [Tuning constants reference](#11-tuning-constants-reference)
+12. [Known limitations & deferred work](#12-known-limitations--deferred-work)
+13. [Severance naming policy](#13-severance-naming-policy)
 
 ---
 
@@ -444,7 +448,107 @@ it's already in the Citizen's body.
 
 ---
 
-## 7. Save-file schema & migration
+## 7. 6.6 The Macrodata Vault (capstone)
+
+The reinforced steel door at the north end of Refinement Floor 2 finally
+opens — for Logicians who've put in the throughput. Inside: a short
+corridor, a glass cubicle, a final encounter with the Founder's Echo,
+and a Reading Carrel that gives a piece of you back on the way out.
+
+### Layout (rooms 351–354)
+
+| Room      | Name                       | Notes                                                        |
+|-----------|----------------------------|--------------------------------------------------------------|
+| room_322  | Vault Antechamber          | The reader plate (now glowing pale green) — Logician-only east exit |
+| room_351  | Vault Threshold            | Just inside. `isVaultEntry: true` — gate-checked at entry    |
+| room_352  | Cold Storage Aisle         | Atmospheric corridor; side door east to the Reading Carrel   |
+| room_353  | The Founder's Cubicle      | Boss arena. The Founder's Echo waits here, fixed-room        |
+| room_354  | The Reading Carrel         | Post-fight payoff space; soft carpet, warm lamp, your file   |
+
+All four are flagged `isLogicState`. The Citizen cannot reach them at
+all (the gate at room_351 demands Logic-State).
+
+### The entry gate
+
+`isVaultEntry: true` on room_351 triggers `vault.canEnterVault(player,
+{ isLogicNow })` from `handleMove` before the player crosses. Both
+conditions must hold:
+
+| Gate                                      | Reject reason                                                     |
+|-------------------------------------------|-------------------------------------------------------------------|
+| Active persona !== `'logic'`              | "The Vault reader plate is dark. Only a Logician carries the right clearance." |
+| `personas.logic.lifetimeBatches < 30`     | "The reader plate refuses you. Your throughput is insufficient. (Lifetime batches: N/30)" |
+
+`lifetimeBatches` is the same counter Tier 6.4 increments on every
+batch refined; it persists across cycles. The gate intentionally
+favours patient play — a single dedicated shift can clear it
+(8–10 batches × ~3 shifts), but you cannot brute-force in.
+
+### The Founder's Echo (boss)
+
+A new entry in `monsterData.bosses` (`the_founders_echo`):
+
+| Field         | Value                                            |
+|---------------|--------------------------------------------------|
+| Level         | 38                                               |
+| HP            | 2800                                             |
+| str           | 90                                               |
+| `combatType`  | `coherence` (counter-attacks drain Coherence)    |
+| `fixedRoom`   | `room_353`                                       |
+| Loot          | "Vault Cipher" (Legendary)                       |
+
+Phase mechanics live in `BOSS_SIGNATURES.the_founders_echo`:
+
+| Trigger                   | Effect                                                            |
+|---------------------------|-------------------------------------------------------------------|
+| `onPlayerHit` at ≤ 50% HP | `bossState.phase2 = true`. Narrates "The Echo splits along an unfamiliar seam. Your reasoning frays in slow waves." Broadcasts to room. |
+| Phase 2 active            | The coherence-damage path multiplies the Echo's counter-attack damage by **1.5×** (`vault.founderCoherenceMult`). |
+
+The 1.5× multiplier is applied right after the standard coherence
+check in `monsterAttackPlayer`, before the player's coherence
+decrements. It's pure data: no separate damage roll, no extra round.
+
+### The clear reward
+
+On defeat (per `vault.applyVaultClearReward(player)` — idempotent):
+
+| Award                                                       | Where it lands                                                |
+|-------------------------------------------------------------|---------------------------------------------------------------|
+| Title **"the Severed"** (suffix)                            | `player.suffix` — only if no suffix is currently set          |
+| **+20 max Coherence permanent**                             | `personas.logic.maxCoherence`; `coherence` topped to new max  |
+| **+5,000 XP**                                               | Standard XP path + cycle leaderboard XP bump                  |
+| **+2,000 gold to the Citizen**                              | `personas.life.gold`                                          |
+| **Vault Cipher** item                                       | Direct push to `player.inventory` (subject to cap)            |
+| Flag `player.vaultCleared = true`                           | Idempotency guard — re-killing on later cycles drops cipher only |
+
+The suffix is **non-destructive**: if the player already wears a
+title (e.g. "the Harmonist" from the Eldoria 2.0 finale), the reward
+preserves it. The XP / gold / coherence / cipher land regardless.
+
+On a re-kill in a later cycle (the boss respawns via the standard
+`defeatedBosses.clear()` reset), the function returns
+`alreadyCleared: true` and the engine renders a quieter beat: "The
+Echo settles again. The folder is unchanged. You leave the cubicle a
+second time."
+
+### `world/vault.js` exports
+
+| Symbol                              | Purpose                                                       |
+|-------------------------------------|---------------------------------------------------------------|
+| `ENTRY_ROOM_ID`, `BOSS_ROOM_ID`,    |                                                               |
+| `RECARREL_ROOM_ID`                  | Room ids for the four Vault rooms                             |
+| `FOUNDER_TEMPLATE`                  | `'the_founders_echo'`                                         |
+| `ENTRY_GATE`                        | `{ lifetimeBatchesRequired: 30, requireLogicState: true }`    |
+| `CLEAR_REWARD`                      | `{ suffix, coherenceBonus, xp, goldToCitizen, itemId }`       |
+| `FOUNDER_PHASES`                    | `{ phase2HpFraction, phase2CoherenceMult, phase2Narration }`  |
+| `canEnterVault(player, opts)`       | Gate check; `opts.isLogicNow` is computed by caller           |
+| `applyVaultClearReward(player)`     | Idempotent reward application                                 |
+| `shouldTriggerPhase2(monster)`      | Pure: trip phase-2 once at ≤ 50% HP                           |
+| `founderCoherenceMult(monster)`     | 1.0 default, 1.5 when `bossState.phase2`                      |
+
+---
+
+## 8. Save-file schema & migration
 
 ### Persona block layout
 
@@ -527,7 +631,7 @@ headache, never stranded mid-floor.
 
 ---
 
-## 8. Hooks the Tier 6 modules install
+## 9. Hooks the Tier 6 modules install
 
 ### `world/sync_state.js`
 
@@ -572,9 +676,18 @@ headache, never stranded mid-floor.
 | `monsterAttackPlayer` (after divine)      | Refinement Reflex consumes `muscle_refinement_reflex`, returns false |
 | `handleFlee` / `handleMonsterCombatFlee`  | Floor Finesse consumes `muscle_floor_finesse`, forces success|
 
+### `world/vault.js` (6.6)
+
+| Hook point                                | What runs                                                       |
+|-------------------------------------------|-----------------------------------------------------------------|
+| `handleMove` into `isVaultEntry` room     | `canEnterVault(player, { isLogicNow })` rejects with the appropriate gate error |
+| `BOSS_SIGNATURES.the_founders_echo` onPlayerHit | `shouldTriggerPhase2(monster)` flips `bossState.phase2` and narrates the split |
+| `monsterAttackPlayer` coherence path      | `founderCoherenceMult(monster)` applies the 1.5× phase-2 multiplier |
+| Boss-defeat path (templateId match)       | `applyVaultClearReward(player)`, bonus XP + Citizen gold + `createItem('vault_cipher')` push, `savePlayer` immediately |
+
 ---
 
-## 9. Smoke / verify suites
+## 10. Smoke / verify suites
 
 Every Tier 6 phase ships two test files at the repo root, following
 the convention established in earlier tiers.
@@ -591,15 +704,17 @@ the convention established in earlier tiers.
 | `_smoke_chord_labor.js`        | Live (6.4)                    | Pull → sort/bind/refine → complete → quota update, then swap-out clears `activeTask`, then verify cycleLeaderboard |
 | `_verify_muscle_memory.js`     | Unit (6.5)                    | Defs, `chargesForShift` math at all thresholds, credit/consume guards, listMemories shape, name resolution (id/prefix/label), and server-side wiring greps for every effect hook + the swap announcement |
 | `_smoke_muscle_memory.js`      | Live (6.5)                    | Run a 12-batch shift end-to-end, swap out, parse the announcement (4× Reflex, 2× Grit, 1× Calm, 1× Finesse), spend Console Calm, confirm Refinement Reflex is rejected outside combat, and confirm Logician-side spend is blocked |
+| `_verify_vault.js`             | Unit (6.6)                    | Constants, `canEnterVault` boundary at exactly 30 batches, `applyVaultClearReward` idempotence and suffix-non-overwrite, phase-2 trigger mathematics including the at-50% edge, world-content presence (rooms / boss / items), and server-side wiring greps for the move guard, the signature, the multiplier, and the defeat hook |
+| `_smoke_vault.js`              | Live (6.6)                    | Three-pass live test: (1) Citizen rejected at the threshold, (2) Logician with 0 batches rejected with "throughput insufficient", (3) Logician with 100 batches walks all four Vault rooms and finds the Founder's Echo at room_353 |
 
 The cumulative count line at the bottom of each Tier 6 commit
-message is the running total. As of Tier 6.5 the unit total is **779**
-checks (Tier 6.5 contributes 57); the live total includes
-**24 muscle-memory** checks on top of all earlier suites.
+message is the running total. As of Tier 6.6 the unit total is **848**
+checks (Tier 6.6 contributes 69); the live total adds
+**22 vault** checks on top of all earlier suites.
 
 ---
 
-## 10. Tuning constants reference
+## 11. Tuning constants reference
 
 ### Sync-State (`world/sync_state.js`)
 
@@ -664,17 +779,23 @@ checks (Tier 6.5 contributes 57); the live total includes
 | Floor Finesse flee success      | 1.0 (forced)                                          |
 | Refinement Reflex attack cancel | 100% (the monster turn returns false; no damage rolls)|
 
+### Macrodata Vault (`world/vault.js`)
+
+| Constant                              | Value                                              |
+|---------------------------------------|----------------------------------------------------|
+| `ENTRY_GATE.lifetimeBatchesRequired`  | 30                                                 |
+| `ENTRY_GATE.requireLogicState`        | true                                               |
+| `CLEAR_REWARD.suffix`                 | `'the Severed'` (only stamped if no suffix set)    |
+| `CLEAR_REWARD.coherenceBonus`         | +20 max Coherence (permanent; current topped to new max) |
+| `CLEAR_REWARD.xp`                     | 5,000                                              |
+| `CLEAR_REWARD.goldToCitizen`          | 2,000 (lands on `personas.life.gold`)              |
+| `CLEAR_REWARD.itemId`                 | `'vault_cipher'`                                   |
+| `FOUNDER_PHASES.phase2HpFraction`     | 0.50                                               |
+| `FOUNDER_PHASES.phase2CoherenceMult`  | 1.5                                                |
+
 ---
 
-## 11. Known limitations & deferred work
-
-### Deferred to 6.6 — Macrodata Vault
-
-room_322 (Vault Antechamber) is intentionally a dead-end with a locked
-door. Tier 6.6 opens it: a Logic-State capstone instance with phase
-mechanics, gated by completing 6.4's quota run and likely consuming
-specific 6.5 muscle-memory charges to defuse phases. The reward
-closes the Tier 6 arc and feeds into the Tier 3 north-star content.
+## 12. Known limitations & deferred work
 
 ### Other known gaps
 
@@ -696,7 +817,7 @@ closes the Tier 6 arc and feeds into the Tier 3 north-star content.
 
 ---
 
-## 12. Severance naming policy
+## 13. Severance naming policy
 
 Tier 6 draws on the *Severance* (Apple TV+) corporate-horror register
 without using any character names from the show. The Saint-Reed
@@ -714,6 +835,7 @@ See also: `memory/project_severance_naming_policy.md`.
 
 ---
 
-_Last updated: Tier 6.5 ship. Reviewed against `world/sync_state.js`,
-`world/echoes.js`, `world/chord_labor.js`, `world/muscle_memory.js`,
-and `rooms.json` rooms 301–350._
+_Last updated: Tier 6.6 ship — **Tier 6 closed**. Reviewed against
+`world/sync_state.js`, `world/echoes.js`, `world/chord_labor.js`,
+`world/muscle_memory.js`, `world/vault.js`, and `rooms.json` rooms
+301–354._

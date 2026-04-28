@@ -1484,6 +1484,19 @@
       "isWandering": false,
       "presenceVerb": "stands very still, watching",
       "loot": { "item": "Supervisor's Spare Key", "type": "Treasure" }
+    },
+    "the_founders_echo": {
+      "name": "The Founder's Echo",
+      "type": "Boss",
+      "level": 38,
+      "hp": 2800,
+      "str": 90,
+      "combatType": "coherence",
+      "description": "An echo of Gia Saint-Reed, sitting at a small desk in a glass cubicle. The figure does not look up. Their lanyard is turned face-in. The folder on the desk has your name across the tab in a font called CONFIDENCE. They are, the placard says, the Founder. The placard's date field is empty.",
+      "fixedRoom": "room_353",
+      "isWandering": false,
+      "presenceVerb": "sits very still, the placard reading FOUNDER",
+      "loot": { "item": "Vault Cipher", "type": "Legendary" }
     }
   }
 }

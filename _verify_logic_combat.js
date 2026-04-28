@@ -31,8 +31,11 @@ function check(label, pass, detail) {
   check('room_323 (Break Room) NOT flagged isLogicState (it is a refuge)', !rooms.room_323.isLogicState);
   check('room_308 east exit opens to room_311', rooms.room_308.exits.east === 'room_311');
   check('room_316 has up exit to room_317 (Floor 2 stair)', rooms.room_316.exits.up === 'room_317');
-  check('room_322 (Vault Antechamber) is a dead-end (south only)',
-    Object.keys(rooms.room_322.exits).length === 1 && rooms.room_322.exits.south === 'room_321');
+  // Tier 6.6: room_322 now has an east exit into the Macrodata Vault
+  // (room_351). Entry is gated dynamically by canEnterVault, not by
+  // omitting the exit, so the connection lives in rooms.json.
+  check('room_322 connects south to room_321 and east to room_351',
+    rooms.room_322.exits.south === 'room_321' && rooms.room_322.exits.east === 'room_351');
 }
 
 // === 8 Corrupted Query templates exist with combatType=coherence ===

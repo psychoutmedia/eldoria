@@ -17,6 +17,7 @@ const syncState = require('./world/sync_state');
 const echoesModule = require('./world/echoes');
 const chordLabor = require('./world/chord_labor');
 const muscleMemory = require('./world/muscle_memory');
+const vault = require('./world/vault');
 
 const PORT = parseInt(process.env.MUD_PORT, 10) || 8888;
 const START_ROOM = 'room_001';
@@ -2521,6 +2522,22 @@ const BOSS_SIGNATURES = {
         broadcastToRoom(player.currentRoom, colorize("Floor Supervisor Alterio locks the Sync Terminals against the room.", 'yellow'), socket);
       }
     }
+  },
+
+  // Tier 6.6: The Founder's Echo. At 50% HP, the Echo splits and starts
+  // dealing 1.5x coherence damage on its counter-attacks. The multiplier
+  // lives on monster.bossState.phase2 and is read by the coherence-damage
+  // path in monsterAttackPlayer.
+  the_founders_echo: {
+    onPlayerHit: (socket, player, monster) => {
+      if (vault.shouldTriggerPhase2(monster)) {
+        monster.bossState.phase2 = true;
+        socket.write(colorize('\r\n' + vault.FOUNDER_PHASES.phase2Narration + '\r\n', 'brightMagenta'));
+        broadcastToRoom(player.currentRoom,
+          colorize("The Founder's Echo splits along an unfamiliar seam. The light in the cubicle shifts.", 'magenta'),
+          socket);
+      }
+    }
   }
 };
 
@@ -3634,6 +3651,11 @@ function monsterAttackPlayer(socket, player, monster) {
   if (monster.combatType === 'coherence'
       && syncState.getActivePersona(player) === 'logic'
       && player.personas && player.personas.logic) {
+    // Tier 6.6: Founder's Echo phase-2 multiplier
+    const founderMult = vault.founderCoherenceMult(monster);
+    if (founderMult !== 1.0) {
+      totalDamage = Math.max(1, Math.floor(totalDamage * founderMult));
+    }
     const before = player.personas.logic.coherence || 0;
     const after  = Math.max(0, before - totalDamage);
     player.personas.logic.coherence = after;
@@ -3909,6 +3931,40 @@ function handleMonsterDeath(socket, player, monster) {
 
   // Tier 1.8: rich (hold 10k gold)
   if (player.gold >= 10000) unlockAchievement(socket, player, 'rich');
+
+  // Tier 6.6: The Founder's Echo - capstone reward.
+  if (isBoss && monster.templateId === 'the_founders_echo') {
+    const r = vault.applyVaultClearReward(player);
+    if (r.applied) {
+      // Bonus XP/gold on top of the standard boss kill drops
+      player.experience = (player.experience || 0) + vault.CLEAR_REWARD.xp;
+      player.cycleXPGained = (player.cycleXPGained || 0) + vault.CLEAR_REWARD.xp;
+      updateCycleLeaderboard(player.name, 'xp', player.cycleXPGained);
+      // Citizen-side gold bump (so the home-side feels the win)
+      if (player.personas && player.personas.life) {
+        player.personas.life.gold = (player.personas.life.gold || 0) + vault.CLEAR_REWARD.goldToCitizen;
+      }
+      // Drop the Vault Cipher into the player's inventory directly
+      if (typeof createItem === 'function') {
+        const cipher = createItem(vault.CLEAR_REWARD.itemId);
+        if (cipher && Array.isArray(player.inventory) && player.inventory.length < (typeof getInventoryCap === 'function' ? getInventoryCap(player) : 20)) {
+          player.inventory.push(cipher);
+        }
+      }
+      socket.write(colorize('\r\n=== The Vault Reads You Back ===\r\n', 'brightCyan'));
+      socket.write(colorize('The cubicle is empty now. The folder on the desk is open.\r\n', 'magenta'));
+      if (r.details && r.details.suffixApplied) {
+        socket.write(colorize(`You wear the title: "${player.suffix}". The Vault remembers you by it now.\r\n`, 'brightYellow'));
+      }
+      socket.write(colorize(`+${vault.CLEAR_REWARD.xp} XP. +${vault.CLEAR_REWARD.coherenceBonus} max Coherence (permanent). The Citizen finds ${vault.CLEAR_REWARD.goldToCitizen} gold in their account.\r\n`, 'green'));
+      socket.write(colorize('A Vault Cipher rests in your hand. The number on it means something to you that you cannot quite say.\r\n', 'brightMagenta'));
+      logActivity(`${player.name} cleared the Macrodata Vault and earned the Severed title.`);
+      savePlayer(player, socket, true);
+    } else if (r.alreadyCleared) {
+      // Re-kill on a later cycle: still drop the cipher (consumable narrative item)
+      socket.write(colorize('\r\nThe Echo settles again. The folder is unchanged. You leave the cubicle a second time.\r\n', 'magenta'));
+    }
+  }
 
   // Eldoria 2.0: Morwyn Ironheart forges the Tuning Fork into the Obsidian Drum-Stave.
   if (isBoss && monster.templateId === 'morwyn_ironheart' && player.stats.storyFlags && !player.stats.storyFlags.drumStaveForged) {
@@ -11772,6 +11828,17 @@ function handleMove(socket, player, direction) {
     const gate = REALM_GATES[newRoomId];
     socket.write(colorize(`A polite hand stops you at the service door. 'Staff only, traveller. ${gate.label} is for returning travellers. Come back when you've rebooted at least once.'\r\n`, 'yellow'));
     return;
+  }
+
+  // Tier 6.6: vault entry gate — only Logicians with sufficient lifetime
+  // throughput can cross the threshold. The reader plate refuses everyone else.
+  const newRoom = rooms[newRoomId];
+  if (newRoom && newRoom.isVaultEntry) {
+    const r = vault.canEnterVault(player, { isLogicNow: syncState.getActivePersona(player) === 'logic' });
+    if (!r.ok) {
+      socket.write(colorize(r.error + '\r\n', 'red'));
+      return;
+    }
   }
 
   // Broadcast departure to players in old room (unless invisible)
