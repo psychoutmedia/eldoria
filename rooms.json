@@ -2562,9 +2562,9 @@
   "room_330": {
     "name": "Optics & Drafting - The Editor's Desk",
     "zone": "Optics and Drafting",
-    "shortDescription": "A small office at the end of the hall. The Editor is not here.",
-    "longDescription": "The Editor's Desk holds a single typewriter, a single pencil, and a single coffee ring exactly the diameter of an institutional mug. Nothing on the desk is dated. The Editor is presumably out, possibly forever. A lamp hums steadily, lighting nothing in particular.",
-    "exits": { "south": "room_329" },
+    "shortDescription": "A small office at the end of the hall. The Editor is not here. A side door has been left fractionally open to the north.",
+    "longDescription": "The Editor's Desk holds a single typewriter, a single pencil, and a single coffee ring exactly the diameter of an institutional mug. Nothing on the desk is dated. The Editor is presumably out, possibly forever. A lamp hums steadily, lighting nothing in particular. A small unlabelled door behind the typewriter has been propped open to the north with a doorstop made of stacked carbon paper; whoever last left did not, by the look of it, fully intend to come back.",
+    "exits": { "south": "room_329", "north": "room_386" },
     "isLogicState": true
   },
   "room_331": {
@@ -2763,6 +2763,64 @@
     "exits": { "west": "room_352" },
     "isLogicState": true,
     "isVault": true
+  },
+  "room_386": {
+    "name": "Optics & Drafting Wing - Apprentice Annex",
+    "zone": "Optics and Drafting",
+    "shortDescription": "A narrow side annex behind the Editor's Desk. Drafting tables, a bulletin board, and a single coat on a hook.",
+    "longDescription": "The Annex is what the Optics & Drafting Wing pretends not to have: a back room. Three drafting tables face the wall in a small wedge of space; a corkboard on the back wall holds pinned diagrams that don't quite show what they are diagrams of. A single coat hangs on a hook by the door, the lining still warm. Whoever wears it has stepped briefly away. A door north opens onto the floor proper; an unmarked passage east drops into the Perpetuity Wing through a corridor that the floor plans do not, strictly speaking, admit to.",
+    "exits": { "south": "room_330", "north": "room_387", "east": "room_389" },
+    "isLogicState": true
+  },
+  "room_387": {
+    "name": "Optics & Drafting Wing - The Drafting Floor",
+    "zone": "Optics and Drafting",
+    "shortDescription": "A long open floor of slanted tables, T-squares, and adjustable lamps. Nobody is currently drafting.",
+    "longDescription": "The Drafting Floor is a single large room of pale linoleum, fifteen slanted drafting tables in three loose rows, and a high ceiling fitted with adjustable lamps on counterweights. Each table has a stool, a T-square, a pencil tin, and a single sheet of layout paper held flat by four corner weights. Nobody is currently working. The lamps are on. The pencils are sharpened. The room gives the strong impression that everyone has just stepped out for a moment together, and that the moment has been going on for considerably longer than a moment.",
+    "exits": { "south": "room_386", "east": "room_388" },
+    "isLogicState": true
+  },
+  "room_388": {
+    "name": "Optics & Drafting Wing - Wellness Office",
+    "zone": "Optics and Drafting",
+    "shortDescription": "A small carpeted office. Two armchairs, a tissue box, a window onto a hallway. Ms. Vance is in.",
+    "longDescription": "The Wellness Office is the only carpeted room you have seen on the Refinement Floors. A pair of pastel armchairs face one another over a low table on which there is a single box of tissues, a single glass of water, and a single small bowl of sugar candies in clear cellophane. The window onto the hallway is one-way: from in here you can watch the corridor; from out there it is a panel of warm wood. A small placard on the door reads MS. VANCE - WELLNESS. The chair on the patient's side has been recently sat in. Ms. Vance is, at present, also in the room.",
+    "exits": { "west": "room_387" },
+    "isLogicState": true,
+    "isSyncTerminal": true
+  },
+  "room_389": {
+    "name": "Perpetuity Wing - Reception",
+    "zone": "Perpetuity Wing",
+    "shortDescription": "A reception desk before a long corridor of unmarked doors. The desk is unmanned. The corridor breathes faintly.",
+    "longDescription": "Reception is a low desk of pale wood and a small framed sign that reads PERPETUITY WING - RECORDS RETAINED IN PERPETUITY. PLEASE TAKE A NUMBER. The number dispenser is empty; the receipt printer is on. The corridor stretches north further than this floor of the building has any right to permit. The walls are lined with unmarked beige doors at exactly equal intervals, each fitted with a small frosted-glass panel. A faint warmth comes from the corridor, and the ventilation hums on a frequency that might be a held chord.",
+    "exits": { "west": "room_386", "north": "room_390" },
+    "isLogicState": true
+  },
+  "room_390": {
+    "name": "Perpetuity Wing - Filing Hall",
+    "zone": "Perpetuity Wing",
+    "shortDescription": "An impossibly long hall of identical filing cabinets. A single cubicle has been carved out of the wall.",
+    "longDescription": "The Filing Hall is the working core of the Perpetuity Wing - a single corridor of standing filing cabinets in matching beige, each labelled with a four-digit year that does not in any case correspond to a year. The cabinets are dustless. The handles are warm. Halfway down the hall, on the eastern side, a small cubicle has been carved into the cabinetry; a name plate on the cubicle reads HOLLY VEX, INSTITUTIONAL HISTORIAN. Further north the corridor continues toward what the wall placards describe, with no irony, as REROUTE.",
+    "exits": { "south": "room_389", "east": "room_391", "north": "room_392" },
+    "isLogicState": true
+  },
+  "room_391": {
+    "name": "Perpetuity Wing - Holly Vex's Cubicle",
+    "zone": "Perpetuity Wing",
+    "shortDescription": "A cubicle carved out of the filing cabinets. One desk, one chair, one occupant.",
+    "longDescription": "Holly Vex's cubicle is built from the surrounding filing cabinets; three of the cabinets serve as walls, their drawers facing inward and labelled with marker in a hand that is recognisably hers. The desk is small and clean. Above it, taped to a cabinet face, is a hand-drawn calendar marked at three points only: a date in the past, a date in the present, and a date in the future, all of them the same date. Holly herself sits with her back to the corridor, her ID lanyard tucked deliberately into her shirt so the photo cannot be read. She has been waiting, you have the impression, for someone roughly your shape.",
+    "exits": { "west": "room_390" },
+    "isLogicState": true
+  },
+  "room_392": {
+    "name": "Perpetuity Wing - Reroute",
+    "zone": "Perpetuity Wing",
+    "shortDescription": "A small terminus room. A single workstation, a single chair, and a corrupted but living transmission.",
+    "longDescription": "The Reroute is the end of the Perpetuity Wing's long corridor; a small terminus, three of its four walls lined with patch-panels and a single workstation in the centre. The workstation is on, its screen scrolling a slow column of half-decoded transmission text in a pale green that hurts no one's eyes. Every fourth line is corrupted. Every seventh line is not. A figure in a Theta lanyard sits at the workstation in profile, both hands on the keyboard, eyes very nearly closed. The lanyard reads NOMAGIO - SEVERANCE LAYER THETA. The transmission is, you realise, the same transmission you heard at room_300, half a tier ago, but heard now from the inside of the wire.",
+    "exits": { "south": "room_390" },
+    "isLogicState": true,
+    "isSyncTerminal": true
   },
   "room_999": {
     "name": "Nomagio's Office",

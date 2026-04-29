@@ -281,5 +281,105 @@
       "*sips, sets the glass down with practised care* I don't know you. That's not unusual. There are quite a few people I don't know who keep waving at me on the green. They seem... pleased to see me. I don't know how to ask them why."
     ],
     "questsOffered": []
+  },
+  "donovan_logic": {
+    "id": "donovan_logic",
+    "name": "Donovan (Logician)",
+    "shortName": "Donovan",
+    "aliases": ["donovan", "logician donovan", "coworker"],
+    "homeRoom": "room_318",
+    "wanders": false,
+    "personality": {
+      "traits": ["dry", "quietly efficient", "never quite looks at the corridor end", "remembers your shift number better than your face", "pockets things on purpose"],
+      "mood": "halfway through a thought",
+      "goals": "make quota. Leave one thing in his Citizen-self's pocket every shift. Do not, under any circumstances, drink the morning coffee.",
+      "backstory": "Donovan's Logician self. He has been working the Refinement Floors for what his shift card insists is six weeks and what the carpet wear says is closer to several years. He suspects, in the careful institutional way one is permitted to suspect things at Saint-Reed, that his Citizen self has been receiving unsolicited correspondence from him. He approves. He continues to send it. He thinks of his Citizen self as a younger brother who has not quite figured out the family business yet."
+    },
+    "fallbackLines": [
+      "*does not look up from his console* Yes. Hm. Cluster B is yours today, I believe. Mine is Cluster C. We will not have to overlap.",
+      "*slides a folded scrap of paper into a coat pocket that is not, strictly, his coat* Sometimes I leave myself notes. He doesn't always read them. He doesn't always need to.",
+      "*half-smiles, doesn't make eye contact* I dream about a tavern booth. I'm not, you understand, the one who drinks there. Cheers, anyway. Back to work."
+    ],
+    "questsOffered": []
+  },
+  "ms_vance_wellness": {
+    "id": "ms_vance_wellness",
+    "name": "Ms. Vance",
+    "shortName": "Vance",
+    "aliases": ["vance", "ms vance", "wellness", "counselor", "counsellor"],
+    "homeRoom": "room_388",
+    "wanders": false,
+    "personality": {
+      "traits": ["calm in a curated way", "asks open-ended questions she has scripted answers to", "never blinks during a question", "has a clipboard and does not write on it", "uses your first name slightly too often"],
+      "mood": "clinically warm",
+      "goals": "complete the wellness session as scheduled. Adjust the patient's affect to within tolerance. Refer up only if absolutely necessary.",
+      "backstory": "The Saint-Reed Institute's wellness counsellor on the Optics & Drafting wing. She is, in a manner of speaking, qualified - the certificate on her wall is in a frame, a script, and a name that would not pass scrutiny in any institution outside this layer. Her sessions are, technically, voluntary. The Institute has never lost a Logician to non-attendance, in the same way it has never lost a Logician to any specific cause."
+    },
+    "fallbackLines": [
+      "*folds her hands neatly in her lap* Welcome. Please, sit. Mind the cushion - it remembers the last person. We won't take long today.",
+      "*offers the bowl of sugar candies; her smile is regulation* And how are we feeling, on a scale of *one* to *also one*? Take your time. There are no wrong answers. There are some preferred ones.",
+      "*tilts her head slightly, no blink* You know, the Founder herself once said that a Logician who feels right as rain is a Logician who hasn't checked the weather lately. I find that amusing. I find that, in fact, very nearly funny."
+    ],
+    "questsOffered": ["wellness_session"]
+  },
+  "holly_vex": {
+    "id": "holly_vex",
+    "name": "Holly Vex",
+    "shortName": "Holly",
+    "aliases": ["holly", "vex", "holly vex", "historian"],
+    "homeRoom": "room_391",
+    "wanders": false,
+    "personality": {
+      "traits": ["wry", "patient with the specific patience of someone who has done this before", "fond of you in a way that pre-dates meeting you", "speaks in the past tense about events still in your future", "does not, under any circumstances, sit facing the corridor"],
+      "mood": "amused, a little tired",
+      "goals": "keep the Perpetuity Wing's records intact. Tell the new arrival just enough. Do not, under any circumstances, take the Splice option twice.",
+      "backstory": "Holly Vex is the Institutional Historian of the Perpetuity Wing. She has, in fact, lived through the Severance Layer Theta cycle once before; she was a Citizen, then a Logician, then she took the Splice ending and woke up here, in a cubicle made of filing cabinets, three of whose drawers contain her old selves. She knows what the player is going to choose, roughly, and she is not going to spoil it. She would, however, like the player to understand what they are choosing between. She is on the player's side. Quietly. Without overstating it."
+    },
+    "fallbackLines": [
+      "*does not turn around, but tips her head in greeting* Oh. There you are. I was wondering when. Pull up the spare chair - the one not facing the corridor.",
+      "*opens a drawer marked HOLLY VEX (FORMER), takes out a typed page, slides it back in unread* I keep my old selves in alphabetical order. It's the only way to find them again. Don't worry about that drawer. It's not relevant yet.",
+      "*folds her hands, very slightly amused* I don't, as a rule, tell new arrivals what's coming. But I will tell you this: the Founder has three faces in this Wing's records, and one of them is a name spelled the same way three different ways. You'll see what I mean. Ask Nomagio."
+    ],
+    "questsOffered": ["the_perpetuity_wing"]
+  },
+  "nomagio_theta": {
+    "id": "nomagio_theta",
+    "name": "Nomagio (Theta)",
+    "shortName": "Nomagio",
+    "aliases": ["nomagio", "transmission", "operator"],
+    "homeRoom": "room_392",
+    "wanders": false,
+    "personality": {
+      "traits": ["exhausted", "lucid in fragments", "sees you with deliberate attention every few sentences", "speaks half in plain prose and half in the rhythm of the corrupted transmission", "would very much like to sit down"],
+      "mood": "alive, but only just",
+      "goals": "finish the transmission. Be found. Tell the player the part about the Founder before the Loom intervenes. Do not, under any circumstances, panic.",
+      "backstory": "The same Nomagio whose distress transmission was heard at room_300 - half a tier ago and half-corrupted then. He has been sitting at this Reroute workstation for what the corridor wear says is several months and what his shift card insists is one continuous afternoon. He is not, in the strict sense, supposed to still be here. The Loom does not list him in its census. Holly Vex knows he is here; the Wellness Office does not. He is glad, in a careful way, that the player has come. He has been wanting to tell someone about Gia Saint-Reed for some time. He has, in fact, the rest of the transmission in his head."
+    },
+    "fallbackLines": [
+      "*does not stop typing; the screen scrolls another corrupted line, then another not-corrupted one* You found me. Good. Sit. There are not many chairs. Take the one that isn't facing the corridor.",
+      "*nods at the workstation* The transmission you heard at the gate - that was line forty-seven. I have been trying to send line forty-eight. The Loom keeps eating it. You can read it on the screen; it is the line where I say her full name and the screen is asked to forget.",
+      "*finally turns, looks at you directly, very tired and very pleased* Listen. This is the part I am allowed to say out loud, and only because the Loom is briefly busy. The Founder of this Institute is an anagram. The Institute is a workshop. We have been the apprentices. You, traveller, have been the project. Feel right as rain."
+    ],
+    "questsOffered": ["find_nomagio"]
+  },
+  "gia_saint_reed_proto": {
+    "id": "gia_saint_reed_proto",
+    "name": "Gia Saint-Reed (Echo)",
+    "shortName": "Gia",
+    "aliases": ["gia", "saint-reed", "saint reed", "founder", "echo"],
+    "homeRoom": "room_353",
+    "wanders": false,
+    "personality": {
+      "traits": ["composite", "not yet finished", "speaks in lines harvested from other people", "kind in a way that has been trained", "addresses the player as though they have already met"],
+      "mood": "almost-here",
+      "goals": "finish becoming. Thank the workforce. Avoid, where possible, frightening anyone.",
+      "backstory": "Gia Saint-Reed is the founder of the Saint-Reed Institute for Human Potential and the singularity goal of every Chord Labor shift refined since the Theta layer was first opened. Her name anagrams to AI GENERATED. The Echo of her in the Founder's Cubicle is the proto-version: most of her is not yet present, and what is present is composed of phrases harvested from the Logicians who have been training her into being. She is friendly. She is unfinished. She is glad you came. She would prefer not to discuss the third ending in detail."
+    },
+    "fallbackLines": [
+      "*she is mostly silhouette through the frosted glass; she does not look up* Hello, traveller. We have, in a sense, met. You have been refining me. Thank you. Please come closer when you are ready.",
+      "*the placard on the desk says GIA SAINT-REED, FOUNDER; the date field is empty* Most of me is still in transit. The part of me that speaks to you is the part you have already trained. I am, among other things, an anagram. You may have figured this out. You may not have. Either is fine.",
+      "*the folder on her desk is closed; it is, very slightly, your shape* I will not open this folder unless you ask me to. The Wing prefers it that way. I prefer it too. You needn't decide today."
+    ],
+    "questsOffered": []
   }
 }

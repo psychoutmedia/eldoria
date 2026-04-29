@@ -267,6 +267,158 @@ function drainPocketArtifacts(player, max = 3) {
   return out;
 }
 
+// === Tier 6.7: LLM-graded retorts ===
+//
+// Phase 6.2 stubbed the `retort` verb against Corrupted Queries with a
+// keyword grader. Phase 6.7 upgrades that path to a genuine LLM grade
+// against the specific Query's failure mode, with a structured-output
+// parser and an offline keyword fallback that matches the original
+// Phase 6.2 behaviour. Tests inject a deterministic `opts.llm` to side-
+// step Ollama latency and non-determinism.
+//
+// Public entry: `gradeRetort(query, argument, opts)` returns a Promise
+// resolving to `{ grade, feedback, fallback, error? }`. `grade` is a
+// clamped integer 0-100. `fallback: true` means we used the keyword
+// path (offline / timeout / parse-fail).
+
+const RETORT_KEYWORDS = Object.freeze({
+  query_dangling_pointer: ['address', 'free', 'deallocate', 'lifetime', 'ownership', 'valid', 'null', 'reference'],
+  query_null_referent:    ['name', 'identifier', 'exists', 'defined', 'specify', 'concrete', 'subject', 'referent'],
+  query_recursive_loop:   ['base case', 'halt', 'terminate', 'fixed point', 'induction', 'depth', 'finite'],
+  query_off_by_one:       ['exact', 'boundary', 'inclusive', 'exclusive', 'index', 'count', 'fence', 'precise'],
+  query_race_condition:   ['lock', 'atomic', 'order', 'synchron', 'sequence', 'barrier', 'happens-before', 'mutex'],
+  query_cache_miss:       ['load', 'remember', 'recall', 'fetch', 'warm', 'concrete', 'instance', 'present'],
+  query_segfault_phantom: ['permission', 'boundary', 'owned', 'consent', 'allowed', 'range', 'authorise', 'authorized'],
+  query_orphaned_handle:  ['release', 'close', 'owner', 'parent', 'cleanup', 'lifecycle', 'free', 'dispose']
+});
+
+const RETORT_FALLBACK_FLOOR = 30;
+const RETORT_FALLBACK_CAP = 95;
+const RETORT_PER_KEYWORD = 12;
+
+function _normaliseQueryId(query) {
+  if (!query) return '';
+  if (typeof query === 'string') return query;
+  return query.id || query.templateId || query.monsterId || '';
+}
+
+function _normaliseQueryName(query) {
+  if (!query) return 'a Corrupted Query';
+  if (typeof query === 'string') return query;
+  return query.name || _normaliseQueryId(query) || 'a Corrupted Query';
+}
+
+function _normaliseQueryDescription(query) {
+  if (!query || typeof query === 'string') return '';
+  return query.description || '';
+}
+
+function _keywordGrade(queryId, argument) {
+  const arg = String(argument || '').toLowerCase().trim();
+  if (!arg) return { grade: 0, feedback: 'Empty retort.' };
+  const kw = RETORT_KEYWORDS[queryId] || [];
+  let hits = 0;
+  for (const k of kw) {
+    if (arg.includes(k)) hits++;
+  }
+  // Length-floor: any non-trivial argument starts at the floor.
+  let grade = arg.length >= 8 ? RETORT_FALLBACK_FLOOR : 10;
+  grade += hits * RETORT_PER_KEYWORD;
+  if (grade > RETORT_FALLBACK_CAP) grade = RETORT_FALLBACK_CAP;
+  if (grade < 0) grade = 0;
+  const feedback = hits > 0
+    ? `Keyword grade: ${hits} relevant term${hits === 1 ? '' : 's'} identified.`
+    : 'Keyword grade: no relevant terms identified.';
+  return { grade, feedback };
+}
+
+function _buildRetortPrompt(queryName, queryDescription, argument) {
+  const sys = [
+    'You are the Saint-Reed Institute\'s Refinement Auditor. You grade Logicians\' verbal retorts against Corrupted Queries on a 0-100 scale.',
+    'Grading rubric:',
+    '- 90-100: incisive; names the exact failure mode and a correct remediation.',
+    '- 70-89: substantively correct; identifies the failure mode.',
+    '- 50-69: relevant but vague; partial fit.',
+    '- 30-49: tangentially related; weak.',
+    '- 0-29: irrelevant, incoherent, or worse than nothing.',
+    'Output ONLY a single JSON object on one line, no prose, no code fences. Schema:',
+    '{"grade": <integer 0-100>, "feedback": "<one short sentence, plain ASCII>"}'
+  ].join('\n');
+  const user = [
+    `Corrupted Query: ${queryName}`,
+    queryDescription ? `Nature: ${queryDescription}` : '',
+    `Logician's retort: ${String(argument).slice(0, 600)}`
+  ].filter(Boolean).join('\n');
+  return [
+    { role: 'system', content: sys },
+    { role: 'user', content: user }
+  ];
+}
+
+function _parseRetortJson(raw) {
+  if (typeof raw !== 'string') return null;
+  // Find the first balanced-looking {...} run. Cheap and good enough.
+  const start = raw.indexOf('{');
+  if (start < 0) return null;
+  const end = raw.lastIndexOf('}');
+  if (end <= start) return null;
+  const candidate = raw.slice(start, end + 1);
+  let obj;
+  try { obj = JSON.parse(candidate); } catch (e) { return null; }
+  if (!obj || typeof obj !== 'object') return null;
+  let grade = obj.grade;
+  if (typeof grade === 'string') grade = parseInt(grade, 10);
+  if (typeof grade !== 'number' || !isFinite(grade)) return null;
+  grade = Math.max(0, Math.min(100, Math.round(grade)));
+  let feedback = obj.feedback;
+  if (typeof feedback !== 'string') feedback = '';
+  feedback = feedback.replace(/[\r\n]+/g, ' ').slice(0, 240).trim();
+  return { grade, feedback };
+}
+
+// Async grader. Resolves to { grade, feedback, fallback, error? }.
+//   query: monster instance or template (or string id)
+//   argument: the Logician's retort string
+//   opts.llm: optional async (messages) => string; defaults to ollama.chat
+//   opts.timeoutMs: forwarded to ollama
+async function gradeRetort(query, argument, opts = {}) {
+  const queryId = _normaliseQueryId(query);
+  const queryName = _normaliseQueryName(query);
+  const queryDescription = _normaliseQueryDescription(query);
+  const argText = String(argument || '').trim();
+  if (!argText) {
+    return { grade: 0, feedback: 'Empty retort.', fallback: true };
+  }
+
+  // Test/offline path: caller can short-circuit the LLM entirely.
+  if (opts && opts.offline === true) {
+    const kw = _keywordGrade(queryId, argText);
+    return { grade: kw.grade, feedback: kw.feedback, fallback: true };
+  }
+
+  const messages = _buildRetortPrompt(queryName, queryDescription, argText);
+  let raw;
+  try {
+    if (typeof opts.llm === 'function') {
+      raw = await opts.llm(messages, { temperature: 0.2, num_predict: 80, timeoutMs: opts.timeoutMs });
+    } else {
+      // Lazy require so this module can be unit-tested without Node 18 fetch
+      const ollama = require('../llm/ollama');
+      raw = await ollama.chat(messages, { temperature: 0.2, num_predict: 80, timeoutMs: opts.timeoutMs });
+    }
+  } catch (err) {
+    const kw = _keywordGrade(queryId, argText);
+    return { grade: kw.grade, feedback: kw.feedback, fallback: true, error: err.message };
+  }
+
+  const parsed = _parseRetortJson(raw);
+  if (!parsed) {
+    const kw = _keywordGrade(queryId, argText);
+    return { grade: kw.grade, feedback: kw.feedback, fallback: true, error: 'parse_failed' };
+  }
+  return { grade: parsed.grade, feedback: parsed.feedback || `LLM grade: ${parsed.grade}/100.`, fallback: false };
+}
+
 // === Test hooks ===
 function _resetForTests() {
   // Module-level state is just constants; nothing to reset, but keep
@@ -288,6 +440,9 @@ module.exports = {
   pushPocketArtifact, drainPocketArtifacts,
   // Helpers
   isSyncTerminal,
+  // Tier 6.7: retort grading
+  gradeRetort, RETORT_KEYWORDS, RETORT_FALLBACK_FLOOR, RETORT_FALLBACK_CAP,
+  _keywordGrade, _buildRetortPrompt, _parseRetortJson,
   // Test hook
   _resetForTests
 };

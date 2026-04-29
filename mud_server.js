@@ -7970,6 +7970,96 @@ function handleSwap(socket, player) {
 }
 
 // ============================================
+// TIER 6.7: LLM-graded retorts vs Corrupted Queries
+// ============================================
+//
+// `retort <query> <argument>` is a Logic-State verbal attack against a
+// Corrupted Query. The argument is graded by the LLM (with a keyword
+// fallback for offline / timeout / parse-fail) and the resulting score
+// converts into HP damage on the query. Phase 6.2 stubbed this verb
+// keyword-only; Phase 6.7 adds the LLM path.
+async function handleRetort(socket, player, args) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  if (!player.personas) syncState.initializePersonas(player);
+  if (syncState.getActivePersona(player) !== 'logic') {
+    socket.write(colorize('A retort is a Logic-State act. Swap to your Logician first.\r\n', 'red'));
+    return;
+  }
+
+  const trimmed = (args || '').trim();
+  if (!trimmed) {
+    socket.write('Usage: retort <query> <argument>\r\n');
+    socket.write('Example: retort dangling "the address has been freed; you point at nothing"\r\n');
+    return;
+  }
+  const spaceIdx = trimmed.indexOf(' ');
+  if (spaceIdx < 0) {
+    socket.write('A retort requires both a target and an argument. Usage: retort <query> <argument>\r\n');
+    return;
+  }
+  const queryName = trimmed.slice(0, spaceIdx).trim();
+  const argument = trimmed.slice(spaceIdx + 1).trim();
+  if (!argument) {
+    socket.write('You must supply an argument. Usage: retort <query> <argument>\r\n');
+    return;
+  }
+
+  const monster = findMonsterInRoom(player.currentRoom, queryName);
+  if (!monster) {
+    socket.write(colorize(`There is no "${queryName}" here to retort against.\r\n`, 'red'));
+    return;
+  }
+  if (monster.combatType !== 'coherence') {
+    socket.write(colorize(`A retort has no purchase on ${monster.name}; it is not a Corrupted Query.\r\n`, 'yellow'));
+    return;
+  }
+
+  socket.write(colorize(`You frame your retort against ${monster.name}, weighing the argument...\r\n`, 'gray'));
+
+  let result;
+  try {
+    result = await syncState.gradeRetort(monster, argument);
+  } catch (e) {
+    socket.write(colorize(`Your retort dissolves before it lands. (${e.message || e})\r\n`, 'red'));
+    return;
+  }
+
+  // The await may have allowed the monster to die or wander off; re-fetch.
+  const fresh = getMonsterById(monster.id);
+  if (!fresh || fresh.currentRoom !== player.currentRoom) {
+    socket.write(colorize('The Corrupted Query is gone before your retort lands.\r\n', 'yellow'));
+    return;
+  }
+
+  const grade = result.grade;
+  const baseHp = fresh.maxHp || fresh.hp || 200;
+  const damage = Math.max(1, Math.floor(baseHp * grade / 250));
+  fresh.hp -= damage;
+  player.stats.totalDamageDealt = (player.stats.totalDamageDealt || 0) + damage;
+
+  const tag = result.fallback ? colorize(' (fallback)', 'gray') : '';
+  socket.write(colorize(`Retort grade: ${grade}/100`, 'brightCyan') + tag + '\r\n');
+  if (result.feedback) socket.write(colorize(`  ${result.feedback}\r\n`, 'gray'));
+  socket.write(colorize(
+    `Your argument lands on ${fresh.name} for ${damage} damage. (${Math.max(0, fresh.hp)}/${fresh.maxHp} HP)\r\n`,
+    'green'
+  ));
+  broadcastToRoom(player.currentRoom,
+    colorize(`${getDisplayName(player)} delivers a retort that visibly disagrees with ${fresh.name}.`, 'yellow'),
+    socket);
+
+  if (fresh.hp <= 0) {
+    handleMonsterDeath(socket, player, fresh);
+    if (player.monsterCombatId) {
+      try { cleanupMonsterCombat(player.monsterCombatId); } catch (e) {}
+    }
+    socket.write('> ');
+    return;
+  }
+  socket.write('> ');
+}
+
+// ============================================
 // TIER 6.3: ECHOES — non-linguistic signs
 // ============================================
 //
@@ -12570,6 +12660,14 @@ function processCommand(socket, player, input) {
     const original = input.trim();
     const args = command.startsWith('memory ') ? original.slice(7) : '';
     handleMemory(socket, player, args);
+    return true;
+  }
+
+  // Tier 6.7: LLM-graded retort against a Corrupted Query (Logic-State verbal attack)
+  if (command === 'retort' || command.startsWith('retort ')) {
+    const original = input.trim();
+    const args = original.length > 7 ? original.slice(7) : '';
+    handleRetort(socket, player, args);
     return true;
   }
 

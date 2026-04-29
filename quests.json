@@ -343,5 +343,38 @@
       { "id": "visit_343", "type": "visit_room", "targetId": "room_343", "count": 1, "description": "Look in on the lone drinker in the booths" }
     ],
     "rewards": { "xp": 400, "questPoints": 20 }
+  },
+  "wellness_session": {
+    "id": "wellness_session",
+    "title": "Wellness Session",
+    "giver": "ms_vance_wellness",
+    "description": "Ms. Vance, the Wellness Counsellor on the Optics & Drafting wing, has scheduled you in for a routine wellness session. Attendance is voluntary. Attendance has, however, never failed to occur. Walk into the Wellness Office and let her note your visit.",
+    "hint": "From the Editor's Desk (room_330), go north through the Apprentice Annex and the Drafting Floor into the Wellness Office (room_388).",
+    "objectives": [
+      { "id": "visit_wellness", "type": "visit_room", "targetId": "room_388", "count": 1, "description": "Attend your wellness session with Ms. Vance" }
+    ],
+    "rewards": { "xp": 1200, "questPoints": 50 }
+  },
+  "the_perpetuity_wing": {
+    "id": "the_perpetuity_wing",
+    "title": "The Perpetuity Wing",
+    "giver": "holly_vex",
+    "description": "Holly Vex, the Institutional Historian, would like a quiet word with you in the Filing Hall. She is not on the Loom's census of currently-employed Logicians, and she would like that to remain the case. Find her cubicle, sit in the chair that does not face the corridor, and let her tell you the part of the story she is allowed to.",
+    "hint": "From the Apprentice Annex (room_386) take the unmarked east passage to Reception (room_389), then north into the Filing Hall (room_390), then east into Holly's cubicle (room_391).",
+    "objectives": [
+      { "id": "visit_holly", "type": "visit_room", "targetId": "room_391", "count": 1, "description": "Visit Holly Vex's cubicle" }
+    ],
+    "rewards": { "xp": 1800, "questPoints": 75 }
+  },
+  "find_nomagio": {
+    "id": "find_nomagio",
+    "title": "Find Nomagio",
+    "giver": "holly_vex",
+    "description": "Holly Vex confirms what the half-decoded transmission at room_300 implied: Nomagio is alive, and on this layer, sat at a workstation at the far end of the Perpetuity Wing's Filing Hall. The Loom does not list him in its census. Walk to the Reroute terminus, find him, and let him say the line he has been trying to send since the original transmission corrupted on its way to room_300.",
+    "hint": "From the Filing Hall (room_390), walk north into the Reroute terminus (room_392). Speak to Nomagio when you arrive - or simply stand in the room; he has been waiting.",
+    "objectives": [
+      { "id": "visit_nomagio", "type": "visit_room", "targetId": "room_392", "count": 1, "description": "Reach Nomagio at the Reroute terminus" }
+    ],
+    "rewards": { "xp": 3000, "questPoints": 120, "items": ["retort_godel_strike"] }
   }
 }
