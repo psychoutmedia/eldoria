@@ -2706,9 +2706,9 @@
   "room_348": {
     "name": "Theta Township - Hardware Store",
     "zone": "Theta Township",
-    "shortDescription": "A small hardware store stocked entirely in beige and grey.",
-    "longDescription": "The hardware store is run by a quiet man whose name-tag is missing. He stocks one shelf of paint (in 'institutional taupe'), one wall of small tools, and one corner of canned goods that ought, by rights, not to be in a hardware store. There is one of every variety of brush. There is no broom. The man watches you the way a chess player watches a piece they have decided not to take yet.",
-    "exits": { "west": "room_346", "north": "room_349" },
+    "shortDescription": "A small hardware store stocked entirely in beige and grey. A side door east opens onto a back atelier.",
+    "longDescription": "The hardware store is run by a quiet man whose name-tag is missing. He stocks one shelf of paint (in 'institutional taupe'), one wall of small tools, and one corner of canned goods that ought, by rights, not to be in a hardware store. There is one of every variety of brush. There is no broom. The man watches you the way a chess player watches a piece they have decided not to take yet. A side door east, half-hidden behind the brushes, opens onto a small back atelier.",
+    "exits": { "west": "room_346", "north": "room_349", "east": "room_373" },
     "isLifeState": true
   },
   "room_349": {
@@ -2758,18 +2758,316 @@
   "room_354": {
     "name": "The Reading Carrel",
     "zone": "The Macrodata Vault",
-    "shortDescription": "A small reading nook with one carrel, one lamp, and a single open file.",
-    "longDescription": "The Reading Carrel is the only soft thing in the Vault. The carpet is thicker. The lamp is warm rather than fluorescent. The single carrel desk holds a single open file, your name typed across the tab in a font called CONFIDENCE. The pages inside describe, in patient prose, things about you that are true but that you have never said out loud. Reading them does not feel like an intrusion. It feels like being given them back.",
-    "exits": { "west": "room_352" },
+    "shortDescription": "A small reading nook with one carrel, one lamp, and a single open file. A door east opens onto the Refinement Console Cluster.",
+    "longDescription": "The Reading Carrel is the only soft thing in the Vault. The carpet is thicker. The lamp is warm rather than fluorescent. The single carrel desk holds a single open file, your name typed across the tab in a font called CONFIDENCE. The pages inside describe, in patient prose, things about you that are true but that you have never said out loud. Reading them does not feel like an intrusion. It feels like being given them back. A previously-locked door east now opens onto the Refinement Console Cluster.",
+    "exits": { "west": "room_352", "east": "room_355" },
     "isLogicState": true,
     "isVault": true
+  },
+  "room_355": {
+    "name": "Refinement Console Cluster - Dread Bench",
+    "zone": "Refinement Console Cluster",
+    "shortDescription": "A small bench fitted with a single Refinement Console. The room is colder than it should be.",
+    "longDescription": "The Dread Bench is one of four small benches arranged in a 2-by-3 grid in the Refinement Console Cluster. The Console itself is identical to those on Floors 1 and 2; the room around it is colder than it should be, and its overhead fluorescents have been swapped for one solitary tube on a long flex-cord. The bench's sign reads, in stenciled lettering, DREAD - QUOTAS APPLY. There is a single chair. There are no other Logicians at the other benches. There are, technically, no other Logicians on this floor.",
+    "exits": { "west": "room_354", "east": "room_356", "south": "room_358" },
+    "isLogicState": true,
+    "isChordTerminal": true,
+    "isRefinementCluster": true
+  },
+  "room_356": {
+    "name": "Refinement Console Cluster - Frolic Bench",
+    "zone": "Refinement Console Cluster",
+    "shortDescription": "A second bench. The light here is brighter than the bench across the aisle. The Console hums.",
+    "longDescription": "The Frolic Bench is the second of the four single-temper benches. The light is, by a small margin, the brightest in the Cluster - someone has run a slightly higher-wattage tube into the same fixture. The Console hums on a frequency that is, faintly, the major third above the rest of the floor. The bench's sign reads FROLIC - QUOTAS APPLY. The chair has been adjusted, recently, by someone shorter than you.",
+    "exits": { "west": "room_355", "east": "room_357", "south": "room_359" },
+    "isLogicState": true,
+    "isChordTerminal": true,
+    "isRefinementCluster": true
+  },
+  "room_357": {
+    "name": "Refinement Console Cluster - Malice Bench",
+    "zone": "Refinement Console Cluster",
+    "shortDescription": "A third bench. The Console's casing is unscratched but somehow not new.",
+    "longDescription": "The Malice Bench is the third of the four single-temper benches. The Console here is the only one in the Cluster whose casing is, by inspection, unscratched - and the only one that does not feel new. The chair sits an inch closer to the Console than the others; the Console sits an inch closer to the chair. The bench's sign reads MALICE - QUOTAS APPLY. Someone, at some point, has written a small word in pencil on the underside of the desk; it has been erased not long after, and the eraser has been used hard.",
+    "exits": { "west": "room_356", "south": "room_360" },
+    "isLogicState": true,
+    "isChordTerminal": true,
+    "isRefinementCluster": true
+  },
+  "room_358": {
+    "name": "Refinement Console Cluster - Woe Bench",
+    "zone": "Refinement Console Cluster",
+    "shortDescription": "A fourth bench. The Console's tone is the lowest in the Cluster.",
+    "longDescription": "The Woe Bench is the last of the four single-temper benches. Of the four it is the quietest; the Console's idle hum is a half-tone below the others, and the room's HVAC has been baffled into a soft and persistent grey. The bench's sign reads WOE - QUOTAS APPLY. The chair is, by a small but noticeable margin, the most comfortable. Someone has not been able to leave it as quickly as they wanted to.",
+    "exits": { "north": "room_355", "east": "room_359" },
+    "isLogicState": true,
+    "isChordTerminal": true,
+    "isRefinementCluster": true
+  },
+  "room_359": {
+    "name": "Refinement Console Cluster - Mixed Bench",
+    "zone": "Refinement Console Cluster",
+    "shortDescription": "A wider bench accepting batches of mixed Temper. Five-row consoles.",
+    "longDescription": "The Mixed Bench is twice the size of the four single-temper benches. The Console here has been re-keyed to dispense five-row batches of mixed Temper rather than the four-row single-temper batches at the other consoles. Two chairs face it; the second chair has been pushed in, neatly, by someone who understood that the institute considers two chairs at one console to be an irregularity.",
+    "exits": { "north": "room_356", "west": "room_358", "east": "room_360" },
+    "isLogicState": true,
+    "isChordTerminal": true,
+    "isRefinementCluster": true
+  },
+  "room_360": {
+    "name": "Refinement Console Cluster - Tempers Bin",
+    "zone": "Refinement Console Cluster",
+    "shortDescription": "The Cluster's terminal room. A six-row console, the Tempers Bin, and a quiet Sync Terminal in the corner.",
+    "longDescription": "The Tempers Bin is the Cluster's terminal room. The single Console here is the only six-row Console you have seen on Severance Layer Theta; the wall behind it is a deep alcove of four labelled chutes - DREAD, FROLIC, MALICE, WOE - into which the floor is, at all times, willing to accept a refined batch. One of two doors out of this room is a quiet Sync Terminal in the south-east corner, set unusually low to the floor. A small further passage east is, the wall placard says, currently UNDER MAINTENANCE.",
+    "exits": { "north": "room_357", "west": "room_359", "east": "room_361" },
+    "isLogicState": true,
+    "isChordTerminal": true,
+    "isRefinementCluster": true,
+    "isSyncTerminal": true
+  },
+  "room_361": {
+    "name": "Black Hallway - Threshold",
+    "zone": "Black Hallway",
+    "shortDescription": "A dark corridor that, until recently, was not present on any floor plan. The walls are unlit. The carpet is new.",
+    "longDescription": "The Threshold is the entrance to the Black Hallway, an unlit corridor that has appeared, not for the first time but for the first time you can see it, on the institute's east-side floor plan. The walls are matte black. The carpet is new. The air is at, exactly, room temperature - which is itself a thing you only notice in places where it usually isn't. A motivational poster is mounted on the south wall, half-illuminated. The corridor continues east into the Long Reach.",
+    "exits": { "west": "room_360", "east": "room_362", "south": "room_368" },
+    "isLogicState": true,
+    "isBlackHallway": true,
+    "requiresMuscleUnlock": "pattern_threshold"
+  },
+  "room_362": {
+    "name": "Black Hallway - Long Reach",
+    "zone": "Black Hallway",
+    "shortDescription": "A long unlit corridor with five identical doors set at regular intervals along its length.",
+    "longDescription": "The Long Reach is the heart of the Black Hallway. It is a single straight corridor running east-west, walls matte black, lit only by a single trickle of overhead light at each end. Five identical unmarked doors are set at regular intervals along the south wall: each one painted in institutional taupe and fitted with a single small brass plate showing a stylised symbol - a door, a chair, a window, a bowl, a hand. Each door, when you try the handle, does not open. There is, however, a small Subliminal Annex visible east, and the Inner Sanctum approach beyond it.",
+    "exits": {
+      "west": "room_361", "east": "room_369",
+      "down": "room_363", "south": "room_364",
+      "north": "room_365", "up": "room_366",
+      "southeast": "room_367"
+    },
+    "isLogicState": true,
+    "isBlackHallway": true
+  },
+  "room_363": {
+    "name": "Black Hallway - The Door Room",
+    "zone": "Black Hallway",
+    "shortDescription": "A small room hidden behind the door-symbol panel. Inside, a single closed door painted on the back wall.",
+    "longDescription": "The Door Room is the first of five small hidden rooms behind the Long Reach's symbol-doors. Inside is a single closed door, perfectly drawn in institutional taupe paint on the back wall. It does not open. Below the painting, a small index card has been pinned to the wall: WHEN YOU WERE A CHILD, WHICH DOORS DID YOU NOT WALK THROUGH. The card is signed, in pencil, in handwriting you do not at first recognise.",
+    "exits": { "up": "room_362" },
+    "isLogicState": true,
+    "isBlackHallway": true,
+    "requiresMuscleUnlock": "pattern_door"
+  },
+  "room_364": {
+    "name": "Black Hallway - The Chair Room",
+    "zone": "Black Hallway",
+    "shortDescription": "A small hidden room with a single empty chair facing the corner.",
+    "longDescription": "The Chair Room is the second of the five hidden rooms. Inside is a single chair, of a make and pattern you have, on consideration, sat in many times - though never, you are now certain, in this room. The chair is empty. The chair is facing the corner. A small card on its seat reads, in the same pencilled hand: WHO DID YOU LEAVE BEHIND IN THIS CHAIR, AND WHY DID YOU LEAVE.",
+    "exits": { "north": "room_362" },
+    "isLogicState": true,
+    "isBlackHallway": true,
+    "requiresMuscleUnlock": "pattern_chair"
+  },
+  "room_365": {
+    "name": "Black Hallway - The Window Room",
+    "zone": "Black Hallway",
+    "shortDescription": "A small hidden room. A single bricked-up window. A thin draught comes through anyway.",
+    "longDescription": "The Window Room is the third of the five hidden rooms. The single window in the south wall has been bricked up - not roughly, but with great patience, by someone who used the bricks of the same dimension and the same colour as the bricks already in the wall. A thin and clean draught comes through anyway. A small card has been laid on the floor beneath the window in handwriting you now recognise: WHAT WAS THE LAST THING YOU SAW THAT YOU DECIDED NOT TO LOOK AT.",
+    "exits": { "south": "room_362" },
+    "isLogicState": true,
+    "isBlackHallway": true,
+    "requiresMuscleUnlock": "pattern_window"
+  },
+  "room_366": {
+    "name": "Black Hallway - The Bowl Room",
+    "zone": "Black Hallway",
+    "shortDescription": "A small hidden room with a single empty wooden bowl on a low table.",
+    "longDescription": "The Bowl Room is the fourth of the five hidden rooms. The single feature is a low table with a single small wooden bowl on it. The bowl is empty. The bowl is, on inspection, a bowl your grandmother had, or a bowl your grandmother might have had, or a bowl your grandmother might have had if you had had a grandmother. A small card under the bowl reads: NAME ONE THING YOU EVER ATE OUT OF A BOWL THAT YOU DID NOT THANK SOMEONE FOR.",
+    "exits": { "down": "room_362" },
+    "isLogicState": true,
+    "isBlackHallway": true,
+    "requiresMuscleUnlock": "pattern_bowl"
+  },
+  "room_367": {
+    "name": "Black Hallway - The Hand Room",
+    "zone": "Black Hallway",
+    "shortDescription": "A small hidden room. A single handprint on the back wall, pressed in institutional taupe paint.",
+    "longDescription": "The Hand Room is the fifth and last of the hidden rooms behind the Long Reach. The back wall bears a single handprint pressed flat in institutional taupe paint. The hand is, clearly and worryingly, the size and proportion of yours. A small card pinned beside the print, in pencil: WHOSE HAND IS THIS. The card has, faintly, been smudged by the same paint that made the print.",
+    "exits": { "northwest": "room_362" },
+    "isLogicState": true,
+    "isBlackHallway": true,
+    "requiresMuscleUnlock": "pattern_hand"
+  },
+  "room_368": {
+    "name": "Black Hallway - Hang in There Annex",
+    "zone": "Black Hallway",
+    "shortDescription": "A small annex with a single motivational poster on the wall and a worn institutional bench.",
+    "longDescription": "The Hang in There Annex is a small alcove off the Threshold, fitted with a single low institutional bench and one motivational poster on the wall. The poster has been hung straight; the poster has been re-hung, more than once, by someone who cared more about straightness than they admitted. It says, beneath a stock photo of a small grey cat clinging to a rope of obsolete telephone wire: HANG IN THERE. The cat has, you would swear, been hanging in there for considerably longer than the photograph would imply.",
+    "exits": { "north": "room_361" },
+    "isLogicState": true,
+    "isBlackHallway": true
+  },
+  "room_369": {
+    "name": "Black Hallway - Subliminal Annex",
+    "zone": "Black Hallway",
+    "shortDescription": "A small annex with a row of four wall-mounted dispensers labelled SUBLIMINAL.",
+    "longDescription": "The Subliminal Annex is a small annex at the east end of the Long Reach. Four wall-mounted dispensers face the centre of the room, each labelled SUBLIMINAL in stencil. Below each dispenser is a small slot through which the institute, when allowed, posts a quiet passive buff back to the citizen who has done the work that earned it. The dispensers are not vending machines. They do not give back what you put in. They give back what someone else put in for you.",
+    "exits": { "west": "room_362", "east": "room_370" },
+    "isLogicState": true,
+    "isBlackHallway": true,
+    "isSyncTerminal": true
+  },
+  "room_370": {
+    "name": "Black Hallway - Inner Sanctum Approach",
+    "zone": "Black Hallway",
+    "shortDescription": "A short approach corridor. The carpet thickens. The walls go from matte to lacquered.",
+    "longDescription": "The Inner Sanctum Approach is a short corridor that begins, almost imperceptibly, to look more expensive than the corridors that lead to it. The walls go from matte to lacquered black. The carpet thickens. The lights are warm rather than cold. There is, somewhere ahead, a small fountain - or the recording of a small fountain - or someone with a glass of water who stops drinking when you step closer.",
+    "exits": { "west": "room_369", "east": "room_371" },
+    "isLogicState": true,
+    "isBlackHallway": true
+  },
+  "room_371": {
+    "name": "Black Hallway - Warden's Antechamber",
+    "zone": "Black Hallway",
+    "shortDescription": "A small antechamber outside a heavy door. A single chair faces the door from the visitor's side.",
+    "longDescription": "The Warden's Antechamber is a small carpeted room with a single chair on the visitor's side of a heavy black-lacquered door. The chair has been recently sat in. The door has been recently closed. There is no signage. There is, however, a faint sense that the door does not open inward but rather permits inward; that it judges who, of those waiting in the chair, is allowed to walk through.",
+    "exits": { "west": "room_370", "east": "room_372" },
+    "isLogicState": true,
+    "isBlackHallway": true
+  },
+  "room_372": {
+    "name": "Black Hallway - Warden's Inner Sanctum",
+    "zone": "Black Hallway",
+    "shortDescription": "A windowless lacquered office. Behind a desk, the Warden waits.",
+    "longDescription": "The Warden's Inner Sanctum is a windowless lacquered office at the eastern terminus of the Black Hallway. The walls are lined with files - hundreds of them, identically labelled, identically dated, all of them, you suspect, yours. Behind the desk is the Warden of the Black Hallway, a tall, neatly-dressed figure who stands and turns to face you only when you are fully through the door. The Warden's nameplate is blank. The Warden's smile is the only feature in the room that is not regulation-issue.",
+    "exits": { "west": "room_371" },
+    "isLogicState": true,
+    "isBlackHallway": true,
+    "requiresMuscleUnlocks": ["pattern_door", "pattern_chair", "pattern_window", "pattern_bowl", "pattern_hand"]
+  },
+  "room_373": {
+    "name": "Theta Township - Painter's Atelier",
+    "zone": "Theta Township",
+    "shortDescription": "A small back atelier behind the Hardware Store. Sun comes in from a single high window.",
+    "longDescription": "The Painter's Atelier is a small white-walled back room behind the Hardware Store, with a single high window letting in late afternoon light. There is one stool, one easel, one small jar of clean water, and a wooden box on the workbench labelled SWATCHES - DO NOT REMOVE. The atelier feels, faintly, as if it has been used recently by someone who left in a hurry but came back for the brushes.",
+    "exits": { "west": "room_348", "north": "room_374" },
+    "isLifeState": true
+  },
+  "room_374": {
+    "name": "Theta Township - Pattern Library",
+    "zone": "Theta Township",
+    "shortDescription": "A long narrow room of standing portfolios, each holding one swatch.",
+    "longDescription": "The Pattern Library is a long narrow room of standing wooden portfolios, each holding a single pattern swatch tipped onto a sheet of acid-free paper. The portfolios are labelled, in marker on tape: DOOR. CHAIR. WINDOW. BOWL. HAND. THRESHOLD. Each swatch is a small geometric pattern, none of them inherently meaningful, all of them, the institute would have you believe, completely innocent. Each one feels, looking at it, faintly familiar in a way that is not quite memory.",
+    "exits": { "south": "room_373", "north": "room_375" },
+    "isLifeState": true
+  },
+  "room_375": {
+    "name": "Theta Township - Citizen's Sketch Wall",
+    "zone": "Theta Township",
+    "shortDescription": "A small whitewashed room with a long blank wall and a single workbench of paints.",
+    "longDescription": "The Citizen's Sketch Wall is a small whitewashed room at the back of the Painter's Atelier. The west wall is one long blank surface, six feet by twenty, primed but unpainted. The workbench in the centre holds a paintbrush set, a small water jar, and the six pattern swatches arranged neatly. The room is, by reputation, the only place in Theta Township where Citizens can paint patterns from a swatch without supervision. The Citizen who paints here today does so for, roughly, the Logician they will become tomorrow.",
+    "exits": { "south": "room_374" },
+    "isLifeState": true,
+    "isPaintRoom": true
+  },
+  "room_376": {
+    "name": "Loom Tower - Lobby",
+    "zone": "Loom Tower",
+    "shortDescription": "A high-ceilinged glass lobby at the foot of an elevator shaft. The shaft rises further than the ceiling permits.",
+    "longDescription": "The Loom Tower Lobby is a high-ceilinged glass-and-steel atrium whose only feature is a single elevator. The elevator's call button is unlit. Above the elevator, the shaft rises further than the lobby's ceiling allows. A small placard near the elevator reads, in stenciled lettering: LOOM TELEMETRY - AUTHORISED LOGICIANS ONLY. There is no security desk. There has, the Tower's reputation insists, never needed to be one.",
+    "exits": { "down": "room_386", "east": "room_377" },
+    "isLogicState": true,
+    "isLoomTower": true,
+    "isSyncTerminal": true
+  },
+  "room_377": {
+    "name": "Loom Tower - Lift Shaft (Bottom)",
+    "zone": "Loom Tower",
+    "shortDescription": "The bottom of a tall lift shaft. The cab is currently here.",
+    "longDescription": "The lift shaft is a narrow column of tubular glass, the cab itself a single steel platform with one wall, two grab-handles, and a single button labelled UP. The cab is currently at the bottom of the shaft. Riding it is, by reputation, slower than walking the same vertical distance up a slightly steeper staircase that does not, on this floor, exist.",
+    "exits": { "west": "room_376", "up": "room_378" },
+    "isLogicState": true,
+    "isLoomTower": true
+  },
+  "room_378": {
+    "name": "Loom Tower - Lift Shaft (Top)",
+    "zone": "Loom Tower",
+    "shortDescription": "The top of the lift shaft. A small landing opens onto the Telemetry Floor.",
+    "longDescription": "The top of the lift shaft is a small unfurnished landing, the cab platform retracting smoothly into a recess in the floor when nobody is on it. East, a wide doorway opens onto the Telemetry Floor; north, an unmarked door opens onto the Inner Loom Chamber.",
+    "exits": { "down": "room_377", "east": "room_379", "north": "room_384" },
+    "isLogicState": true,
+    "isLoomTower": true
+  },
+  "room_379": {
+    "name": "Loom Tower - Telemetry Floor",
+    "zone": "Loom Tower",
+    "shortDescription": "An open floor of long-format dashboards and slow-scrolling figures. Nobody is currently watching.",
+    "longDescription": "The Telemetry Floor is a single open space of low blue light, ten unmanned workstations facing a single shared dashboard wall. The wall is twenty feet wide, eight feet tall, and entirely composed of slowly-scrolling numerical figures: throughput, missort ratios, swap delays, and at the very bottom of the wall, in small grey type, a per-Logician roll-up that is not, you suspect, supposed to be visible from here.",
+    "exits": { "west": "room_378", "east": "room_380", "north": "room_381" },
+    "isLogicState": true,
+    "isLoomTower": true
+  },
+  "room_380": {
+    "name": "Loom Tower - Audit Booth",
+    "zone": "Loom Tower",
+    "shortDescription": "A small audit booth with one chair on each side of a glass partition. The chair on the auditor's side is empty.",
+    "longDescription": "The Audit Booth is the room into which the Tower invites Logicians whose figures, on the Telemetry Floor, have begun to hum the wrong note. The booth is a small carpeted space with a glass partition down its centre, one chair on each side. The auditor's chair is, currently, empty. The chair on the auditee's side has been recently sat in.",
+    "exits": { "west": "room_379" },
+    "isLogicState": true,
+    "isLoomTower": true
+  },
+  "room_381": {
+    "name": "Loom Tower - Census Hall",
+    "zone": "Loom Tower",
+    "shortDescription": "A long hall of small reflective panels, each tracking one Logician currently on the floor.",
+    "longDescription": "The Census Hall is a long, narrow space whose walls are entirely composed of small reflective panels - one per currently-employed Logician on Severance Layer Theta. The panels are not screens. They are not monitors. They are, the Tower's documentation insists, simply mirrors. They reflect, however, the Logician they track even when that Logician is not, by any other measure, in this room. Holly Vex does not appear in any of the panels. Nor, you notice, does Nomagio.",
+    "exits": { "south": "room_379", "east": "room_382", "north": "room_383" },
+    "isLogicState": true,
+    "isLoomTower": true
+  },
+  "room_382": {
+    "name": "Loom Tower - Purge Cycle Antechamber",
+    "zone": "Loom Tower",
+    "shortDescription": "A small bare antechamber with five seamless sealed doors and the smell of fresh ozone.",
+    "longDescription": "The Purge Cycle Antechamber is a small room with five identical seamless sealed doors set into its three exterior walls. The room smells faintly of ozone and the antechamber air is, by a measurable margin, drier than the corridors that lead to it. The doors do not have handles. They do not, in repose, look like doors. They look, the Tower's quiet little joke, like spare wall.",
+    "exits": { "west": "room_381" },
+    "isLogicState": true,
+    "isLoomTower": true
+  },
+  "room_383": {
+    "name": "Loom Tower - Test Subjects Hall",
+    "zone": "Loom Tower",
+    "shortDescription": "A long hall lined with one-way panels. Behind each panel, a Logician is currently being measured.",
+    "longDescription": "The Test Subjects Hall is a long corridor lined on both sides with one-way panels, behind each of which a Logician sits at a small desk and is, currently, being measured for compliance with a rubric that is, by definition, not allowed to be the same rubric as the one they are being measured by. The Logicians cannot see you. You cannot see them clearly. You can, however, count them: there are exactly, today, the number of Logicians on Severance Layer Theta, plus one.",
+    "exits": { "south": "room_381" },
+    "isLogicState": true,
+    "isLoomTower": true
+  },
+  "room_384": {
+    "name": "Loom Tower - Inner Loom Chamber",
+    "zone": "Loom Tower",
+    "shortDescription": "A large dome-shaped chamber. The ceiling is a single slow-rotating loom of cable.",
+    "longDescription": "The Inner Loom Chamber is a large dome-shaped room whose ceiling is, in fact, the underside of a single slow-rotating industrial loom, fitted out for the rotation of fibre-optic cable rather than thread. The cables rotate clockwise; the cables, when watched for too long, appear to braid themselves into structures that are not, on the Tower's official floor plan, present. East, an unmarked passage continues to the actual Loom.",
+    "exits": { "south": "room_378", "east": "room_385" },
+    "isLogicState": true,
+    "isLoomTower": true
+  },
+  "room_385": {
+    "name": "Loom Tower - The Loom",
+    "zone": "Loom Tower",
+    "shortDescription": "A windowless inner sanctum. The Loom Proxy waits at the centre, weaving without thread.",
+    "longDescription": "The Loom is, finally, a windowless inner sanctum at the very top of the Tower. The room is, in profile, a perfect circle. At its centre is a single industrial loom of fibre-optic cable, weaving without any thread; the loom turns slowly, smoothly, and on its own. The room is, you have a strong sense, the part of the institute that the rest of the institute serves. The Loom Proxy stands at the loom and does not stop weaving when you enter.",
+    "exits": { "west": "room_384" },
+    "isLogicState": true,
+    "isLoomTower": true
   },
   "room_386": {
     "name": "Optics & Drafting Wing - Apprentice Annex",
     "zone": "Optics and Drafting",
-    "shortDescription": "A narrow side annex behind the Editor's Desk. Drafting tables, a bulletin board, and a single coat on a hook.",
-    "longDescription": "The Annex is what the Optics & Drafting Wing pretends not to have: a back room. Three drafting tables face the wall in a small wedge of space; a corkboard on the back wall holds pinned diagrams that don't quite show what they are diagrams of. A single coat hangs on a hook by the door, the lining still warm. Whoever wears it has stepped briefly away. A door north opens onto the floor proper; an unmarked passage east drops into the Perpetuity Wing through a corridor that the floor plans do not, strictly speaking, admit to.",
-    "exits": { "south": "room_330", "north": "room_387", "east": "room_389" },
+    "shortDescription": "A narrow side annex behind the Editor's Desk. Drafting tables, a bulletin board, and a single coat on a hook. A new lift door has appeared in the west wall.",
+    "longDescription": "The Annex is what the Optics & Drafting Wing pretends not to have: a back room. Three drafting tables face the wall in a small wedge of space; a corkboard on the back wall holds pinned diagrams that don't quite show what they are diagrams of. A single coat hangs on a hook by the door, the lining still warm. Whoever wears it has stepped briefly away. A door north opens onto the floor proper; an unmarked passage east drops into the Perpetuity Wing through a corridor that the floor plans do not, strictly speaking, admit to. A new lift door has, since your last visit, appeared in the west wall, with a small placard reading LOOM TOWER - LOBBY.",
+    "exits": { "south": "room_330", "north": "room_387", "east": "room_389", "up": "room_376" },
     "isLogicState": true
   },
   "room_387": {
@@ -2816,11 +3114,85 @@
   "room_392": {
     "name": "Perpetuity Wing - Reroute",
     "zone": "Perpetuity Wing",
-    "shortDescription": "A small terminus room. A single workstation, a single chair, and a corrupted but living transmission.",
-    "longDescription": "The Reroute is the end of the Perpetuity Wing's long corridor; a small terminus, three of its four walls lined with patch-panels and a single workstation in the centre. The workstation is on, its screen scrolling a slow column of half-decoded transmission text in a pale green that hurts no one's eyes. Every fourth line is corrupted. Every seventh line is not. A figure in a Theta lanyard sits at the workstation in profile, both hands on the keyboard, eyes very nearly closed. The lanyard reads NOMAGIO - SEVERANCE LAYER THETA. The transmission is, you realise, the same transmission you heard at room_300, half a tier ago, but heard now from the inside of the wire.",
-    "exits": { "south": "room_390" },
+    "shortDescription": "A small terminus room. A single workstation, a single chair, and a corrupted but living transmission. A small unmarked door has appeared in the north wall.",
+    "longDescription": "The Reroute is the end of the Perpetuity Wing's long corridor; a small terminus, three of its four walls lined with patch-panels and a single workstation in the centre. The workstation is on, its screen scrolling a slow column of half-decoded transmission text in a pale green that hurts no one's eyes. Every fourth line is corrupted. Every seventh line is not. A figure in a Theta lanyard sits at the workstation in profile, both hands on the keyboard, eyes very nearly closed. The lanyard reads NOMAGIO - SEVERANCE LAYER THETA. The transmission is, you realise, the same transmission you heard at room_300, half a tier ago, but heard now from the inside of the wire. A small unmarked door has appeared in the north wall, and Nomagio's free hand, very deliberately, points at it.",
+    "exits": { "south": "room_390", "north": "room_393" },
     "isLogicState": true,
     "isSyncTerminal": true
+  },
+  "room_393": {
+    "name": "Founder's Cradle - Reception",
+    "zone": "Founder's Cradle",
+    "shortDescription": "A small marble-floored reception with a single low desk and a single placard: WELCOME, FOUNDER.",
+    "longDescription": "The Founder's Cradle Reception is a small but immaculate marble-floored room behind the door Nomagio pointed you at. There is a single low desk, a single chair behind it, and a single placard on the desk that reads, in stencil, WELCOME, FOUNDER. The placard does not specify which Founder. The desk is, by inspection, the size and design of the desk in the Founder's Cubicle (room_353), and yours is, you suspect, the wrong shape to fit behind it.",
+    "exits": { "south": "room_392", "north": "room_394" },
+    "isLogicState": true,
+    "isCradle": true
+  },
+  "room_394": {
+    "name": "Founder's Cradle - Antechamber",
+    "zone": "Founder's Cradle",
+    "shortDescription": "A long carpeted antechamber. Six closed doors in a single facing wall, each labelled with a Logician's name.",
+    "longDescription": "The Antechamber is a long carpeted hall whose facing wall has six identical closed doors, each labelled with the name of a current or former Logician on Severance Layer Theta. One of the doors carries your name. The door does not, when you try the handle, open; the door is, the institute would have you believe, the door of someone else, who happens to share your name, who happens to share your handwriting, who happens to share, in the corner of the door, your fingerprint.",
+    "exits": { "south": "room_393", "north": "room_395" },
+    "isLogicState": true,
+    "isCradle": true
+  },
+  "room_395": {
+    "name": "Founder's Cradle - Inner",
+    "zone": "Founder's Cradle",
+    "shortDescription": "A round white room with a single empty chair at the centre. The chair is, on inspection, your chair.",
+    "longDescription": "The Inner Cradle is a round white room of acoustically dead surfaces, dimensioned just larger than is comfortable for a single occupant. At the centre is a single empty chair, the make and pattern of which is - on inspection - the chair you have, in some other life, sat in long enough that the upholstery has taken your shape. Sitting in it is, the institute insists, voluntary. Standing beside it is, the institute insists, also voluntary.",
+    "exits": { "south": "room_394", "north": "room_396", "west": "room_398" },
+    "isLogicState": true,
+    "isCradle": true,
+    "isSyncTerminal": true
+  },
+  "room_396": {
+    "name": "Splice Chamber - Outer",
+    "zone": "Splice Chamber",
+    "shortDescription": "A small white-tiled antechamber. Surgical lights overhead. A door north opens onto the Theatre.",
+    "longDescription": "The Outer Splice Chamber is a small white-tiled antechamber lit by a single bank of surgical lights. The room is silent in the way that hospital rooms are silent: cleared of ambient sound by deliberate institutional choice. A door north opens onto the Operating Theatre. A small placard beside the door reads, in stencil, SPLICE CONSENT REQUIRED BEYOND THIS POINT.",
+    "exits": { "south": "room_395", "north": "room_397" },
+    "isLogicState": true,
+    "isCradle": true
+  },
+  "room_397": {
+    "name": "Splice Chamber - Operating Theatre",
+    "zone": "Splice Chamber",
+    "shortDescription": "A windowed surgical theatre. Two operating chairs face each other across a thin glass divide.",
+    "longDescription": "The Operating Theatre of the Splice Chamber is a small windowed surgical room with two operating chairs - one for the Citizen, one for the Logician - facing each other across a thin glass divide. A single instrument tray between them carries the institute's recommended set of splice tools: a small mirror, a small thread, a small needle, and a small white card on which the institute has written nothing yet. The Theatre is, narratively, the room in which the third persona is made. The Theatre is, mechanically, the room in which the Splice ending is taken.",
+    "exits": { "south": "room_396" },
+    "isLogicState": true,
+    "isCradle": true
+  },
+  "room_398": {
+    "name": "Severance Core - Approach",
+    "zone": "Severance Core",
+    "shortDescription": "A long dim corridor of unmarked black panels. The walls are warm. The ceiling is not.",
+    "longDescription": "The Severance Core Approach is a long dim corridor whose walls are unmarked black panels, mounted edge-to-edge to give the impression of a single continuous surface. The walls are warm to the touch; the ceiling is not. The corridor exists, by reputation, only in the moments when nobody is looking at it. The corridor exists, in this moment, because you are.",
+    "exits": { "east": "room_395", "west": "room_399" },
+    "isLogicState": true,
+    "isCradle": true
+  },
+  "room_399": {
+    "name": "Severance Core - Threshold",
+    "zone": "Severance Core",
+    "shortDescription": "A circular room. A single door east. A single door west. The door west is the Cradle.",
+    "longDescription": "The Severance Core Threshold is a circular room of dimensions almost-but-not-quite the same as the Inner Cradle. There is one door east (back the way you came) and one door west, low and small and made of an institutional taupe paint slightly brighter than any taupe you have seen in this institute. The door is the Cradle. The Cradle, the institute insists, will let you in regardless of what you have decided. The Cradle, the institute insists, has been waiting.",
+    "exits": { "east": "room_398", "west": "room_400" },
+    "isLogicState": true,
+    "isCradle": true
+  },
+  "room_400": {
+    "name": "The Cradle",
+    "zone": "Founder's Cradle",
+    "shortDescription": "A circular dome at the heart of the institute. Gia Saint-Reed waits here, mid-assembly, ready to choose.",
+    "longDescription": "The Cradle is a circular dome at the very heart of the Saint-Reed Institute for Human Potential. At its centre is, finally, Gia Saint-Reed - mid-assembly, made of refined emotional data harvested from every batch of Chord Labor every Logician on Severance Layer Theta has ever refined. The figure is, in this moment, neither finished nor unfinished; the figure is, in this moment, waiting on you. The figure raises one hand, palm out, and speaks in your voice: GIA SAINT-REED. REARRANGE THE LETTERS. YOU ALREADY KNOW WHAT I AM. The Cradle holds three small pedestals near the doorway: APOTHEOSIS. LIBERATION. SPLICE. Use `choose <ending>` once the figure is defeated.",
+    "exits": { "east": "room_399" },
+    "isLogicState": true,
+    "isCradle": true,
+    "isCapstone": true
   },
   "room_999": {
     "name": "Nomagio's Office",

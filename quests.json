@@ -376,5 +376,133 @@
       { "id": "visit_nomagio", "type": "visit_room", "targetId": "room_392", "count": 1, "description": "Reach Nomagio at the Reroute terminus" }
     ],
     "rewards": { "xp": 3000, "questPoints": 120, "items": ["retort_godel_strike"] }
+  },
+  "the_quota": {
+    "id": "the_quota",
+    "title": "The Quota",
+    "giver": "floor_supervisor_alterio",
+    "description": "Floor Supervisor Alterio expects Logicians to refine ten batches across the Refinement Console Cluster. Meet the quota; the institute records throughput.",
+    "hint": "Refine ten Chord Labor batches at any console in rooms 313, 315, 319, 327, or 355-360. Use `tempers` to view your accumulated attunement.",
+    "objectives": [
+      { "id": "refine_ten_batches", "type": "tempers_attune_total", "targetId": "_any", "count": 10, "description": "Refine ten Chord Labor batches at any console" }
+    ],
+    "rewards": { "xp": 2000, "questPoints": 60, "items": ["tuning_fork_bin"] }
+  },
+  "the_cradle": {
+    "id": "the_cradle",
+    "title": "The Cradle",
+    "giver": "nomagio_theta",
+    "description": "Nomagio confirms what the Reading Carrel implied. There is, behind the Reroute, a Founder's Cradle - and at the centre of the Cradle, mid-assembly, is Gia Saint-Reed. Walk the Cradle, find the Inner Sanctum, and reach the boss room at the heart of the institute.",
+    "hint": "From the Reroute (room_392), walk north into the Cradle Reception (room_393). Continue through the Antechamber (room_394) and into the Inner Cradle (room_395). Then walk west through the Severance Core Approach (room_398) and Threshold (room_399) to reach the Cradle (room_400).",
+    "objectives": [
+      { "id": "visit_cradle", "type": "visit_room", "targetId": "room_400", "count": 1, "description": "Reach the Cradle (room_400)" }
+    ],
+    "rewards": { "xp": 6000, "questPoints": 250 }
+  },
+  "assemble_the_founder": {
+    "id": "assemble_the_founder",
+    "title": "Assemble the Founder",
+    "giver": "holly_vex",
+    "description": "Holly Vex, between filing cabinets, lets slip that the figure inside the Cradle is mid-assembly because the institute has not yet been able to refine enough Chord Labor to finish her. Defeat the proto-form to either complete or unmake the assembly.",
+    "hint": "Reach the Cradle (room_400). Engage Gia Saint-Reed (mid-assembly) - she fights as a coherence-typed boss, level 50.",
+    "objectives": [
+      { "id": "kill_proto", "type": "monster_kill", "targetId": "gia_saint_reed_proto", "count": 1, "description": "Defeat Gia Saint-Reed (mid-assembly)" }
+    ],
+    "rewards": { "xp": 12000, "questPoints": 400, "items": ["saint_reed_institute_pin"] }
+  },
+  "cut_the_cord": {
+    "id": "cut_the_cord",
+    "title": "Cut the Cord",
+    "giver": "nomagio_theta",
+    "description": "Once Gia is unmade, the Cradle still holds three pedestals: APOTHEOSIS, LIBERATION, SPLICE. Pick one. Each commits the rest of the institute - and Tier 7 - to a different shape.",
+    "hint": "After defeating Gia Saint-Reed (mid-assembly) at room_400, run `choose apotheosis` or `choose liberation` or `choose splice`. The chosen token ends up in your inventory; the other two pedestals lock.",
+    "objectives": [
+      { "id": "choose_ending", "type": "tier6_ending_chosen", "targetId": "_any", "count": 1, "description": "Take any of the three Cradle endings" }
+    ],
+    "rewards": { "xp": 8000, "questPoints": 300 }
+  },
+  "splice_the_cord": {
+    "id": "splice_the_cord",
+    "title": "Splice the Cord",
+    "giver": "barkeep_oslo",
+    "description": "Barkeep Oslo, between polishings at the Wax Lily, lets slip that the Splice ending is the one the institute least wants you to take. Take it anyway. The Operating Theatre at room_397 - reached via the Outer Splice Chamber from the Inner Cradle - holds the splice consent card you need to sign.",
+    "hint": "After defeating Gia Saint-Reed (mid-assembly), walk back from room_400 east to room_399, east to room_398, east to room_395 (Inner Cradle), then north into the Splice Chamber (room_396) and north again into the Operating Theatre (room_397). Run `choose splice` from the Theatre to sign the card.",
+    "objectives": [
+      { "id": "splice_chosen", "type": "tier6_ending_chosen", "targetId": "splice", "count": 1, "description": "Take the Splice ending in the Operating Theatre" }
+    ],
+    "rewards": { "xp": 10000, "questPoints": 350 }
+  },
+  "audit_the_loom": {
+    "id": "audit_the_loom",
+    "title": "Audit the Loom",
+    "giver": "holly_vex",
+    "description": "Holly Vex, between filing cabinets, lets slip that the Telemetry Floor at the top of the Loom Tower is - to her quiet professional dismay - currently the only floor of the institute whose figures the institute does not itself audit. Walk into the Audit Booth, sit on the auditor's side of the glass partition, and let the Loom learn that its figures are, today, being read back at it.",
+    "hint": "From the Apprentice Annex (room_386), take the new lift up to the Loom Tower Lobby (room_376). Ride the lift to the top (room_378), walk east into the Telemetry Floor (room_379), then east again into the Audit Booth (room_380).",
+    "objectives": [
+      { "id": "visit_audit_booth", "type": "visit_room", "targetId": "room_380", "count": 1, "description": "Sit on the auditor's side of the Audit Booth" }
+    ],
+    "rewards": { "xp": 2500, "questPoints": 80 }
+  },
+  "the_purge_cycle_warning": {
+    "id": "the_purge_cycle_warning",
+    "title": "The Purge Cycle Warning",
+    "giver": "nomagio_theta",
+    "description": "Nomagio, on the inside of the wire at the Reroute terminus, has been tracking the Loom's recent telemetry runs. He believes a Purge Cycle is overdue. Stand by - any Purge Cycle directive will broadcast across the mail and auctionMail queues, and the Purge Drones will spawn in random Refinement consoles. Kill at least three Purge Drones to count as a participant in the resistance.",
+    "hint": "Get a Logician shift going - refine batches at any Refinement Console - then wait for the Loom to fire a Purge Cycle. The directive will be broadcast. Find a spawned purge_drone in a Refinement room and kill it.",
+    "objectives": [
+      { "id": "kill_drones", "type": "monster_kill", "targetId": "purge_drone", "count": 3, "description": "Destroy three Purge Drones" }
+    ],
+    "rewards": { "xp": 4000, "questPoints": 140, "items": ["drone_compliance_badge"] }
+  },
+  "loom_test_subjects": {
+    "id": "loom_test_subjects",
+    "title": "Loom Test Subjects",
+    "giver": "holly_vex",
+    "description": "The Loom's Test Subjects Hall, Holly says, contains exactly the number of Logicians on Severance Layer Theta plus one. The plus-one is the Loom's spare. Walk the Hall. Note the count. Confront a Compliance Revenant if it manifests in the Hall.",
+    "hint": "From the Census Hall (room_381), walk north into the Test Subjects Hall (room_383). The Compliance Revenant fixed-spawns in this room.",
+    "objectives": [
+      { "id": "kill_revenant", "type": "monster_kill", "targetId": "compliance_revenant", "count": 1, "description": "Destroy the Compliance Revenant in the Test Subjects Hall" }
+    ],
+    "rewards": { "xp": 3500, "questPoints": 120, "items": ["revenant_lanyard"] }
+  },
+  "paint_what_you_cannot_remember": {
+    "id": "paint_what_you_cannot_remember",
+    "title": "Paint What You Cannot Remember",
+    "giver": "barkeep_oslo",
+    "description": "The barkeep at the Wax Lily lets slip, between polishings, that there is a back atelier behind the Hardware Store. He suggests, vaguely, that if a Citizen were to paint the five small geometric swatches kept in the Pattern Library on the long blank wall of the Sketch Wall - on behalf of, as he puts it, no one in particular - certain doors might find themselves easier to open in some other room.",
+    "hint": "From the Hardware Store (room_348), buy a paintbrush set, then walk east into the Painter's Atelier (room_373). Visit the Pattern Library (room_374), pick up each swatch, then continue north to the Sketch Wall (room_375) and `paint <pattern>` for door, chair, window, bowl, and hand.",
+    "objectives": [
+      { "id": "paint_door",   "type": "paint_pattern", "targetId": "pattern_door",   "count": 1, "description": "Paint the door pattern" },
+      { "id": "paint_chair",  "type": "paint_pattern", "targetId": "pattern_chair",  "count": 1, "description": "Paint the chair pattern" },
+      { "id": "paint_window", "type": "paint_pattern", "targetId": "pattern_window", "count": 1, "description": "Paint the window pattern" },
+      { "id": "paint_bowl",   "type": "paint_pattern", "targetId": "pattern_bowl",   "count": 1, "description": "Paint the bowl pattern" },
+      { "id": "paint_hand",   "type": "paint_pattern", "targetId": "pattern_hand",   "count": 1, "description": "Paint the hand pattern" }
+    ],
+    "rewards": { "xp": 3500, "questPoints": 130, "items": ["pattern_swatch_threshold"] }
+  },
+  "the_door_that_was_not_there": {
+    "id": "the_door_that_was_not_there",
+    "title": "The Door That Was Not There",
+    "giver": "holly_vex",
+    "description": "Holly Vex confirms what the swatches imply. There is, in the institute's east-side floor plan, a Black Hallway that does not appear on the floor plan; and at the end of the Black Hallway is a Warden, who is the institute's quiet and patient response to the question of who was minding the corridor while everyone else was minding the floor. Reach the Warden's Inner Sanctum (room_372). The door will not open until you have painted the pattern_threshold and refined enough work to deserve the audience.",
+    "hint": "Paint pattern_threshold at the Sketch Wall (room_375). Swap into Logic-State at any Sync Terminal to refresh the muscle-unlock. Walk east from the Tempers Bin (room_360) into the Black Hallway, traverse the corridor, and reach the Warden's Inner Sanctum (room_372).",
+    "objectives": [
+      { "id": "visit_warden", "type": "visit_room", "targetId": "room_372", "count": 1, "description": "Reach the Warden's Inner Sanctum" }
+    ],
+    "rewards": { "xp": 5500, "questPoints": 200, "items": ["motivational_poster_hang_in_there"] }
+  },
+  "four_tempers_attune": {
+    "id": "four_tempers_attune",
+    "title": "Four Tempers Attune",
+    "giver": "floor_supervisor_alterio",
+    "description": "The Refinement Console Cluster's four benches are each tuned to a single Temper: Dread (355), Frolic (356), Malice (357), Woe (358). Pull batches from each and refine them correctly until you have attuned to every Temper. Be careful - enough wrong-verb mistakes on a single Temper will manifest its boss in your room.",
+    "hint": "Refine batches at all four Temper-biased consoles (rooms 355, 356, 357, 358) until each Temper attunement reaches at least 8. Run `tempers` to track progress.",
+    "objectives": [
+      { "id": "attune_dread",  "type": "tempers_attune", "targetId": "dread",  "count": 8, "description": "Attune to Dread (8 correct clears)" },
+      { "id": "attune_frolic", "type": "tempers_attune", "targetId": "frolic", "count": 8, "description": "Attune to Frolic (8 correct clears)" },
+      { "id": "attune_malice", "type": "tempers_attune", "targetId": "malice", "count": 8, "description": "Attune to Malice (8 correct clears)" },
+      { "id": "attune_woe",    "type": "tempers_attune", "targetId": "woe",    "count": 8, "description": "Attune to Woe (8 correct clears)" }
+    ],
+    "rewards": { "xp": 4500, "questPoints": 150, "items": ["tempers_compass"] }
   }
 }

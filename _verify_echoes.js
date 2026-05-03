@@ -200,7 +200,7 @@ function check(label, pass, detail) {
   check('handleSwap surfaces pocket artifacts on swap',
     /handleSwap[\s\S]{0,5000}drainPocketArtifacts\(player, 3\)/.test(src));
   check('handleSwap accrues credits when leaving Logician',
-    /handleSwap[\s\S]{0,3000}wasLogic && r\.to === 'life'[\s\S]{0,200}credits = \(player\.personas\.life\.credits/.test(src));
+    /handleSwap[\s\S]{0,4000}wasLogic && r\.to === 'life'[\s\S]{0,200}credits = \(player\.personas\.life\.credits/.test(src));
   check('handleSwap stamps shiftStartedAt when entering Logician',
     /r\.to === 'logic'[\s\S]{0,200}shiftStartedAt = Date\.now\(\)/.test(src));
 }

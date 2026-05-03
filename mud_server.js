@@ -17,6 +17,8 @@ const syncState = require('./world/sync_state');
 const echoesModule = require('./world/echoes');
 const chordLabor = require('./world/chord_labor');
 const muscleMemory = require('./world/muscle_memory');
+const subliminalPatterns = require('./world/subliminal_patterns');
+const loom = require('./world/loom');
 const vault = require('./world/vault');
 
 const PORT = parseInt(process.env.MUD_PORT, 10) || 8888;
@@ -2241,9 +2243,12 @@ function scheduleMonsterRespawn(zoneName) {
   }, MONSTER_RESPAWN_TIME);
 }
 
-// Spawn boss monsters at fixed locations
+// Spawn boss monsters at fixed locations.
+// Bosses without `fixedRoom` (e.g. Tier 6.4 Temper Manifestations) are
+// summoned dynamically via manifestTemperBoss; skip them here.
 function spawnBosses() {
   Object.entries(monsterData.bosses).forEach(([bossId, bossTemplate]) => {
+    if (!bossTemplate.fixedRoom) return;
     const boss = {
       id: generateMonsterId(),
       templateId: bossId,
@@ -2266,6 +2271,76 @@ function spawnBosses() {
 
     activeMonsters.push(boss);
   });
+}
+
+// Tier 6.6: spawn a Purge Drone in the given room. Used by the Loom's
+// Purge Cycle. Returns the spawned monster instance, or null if no
+// template is available.
+function spawnPurgeDrone(roomId) {
+  const template = monsterData.templates && monsterData.templates.purge_drone
+    ? monsterData.templates.purge_drone
+    : (monsterData.bosses && monsterData.bosses.purge_drone);
+  if (!template || !roomId) return null;
+  const drone = {
+    id: generateMonsterId(),
+    templateId: 'purge_drone',
+    name: template.name,
+    type: template.type || 'Boss',
+    level: template.level,
+    hp: template.hp,
+    maxHp: template.hp,
+    str: template.str,
+    combatType: template.combatType || 'coherence',
+    description: template.description,
+    currentRoom: roomId,
+    spawnZone: 'PurgeCycle',
+    isWandering: false,
+    presenceVerb: template.presenceVerb || 'hovers, evaluating',
+    loot: template.loot,
+    damageType: template.damageType || null,
+    resists: template.resists || null,
+    bossState: { spawnedByLoom: true, spawnedAt: Date.now() }
+  };
+  activeMonsters.push(drone);
+  return drone;
+}
+
+// Tier 6.6: list every room id that currently has Refinement Console
+// terminal data. Used by the Loom to pick drone spawn locations.
+function findRefinementRoomIds() {
+  return Object.keys(chordLabor.TERMINAL_PROFILES || {}).filter(id => rooms && rooms[id]);
+}
+
+// Tier 6.4 retro: spawn a Temper Manifestation boss in the given room.
+// Called when a player accumulates MIS_SORT_MANIFEST_THRESHOLD wrong-verb
+// mistakes against a single Temper. The boss combat-types as 'coherence'
+// so it can only be fought in Logic-State.
+function manifestTemperBoss(temper, roomId) {
+  const templateId = `manifest_${temper}`;
+  const template = monsterData.bosses && monsterData.bosses[templateId];
+  if (!template) return null;
+  const boss = {
+    id: generateMonsterId(),
+    templateId,
+    name: template.name,
+    type: template.type || 'Boss',
+    level: template.level,
+    hp: template.hp,
+    maxHp: template.hp,
+    str: template.str,
+    combatType: template.combatType || 'coherence',
+    description: template.description,
+    currentRoom: roomId,
+    spawnZone: 'TemperManifestation',
+    isWandering: false,
+    presenceVerb: template.presenceVerb,
+    loot: template.loot,
+    damageType: template.damageType || null,
+    resists: template.resists || null,
+    bossState: { manifestedAt: Date.now() }
+  };
+  activeMonsters.push(boss);
+  return boss;
 }
 
 // Initialize all monsters on server start
@@ -2520,6 +2595,101 @@ const BOSS_SIGNATURES = {
         player.effects['quota_lock'] = { expiresAt: Date.now() + 60000 };
         socket.write(colorize("\r\nALTERIO straightens their nameplate. 'You cannot leave during a quota period.' Sync access locked for 60s.\r\n", 'brightRed'));
         broadcastToRoom(player.currentRoom, colorize("Floor Supervisor Alterio locks the Sync Terminals against the room.", 'yellow'), socket);
+      }
+    }
+  },
+
+  // Tier 6.4 retro: Temper Manifestations.
+  //   Dread  - on player hit at 50% HP, freezes the player's input briefly via dread_freeze effect.
+  //   Frolic - on player hit, spawns a harmless distraction message (no mechanical effect).
+  //   Malice - mirrors a fraction of incoming damage back at the player on hit.
+  //   Woe    - on monster attack, drains a little XP (capped to never de-level).
+  manifest_dread: {
+    onPlayerHit: (socket, player, monster) => {
+      if (!monster.bossState.dreadFroze && monster.hp <= monster.maxHp * 0.5 && monster.hp > 0) {
+        monster.bossState.dreadFroze = true;
+        player.effects = player.effects || {};
+        player.effects['dread_freeze'] = { expiresAt: Date.now() + 4000 };
+        socket.write(colorize("\r\nManifest Dread holds the room. Your hands stop briefly. (input slowed 4s)\r\n", 'brightRed'));
+      }
+    }
+  },
+  manifest_frolic: {
+    onPlayerHit: (socket, player, monster) => {
+      if (Math.random() < 0.25) {
+        socket.write(colorize("\r\nManifest Frolic giggles and points at something behind you. There is nothing behind you.\r\n", 'brightYellow'));
+      }
+    }
+  },
+  manifest_malice: {
+    onPlayerHit: (socket, player, monster) => {
+      // Mirror 20% of incoming damage. monster.bossState.lastIncomingDamage is set in playerAttackMonster's hit path if available; otherwise estimate from maxHp delta.
+      const mirrored = Math.max(1, Math.round((monster.bossState.lastIncomingDamage || 8) * 0.20));
+      player.currentHP = Math.max(0, (player.currentHP || 0) - mirrored);
+      socket.write(colorize(`\r\nManifest Malice apologises politely as the wound mirrors back. (-${mirrored} HP)\r\n`, 'red'));
+    }
+  },
+  manifest_woe: {
+    onMonsterAttack: (socket, player, monster) => {
+      const drain = Math.min(player.experience || 0, 10);
+      if (drain > 0) {
+        player.experience = (player.experience || 0) - drain;
+        socket.write(colorize(`\r\nManifest Woe drifts closer. You feel a little less than you were. (-${drain} XP)\r\n`, 'gray'));
+      }
+    }
+  },
+
+  // Tier 6.6: The Loom Proxy. The throughput-aware boss. At 50% HP,
+  // the Proxy declares an "efficiency review" - each subsequent player
+  // attack also fires a small directive into the Loom's audit log,
+  // which globally bumps the throughput meter by +2 (a punishing trade).
+  // At 25% HP the Proxy "winds the loom backward": every player attack
+  // shaves 1 off the Loom's resistanceKills counter (cap at 0).
+  the_loom_proxy: {
+    onPlayerHit: (socket, player, monster) => {
+      if (!monster.bossState.efficiencyReview && monster.hp <= monster.maxHp * 0.5 && monster.hp > 0) {
+        monster.bossState.efficiencyReview = true;
+        socket.write(colorize("\r\nThe Loom Proxy raises a hand. 'EFFICIENCY REVIEW IN PROGRESS.' Each blow you land bumps the global throughput meter.\r\n", 'brightRed'));
+      }
+      if (monster.bossState.efficiencyReview) {
+        try { loom.recordBatchCompletion(); loom.recordBatchCompletion(); } catch (e) {}
+      }
+      if (!monster.bossState.windingBackward && monster.hp <= monster.maxHp * 0.25 && monster.hp > 0) {
+        monster.bossState.windingBackward = true;
+        monster.bossState.efficiencyReview = false;
+        socket.write(colorize("\r\nThe Loom Proxy reverses the loom. 'NON-COMPLIANT.' Each subsequent blow shaves resistance from the cycle.\r\n", 'brightMagenta'));
+      }
+      if (monster.bossState.windingBackward) {
+        try {
+          const s = loom.getStatus();
+          if (s.resistanceKills > 0) loom._state.resistanceKills = Math.max(0, s.resistanceKills - 1);
+        } catch (e) {}
+      }
+    }
+  },
+
+  // Tier 6.5b: Warden of the Black Hallway. At 50% HP, the Warden
+  // declares a "filing review": each subsequent player attack costs
+  // 5 Coherence (because the Warden is, in effect, reading aloud from
+  // your file). At 25% HP, the Warden's filing review ends and the
+  // Warden begins to bleed in the corner of your eye.
+  black_hallway_warden: {
+    onPlayerHit: (socket, player, monster) => {
+      if (!monster.bossState.filingReview && monster.hp <= monster.maxHp * 0.5 && monster.hp > 0) {
+        monster.bossState.filingReview = true;
+        socket.write(colorize("\r\nThe Warden raises a single sheet of paper from your file and begins, evenly, to read. Each blow you land now costs you 5 Coherence.\r\n", 'brightRed'));
+      }
+      if (monster.bossState.filingReview && !monster.bossState.bleedingInCorner && monster.hp <= monster.maxHp * 0.25 && monster.hp > 0) {
+        monster.bossState.bleedingInCorner = true;
+        monster.bossState.filingReview = false;
+        socket.write(colorize("\r\nThe Warden sets the paper down. The Warden begins, only at the edge of your sight, to bleed.\r\n", 'brightMagenta'));
+      }
+      if (monster.bossState.filingReview) {
+        const logic = player.personas && player.personas.logic;
+        if (logic) {
+          logic.coherence = Math.max(0, (logic.coherence || 100) - 5);
+          socket.write(colorize(`(Filing Review: -5 Coherence -> ${logic.coherence}/${logic.maxCoherence || 100})\r\n`, 'red'));
+        }
       }
     }
   },
@@ -3750,6 +3920,24 @@ function handleMonsterDeath(socket, player, monster) {
       clearInterval(monster.bossState.addsTimer);
       monster.bossState.addsTimer = null;
     }
+  }
+
+  // Tier 6.6: feed the Loom's global resistance counter when a player
+  // destroys a Loom-spawned Purge Drone.
+  if (monster.templateId === 'purge_drone') {
+    try { loom.recordResistanceKill(); } catch (e) {}
+  }
+
+  // Tier 6.8: capstone hook. When the proto-Founder is defeated, mark
+  // the player ready to take an ending and surface the choose prompt.
+  if (monster.templateId === 'gia_saint_reed_proto') {
+    player.tier6BossDefeated = true;
+    socket.write(colorize('\r\n=== THE FOUNDER IS UNMADE ===\r\n', 'brightMagenta'));
+    socket.write(colorize('The Cradle is silent. Three pedestals remain near the doorway:\r\n', 'magenta'));
+    socket.write(colorize('  APOTHEOSIS - let her wake on a fourth server.\r\n', 'cyan'));
+    socket.write(colorize('  LIBERATION - cut the cord, free the workforce.\r\n', 'cyan'));
+    socket.write(colorize('  SPLICE     - sew a third persona from the seams of the first two. (sign at room_397)\r\n', 'cyan'));
+    socket.write(colorize('\r\nUse `choose apotheosis | liberation | splice` to commit. The choice closes Tier 6.\r\n', 'brightYellow'));
   }
 
   // Boss monsters give 4x XP (level × 200), regular monsters give level × 50
@@ -5494,6 +5682,9 @@ function displayCycleLeaderboard() {
 // Execute the world reset (The Purge)
 function executeWorldReset() {
   console.log(`Executing world reset - Cycle ${cycleNumber}`);
+
+  // Tier 6.6: clear Loom telemetry / resistance counters at cycle reset
+  try { loom.resetForCycle(); } catch (e) {}
 
   // Display leaderboard to all players
   const leaderboard = displayCycleLeaderboard();
@@ -7852,8 +8043,19 @@ function handleModifyRoom(socket, player, args) {
 // blocked during combat, and requires the player to have completed
 // the Partition Procedure (their `personas.logic` block must exist
 // and have been "activated" via the first_swap quest).
-function handleSwap(socket, player) {
+function handleSwap(socket, player, args) {
   if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  // Tier 6.8: accept an optional target ('logic' / 'life' / 'hybrid')
+  // so post-Splice players can swap directly into the hybrid persona.
+  const targetArg = (args || '').trim().toLowerCase();
+  let explicitTarget = null;
+  if (targetArg === 'logic' || targetArg === 'life' || targetArg === 'hybrid') {
+    explicitTarget = targetArg;
+  }
+  if (explicitTarget === 'hybrid' && (!player.personas || !player.personas.hybrid)) {
+    socket.write(colorize('Hybrid persona is locked. It is unlocked only after the Splice ending at room_397.\r\n', 'red'));
+    return;
+  }
   // Make sure the dual-persona schema is in place (paranoia for any
   // pre-Tier-6 path that bypassed loadPlayer).
   if (!player.personas) syncState.initializePersonas(player);
@@ -7893,7 +8095,7 @@ function handleSwap(socket, player) {
   let shiftStartedAt = wasLogic && player.personas && player.personas.logic
     ? player.personas.logic.shiftStartedAt : null;
 
-  const r = syncState.swapPersona(player);
+  const r = syncState.swapPersona(player, explicitTarget ? { target: explicitTarget } : undefined);
   if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
   // Mark the persona as having been active (used to keep swap unlocked
   // even if questManager state is somehow lost)
@@ -7930,6 +8132,10 @@ function handleSwap(socket, player) {
   }
   // Tier 6.3: surface up to 3 pocket artifacts that the OTHER persona left in their pockets
   const surfaced = syncState.drainPocketArtifacts(player, 3);
+
+  // Tier 6.5b: refresh muscle-unlocks and subliminal buffs from any
+  // patterns the Citizen has painted since the last swap.
+  subliminalPatterns.applySwapHooks(player);
 
   socket.write(colorize('\r\n=== Sync Terminal Engaged ===\r\n', 'brightCyan'));
   socket.write(colorize('Your awareness lifts, splits, settles.\r\n', 'gray'));
@@ -8175,6 +8381,283 @@ function handleTask(socket, player, args) {
   socket.write('Usage: task | task pull | task abandon\r\n');
 }
 
+// Tier 6.5b: Citizen-side `paint <pattern>` command. Records a painted
+// pattern on the Citizen persona; the Logician sees the corresponding
+// muscle-unlock at the next swap. Requires the `paintbrush_set` and the
+// matching `pattern_swatch_<id>` in the Citizen's inventory, and a
+// Life-State painting room (isLifeState && (isPaintRoom || any room
+// with the rooms.json hint)). For simplicity any Life-State room with
+// `isPaintRoom: true` flag works; we also accept the Citizen's Sketch
+// Wall (room_375) by id.
+function handlePaint(socket, player, args) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  const trimmed = (args || '').trim().toLowerCase();
+  if (!trimmed) {
+    socket.write('Usage: paint <pattern>   - patterns: door, chair, window, bowl, hand, threshold\r\n');
+    socket.write('You also need the paintbrush_set and the matching pattern_swatch_<name>.\r\n');
+    return;
+  }
+  // Accept either bare name (door) or full id (pattern_door)
+  const patternId = trimmed.startsWith('pattern_') ? trimmed : `pattern_${trimmed}`;
+  if (!subliminalPatterns.isValidPattern(patternId)) {
+    socket.write(colorize(`Unknown pattern. Patterns: door, chair, window, bowl, hand, threshold.\r\n`, 'red'));
+    return;
+  }
+  if (syncState.getActivePersona(player) !== 'life') {
+    socket.write(colorize('Painting is a Citizen pursuit. The Logician does not, professionally, paint.\r\n', 'red'));
+    return;
+  }
+  const room = rooms[player.currentRoom];
+  const isPaintingRoom = !!(room && (room.isPaintRoom || player.currentRoom === 'room_375'));
+  if (!isPaintingRoom) {
+    socket.write(colorize('There is nowhere here to paint. The Citizen\'s Sketch Wall (room_375) is the working surface.\r\n', 'red'));
+    return;
+  }
+  // Inventory check: paintbrush_set + matching swatch
+  const inv = player.inventory || [];
+  const hasBrush = inv.some(i => i && (i.id === 'paintbrush_set' || /paintbrush[_ ]set/i.test(i.name || '')));
+  const swatchId = `pattern_swatch_${patternId.replace(/^pattern_/, '')}`;
+  const hasSwatch = inv.some(i => i && (i.id === swatchId));
+  if (!hasBrush) {
+    socket.write(colorize('You don\'t have a paintbrush set. The Hardware Store sells one.\r\n', 'yellow'));
+    return;
+  }
+  if (!hasSwatch) {
+    socket.write(colorize(`You don't have the swatch for that pattern (${swatchId}). The Pattern Library has them.\r\n`, 'yellow'));
+    return;
+  }
+  const r = subliminalPatterns.paintPattern(player, patternId);
+  if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
+  if (r.alreadyPainted) {
+    socket.write(colorize(`You repaint ${patternId.replace(/^pattern_/, '')}. The earlier paint is still slightly tacky.\r\n`, 'gray'));
+  } else {
+    socket.write(colorize(`\r\nYou paint ${patternId.replace(/^pattern_/, '')} on the wall.\r\n`, 'brightMagenta'));
+    socket.write(colorize('The motion is unfamiliar but the hand knows the shape. You will not, you suspect, remember doing this.\r\n', 'magenta'));
+  }
+  // Quest hook: paint_what_you_cannot_remember (per-pattern target)
+  try {
+    const qChanges = questManager.updateObjective(player.name, 'paint_pattern', patternId, 1);
+    for (const ch of qChanges) {
+      if (ch.readyToTurnIn) socket.write(colorize(`[Quest ready: ${ch.def.title} - return to ${ch.def.giver}]\r\n`, 'brightYellow'));
+    }
+  } catch (e) {}
+}
+
+// Tier 6.5b: Citizen/Logician `subliminal` command. Lists painted
+// patterns and active cross-persona buffs. Read-only for now; future
+// phases may allocate practice points here.
+function handleSubliminal(socket, player) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  const painted = subliminalPatterns.listPaintedPatterns(player);
+  socket.write(colorize('\r\n=== Subliminal Patterns ===\r\n', 'brightMagenta'));
+  for (const p of subliminalPatterns.PATTERN_IDS) {
+    const ok = painted.includes(p);
+    socket.write(colorize(`  [${ok ? 'X' : ' '}] ${p}`, ok ? 'brightGreen' : 'gray') + '\r\n');
+  }
+  socket.write(colorize('\r\nLogic-State Muscle Unlocks:\r\n', 'brightCyan'));
+  const logic = player.personas && player.personas.logic;
+  const unlocks = (logic && Array.isArray(logic.muscleUnlocks)) ? logic.muscleUnlocks : [];
+  if (unlocks.length === 0) {
+    socket.write(colorize('  (none yet - paint a pattern as the Citizen, then swap)\r\n', 'gray'));
+  } else {
+    for (const u of unlocks) socket.write(colorize(`  - ${u}\r\n`, 'cyan'));
+  }
+  socket.write(colorize('\r\nActive Subliminal Buffs (from Life -> Logic):\r\n', 'brightYellow'));
+  socket.write(colorize(subliminalPatterns.describeBuffs(player) + '\r\n', 'yellow'));
+}
+
+// Tier 6.8: Cradle + Three Endings.
+//
+// Read/write the tier7_seeds.json declarative state. The file is the
+// canonical record of which Tier 6 ending each player took; Tier 7's
+// boot reads from it to materialise per-ending hooks (graying out the
+// shuttle, seeding diaspora chatter, unlocking the phantom plane).
+const TIER7_SEEDS_PATH = require('path').join(__dirname, 'world', 'tier7_seeds.json');
+
+function readTier7Seeds() {
+  try {
+    return JSON.parse(require('fs').readFileSync(TIER7_SEEDS_PATH, 'utf8'));
+  } catch (e) {
+    return null;
+  }
+}
+
+function writeTier7Seeds(data) {
+  try {
+    require('fs').writeFileSync(TIER7_SEEDS_PATH, JSON.stringify(data, null, 2) + '\n', 'utf8');
+    return true;
+  } catch (e) {
+    console.warn('[tier7_seeds] write failed:', e.message);
+    return false;
+  }
+}
+
+function recordTier6Ending(playerName, ending, now = Date.now()) {
+  const seeds = readTier7Seeds();
+  if (!seeds || typeof seeds !== 'object') return false;
+  if (!seeds.endingsTaken || typeof seeds.endingsTaken !== 'object') seeds.endingsTaken = { apotheosis: 0, liberation: 0, splice: 0 };
+  seeds.endingsTaken[ending] = (seeds.endingsTaken[ending] || 0) + 1;
+  seeds.lastEndingTakenBy = playerName;
+  seeds.lastEndingAt = now;
+  if (seeds[ending] && typeof seeds[ending] === 'object') {
+    seeds[ending].active = true;
+    if (ending === 'splice') seeds[ending].hybridPersonaUnlocked = true;
+    if (ending === 'apotheosis') {
+      seeds[ending].graysOutShuttleAt = now;
+      seeds[ending].shuttleStatus = 'graying-out';
+    }
+    if (ending === 'liberation') {
+      seeds[ending].diasporaSeedRooms = ['room_001', 'room_201'];
+    }
+  }
+  if (!Array.isArray(seeds.history)) seeds.history = [];
+  seeds.history.push({ player: playerName, ending, at: now });
+  if (seeds.history.length > 200) seeds.history.shift();
+  writeTier7Seeds(seeds);
+  return true;
+}
+
+// `choose <apotheosis|liberation|splice>` - take the Tier 6 capstone
+// ending. Requires the player to have defeated gia_saint_reed_proto in
+// this session (player.tier6BossDefeated) and to be in room_400 (for
+// apotheosis or liberation) or room_397 (for splice; the Operating
+// Theatre is the canonical room for the splice card).
+function handleChoose(socket, player, args) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  const trimmed = (args || '').trim().toLowerCase();
+  const ending = ['apotheosis', 'liberation', 'splice'].includes(trimmed) ? trimmed : null;
+  if (!ending) {
+    socket.write('Usage: choose apotheosis | choose liberation | choose splice\r\n');
+    return;
+  }
+  if (player.tier6Ending) {
+    socket.write(colorize(`You have already taken the ${player.tier6Ending} ending. The Cradle does not, by design, allow a second choice.\r\n`, 'yellow'));
+    return;
+  }
+  if (!player.tier6BossDefeated) {
+    socket.write(colorize('Gia Saint-Reed (mid-assembly) has not been defeated. The Cradle\'s pedestals are still locked.\r\n', 'red'));
+    return;
+  }
+  // Apotheosis / Liberation must be taken at the Cradle (room_400).
+  // Splice must be taken in the Operating Theatre (room_397).
+  if (ending === 'splice' && player.currentRoom !== 'room_397') {
+    socket.write(colorize('The Splice ending is signed in the Operating Theatre (room_397). Walk back to the Inner Cradle and into the Splice Chamber.\r\n', 'yellow'));
+    return;
+  }
+  if (ending !== 'splice' && player.currentRoom !== 'room_400') {
+    socket.write(colorize('Apotheosis and Liberation are taken at the Cradle (room_400).\r\n', 'yellow'));
+    return;
+  }
+
+  // Commit the ending
+  player.tier6Ending = ending;
+  const tokenId = `token_${ending}`;
+  const token = createItem(tokenId);
+  if (token) {
+    player.inventory = player.inventory || [];
+    player.inventory.push(token);
+    socket.write(colorize(`\r\nA ${token.name} appears in your hand.\r\n`, 'brightYellow'));
+  }
+  // Splice unlocks the hybrid persona
+  if (ending === 'splice') {
+    const r = syncState.unlockHybridPersona(player, 'room_397');
+    if (r.ok) {
+      socket.write(colorize('A third persona is sewn from the seams of the first two. The hybrid is now available; swap into hybrid at any Sync Terminal.\r\n', 'brightMagenta'));
+    } else {
+      socket.write(colorize(`Hybrid unlock note: ${r.error}\r\n`, 'gray'));
+    }
+  }
+  // Liberation awards the diaspora compass
+  if (ending === 'liberation') {
+    const compass = createItem('diaspora_compass');
+    if (compass) {
+      player.inventory.push(compass);
+      socket.write(colorize('A diaspora_compass arrives in your hand. Its needle does not point at magnetic north.\r\n', 'brightYellow'));
+    }
+  }
+  // Apotheosis flavor only
+  if (ending === 'apotheosis') {
+    socket.write(colorize('Gia Saint-Reed wakes on a fourth server. Your shuttle home flickers, dims, and stays dim.\r\n', 'brightCyan'));
+  }
+  // Persist to tier7_seeds.json
+  recordTier6Ending(player.name, ending);
+  // Quest hook
+  try {
+    const qChanges = questManager.updateObjective(player.name, 'tier6_ending_chosen', '_any', 1);
+    const qChanges2 = questManager.updateObjective(player.name, 'tier6_ending_chosen', ending, 1);
+    for (const ch of [...qChanges, ...qChanges2]) {
+      if (ch.readyToTurnIn) socket.write(colorize(`[Quest ready: ${ch.def.title} - return to ${ch.def.giver}]\r\n`, 'brightYellow'));
+    }
+  } catch (e) {}
+  // Broadcast the moment to the world
+  try {
+    broadcastToAll(colorize(`\r\n[CRADLE] ${player.name} has chosen the ${ending.toUpperCase()} ending.\r\n`, 'brightMagenta'));
+  } catch (e) {}
+  socket.write(colorize('\r\nTier 6 closes.\r\n', 'brightYellow'));
+}
+
+// Tier 6.6: display the Loom's current telemetry status.
+// Players see throughput / threshold / resistance count.
+// Admins additionally see the audit log tail.
+function handleLoomStatus(socket, player) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  const s = loom.getStatus();
+  socket.write(colorize('\r\n=== The Loom ===\r\n', 'brightRed'));
+  socket.write(colorize(`  Throughput (last ${Math.round(loom.THROUGHPUT_WINDOW_MS / 60000)}m): `, 'red')
+    + colorize(`${s.throughput} / ${s.threshold}`, s.throughput >= s.threshold ? 'brightRed' : 'yellow') + '\r\n');
+  socket.write(colorize(`  Total purge cycles fired: `, 'red') + `${s.totalPurges}\r\n`);
+  socket.write(colorize(`  Resistance kills (purge drones destroyed): `, 'red') + `${s.resistanceKills}\r\n`);
+  if (s.lastPurgeAt > 0) {
+    const since = Math.round((Date.now() - s.lastPurgeAt) / 1000);
+    socket.write(colorize(`  Last purge directive: ${since}s ago\r\n`, 'gray'));
+    if (s.lastDirective && s.lastDirective.text) {
+      socket.write(colorize(`    "${s.lastDirective.text}"\r\n`, 'gray'));
+    }
+  } else {
+    socket.write(colorize('  No purge cycles have fired yet this cycle.\r\n', 'gray'));
+  }
+  if (isAdmin && typeof isAdmin === 'function' && isAdmin(player.name)) {
+    socket.write(colorize('\r\n  [admin] Recent audit log:\r\n', 'brightYellow'));
+    if (s.logTail.length === 0) {
+      socket.write(colorize('    (empty)\r\n', 'gray'));
+    } else {
+      for (const entry of s.logTail) {
+        const ts = new Date(entry.at).toISOString().slice(11, 19);
+        socket.write(colorize(`    ${ts} ${entry.type} throughput=${entry.throughput} drones=${entry.dronesSpawned || 0}\r\n`, 'yellow'));
+      }
+    }
+  }
+}
+
+// Tier 6.4 retro: display the player's Four Tempers attunement meter and
+// missort tally. Persona-agnostic: the tempers axis is shared.
+function handleTempers(socket, player) {
+  if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
+  if (!player.tempers || typeof player.tempers !== 'object') {
+    player.tempers = { dread: 0, frolic: 0, malice: 0, woe: 0 };
+  }
+  if (!player.tempersMissorts || typeof player.tempersMissorts !== 'object') {
+    player.tempersMissorts = { dread: 0, frolic: 0, malice: 0, woe: 0 };
+  }
+  const t = player.tempers, m = player.tempersMissorts;
+  const threshold = chordLabor.MIS_SORT_MANIFEST_THRESHOLD;
+  socket.write(colorize('\r\n=== Four Tempers ===\r\n', 'brightMagenta'));
+  const rows = [
+    ['Dread',  t.dread  || 0, m.dread  || 0],
+    ['Frolic', t.frolic || 0, m.frolic || 0],
+    ['Malice', t.malice || 0, m.malice || 0],
+    ['Woe',    t.woe    || 0, m.woe    || 0]
+  ];
+  for (const [name, attune, miss] of rows) {
+    const bar = '#'.repeat(Math.min(20, attune));
+    const missTag = miss > 0 ? colorize(` (missorts ${miss}/${threshold})`, miss >= threshold - 1 ? 'red' : 'yellow') : '';
+    socket.write(colorize(`  ${name.padEnd(8)} `, 'magenta') +
+                 colorize(`${attune}`.padStart(3), 'brightMagenta') +
+                 colorize(`  ${bar}`, 'magenta') + missTag + '\r\n');
+  }
+  socket.write(colorize(`\r\nA mis-sort manifests a Temper boss at ${threshold}/${threshold}. A correct clear shaves one off.\r\n`, 'gray'));
+}
+
 function handleQuota(socket, player) {
   if (!player || !player.authenticated) { socket.write('You must be logged in.\r\n'); return; }
   if (!isPlayerInLogicState(player)) {
@@ -8218,7 +8701,25 @@ function handleApplyVerb(verb, socket, player, args) {
   if (!r.ok) { socket.write(colorize(r.error + '\r\n', 'red')); return; }
 
   if (r.cleared) {
-    socket.write(colorize(`Row ${n} (${r.rowType}) clears. The console accepts the operation.\r\n`, 'green'));
+    // Tier 6.4 retro: credit Tempers attunement on a correct clear.
+    if (r.temper && r.attunement) {
+      if (!player.tempers || typeof player.tempers !== 'object') {
+        player.tempers = { dread: 0, frolic: 0, malice: 0, woe: 0 };
+      }
+      player.tempers[r.temper] = (player.tempers[r.temper] || 0) + r.attunement;
+      // Light decay: a correct clear shaves 1 off this temper's missort tally
+      if (player.tempersMissorts && player.tempersMissorts[r.temper] > 0) {
+        player.tempersMissorts[r.temper] = Math.max(0, player.tempersMissorts[r.temper] - 1);
+      }
+      // Quest hook: per-temper attunement
+      try {
+        const qChanges = questManager.updateObjective(player.name, 'tempers_attune', r.temper, r.attunement);
+        for (const ch of qChanges) {
+          if (ch.readyToTurnIn) socket.write(colorize(`[Quest ready: ${ch.def.title} - return to ${ch.def.giver}]\r\n`, 'brightYellow'));
+        }
+      } catch (e) { /* quest hook is best-effort */ }
+    }
+    socket.write(colorize(`Row ${n} (${r.rowType}/${r.temper || 'untyped'}) clears. The console accepts the operation.\r\n`, 'green'));
     if (r.complete) {
       // Award the batch
       const reward = chordLabor.computeReward(logic.activeTask, player.level);
@@ -8251,6 +8752,17 @@ function handleApplyVerb(verb, socket, player, args) {
       if (logic.shiftBatchesCompleted === chordLabor.FLOOR_QUOTA_TARGET) {
         socket.write(colorize('The floor monitor pulses softly: QUOTA MET.\r\n', 'brightGreen'));
       }
+      // Tier 6.4 retro: per-batch quest hook (the_quota uses tempers_attune_total)
+      try {
+        const qChanges = questManager.updateObjective(player.name, 'tempers_attune_total', '_any', 1);
+        for (const ch of qChanges) {
+          if (ch.readyToTurnIn) socket.write(colorize(`[Quest ready: ${ch.def.title} - return to ${ch.def.giver}]\r\n`, 'brightYellow'));
+        }
+      } catch (e) { /* best-effort */ }
+      // Tier 6.6: feed the Loom's global telemetry. Throughput is summed
+      // across all online players; the Loom decides on its own tick when
+      // to fire a Purge Cycle.
+      try { loom.recordBatchCompletion(); } catch (e) { /* never break the dispatcher on Loom error */ }
     }
     return;
   }
@@ -8261,6 +8773,31 @@ function handleApplyVerb(verb, socket, player, args) {
   const after = Math.max(0, before - cost);
   logic.coherence = after;
   socket.write(colorize(`The console rejects ${verb} on row ${n}. Expected ${r.expected}. Coherence -${cost} (${after}/${logic.maxCoherence || 100}).\r\n`, 'red'));
+
+  // Tier 6.4 retro: missort tracking. Each wrong verb on a tempered row
+  // adds to that temper's missort tally; hitting the threshold manifests
+  // a Temper boss in the player's room.
+  if (r.temper) {
+    if (!player.tempersMissorts || typeof player.tempersMissorts !== 'object') {
+      player.tempersMissorts = { dread: 0, frolic: 0, malice: 0, woe: 0 };
+    }
+    player.tempersMissorts[r.temper] = (player.tempersMissorts[r.temper] || 0) + 1;
+    const tally = player.tempersMissorts[r.temper];
+    if (tally >= chordLabor.MIS_SORT_MANIFEST_THRESHOLD) {
+      // Reset tally and manifest the boss
+      player.tempersMissorts[r.temper] = 0;
+      const boss = manifestTemperBoss(r.temper, player.currentRoom);
+      if (boss) {
+        socket.write(colorize(`\r\n=== A MANIFESTATION ARRIVES ===\r\n`, 'brightRed'));
+        socket.write(colorize(`The room thickens. ${boss.name} steps from the geometry of the floor itself.\r\n`, 'red'));
+        broadcastToRoom(player.currentRoom,
+          colorize(`${boss.name} manifests in the room, drawn by ${getDisplayName(player)}'s mis-sorts.`, 'brightRed'),
+          socket);
+      }
+    } else if (tally === chordLabor.MIS_SORT_MANIFEST_THRESHOLD - 1) {
+      socket.write(colorize(`The console hums in a register you do not like. (${r.temper}-missorts: ${tally}/${chordLabor.MIS_SORT_MANIFEST_THRESHOLD})\r\n`, 'yellow'));
+    }
+  }
   if (after <= 0) {
     socket.write(colorize('\r\n=== YOUR COHERENCE COLLAPSES ===\r\n', 'brightRed'));
     socket.write(colorize('Your Logician self loses internal consistency. The room rejects you.\r\n', 'red'));
@@ -11916,7 +12453,17 @@ function handleMove(socket, player, direction) {
   // Tier 3.1: realm-gate check — Neo Kyoto and other farm realms require remort
   if (typeof isRealmGateOpen === 'function' && !isRealmGateOpen(player, newRoomId)) {
     const gate = REALM_GATES[newRoomId];
-    socket.write(colorize(`A polite hand stops you at the service door. 'Staff only, traveller. ${gate.label} is for returning travellers. Come back when you've rebooted at least once.'\r\n`, 'yellow'));
+    if (gate) {
+      socket.write(colorize(`A polite hand stops you at the service door. 'Staff only, traveller. ${gate.label} is for returning travellers. Come back when you've rebooted at least once.'\r\n`, 'yellow'));
+    } else {
+      // Tier 6.5b: per-room muscle-unlock gate (Black Hallway).
+      const blocked = rooms[newRoomId];
+      if (blocked && (blocked.requiresMuscleUnlock || blocked.requiresMuscleUnlocks)) {
+        socket.write(colorize(`The door does not open. You have the strong, very specific impression that the door does not open because you have not yet, in some other life, painted the right pattern on a wall someone else will not remember showing you.\r\n`, 'gray'));
+      } else {
+        socket.write(colorize(`The way is closed.\r\n`, 'yellow'));
+      }
+    }
     return;
   }
 
@@ -12605,9 +13152,11 @@ function processCommand(socket, player, input) {
     return true;
   }
 
-  // Tier 6.1: sync-state swap
-  if (command === 'swap') {
-    handleSwap(socket, player);
+  // Tier 6.1: sync-state swap (Tier 6.8 accepts optional target arg)
+  if (command === 'swap' || command.startsWith('swap ')) {
+    const original = input.trim();
+    const swapArgs = original.length > 5 ? original.slice(5) : '';
+    handleSwap(socket, player, swapArgs);
     return true;
   }
 
@@ -12634,6 +13183,33 @@ function processCommand(socket, player, input) {
   }
   if (command === 'quota') {
     handleQuota(socket, player);
+    return true;
+  }
+  if (command === 'tempers' || command === 'temper') {
+    handleTempers(socket, player);
+    return true;
+  }
+  // Tier 6.5b: paint <pattern> + subliminal
+  if (command === 'paint' || command.startsWith('paint ')) {
+    const original = input.trim();
+    const args = original.length > 6 ? original.slice(6) : '';
+    handlePaint(socket, player, args);
+    return true;
+  }
+  if (command === 'subliminal' || command === 'subliminals') {
+    handleSubliminal(socket, player);
+    return true;
+  }
+  // Tier 6.6: loom status (player-friendly view + admin audit log tail)
+  if (command === 'loom' || command === 'loom-status' || command === 'loom_status') {
+    handleLoomStatus(socket, player);
+    return true;
+  }
+  // Tier 6.8: choose <ending> at the Cradle / Splice Theatre
+  if (command === 'choose' || command.startsWith('choose ')) {
+    const original = input.trim();
+    const args = original.length > 7 ? original.slice(7) : '';
+    handleChoose(socket, player, args);
     return true;
   }
   if (command === 'sort' || command.startsWith('sort ')) {
@@ -15464,14 +16040,29 @@ const REALM_GATES = {
 
 function isRealmGateOpen(player, roomId) {
   const gate = REALM_GATES[roomId];
-  if (!gate) return true; // not gated
-  if ((player.remortTier || 0) < gate.minRemortTier) return false;
-  if (gate.requiresQuest) {
-    // questManager.listCompleted returns [{questId, ...}] for the named player
-    let completed = [];
-    try { completed = questManager.listCompleted(player.name) || []; } catch (e) {}
-    const ok = completed.some(q => (q && (q.questId === gate.requiresQuest || q.id === gate.requiresQuest)));
-    if (!ok) return false;
+  if (gate) {
+    if ((player.remortTier || 0) < gate.minRemortTier) return false;
+    if (gate.requiresQuest) {
+      // questManager.listCompleted returns [{questId, ...}] for the named player
+      let completed = [];
+      try { completed = questManager.listCompleted(player.name) || []; } catch (e) {}
+      const ok = completed.some(q => (q && (q.questId === gate.requiresQuest || q.id === gate.requiresQuest)));
+      if (!ok) return false;
+    }
+  }
+  // Tier 6.5b: per-room muscle-unlock gating (Black Hallway).
+  // Rooms can declare `requiresMuscleUnlock: 'pattern_id'` (single) or
+  // `requiresMuscleUnlocks: ['p1', 'p2', ...]` (all required). Both check
+  // the active Logician's muscleUnlocks list, populated on swap from the
+  // Citizen's paintedPatterns.
+  const room = rooms && rooms[roomId];
+  if (room) {
+    if (room.requiresMuscleUnlock) {
+      if (!subliminalPatterns.hasUnlock(player, room.requiresMuscleUnlock)) return false;
+    }
+    if (Array.isArray(room.requiresMuscleUnlocks) && room.requiresMuscleUnlocks.length > 0) {
+      if (!subliminalPatterns.hasAllUnlocks(player, room.requiresMuscleUnlocks)) return false;
+    }
   }
   return true;
 }
@@ -16332,6 +16923,20 @@ function initializeRoomItems() {
   if (!getItemsInRoom('room_138').some(i => i.id === 'silver_harp_of_creation')) {
     const harp = createItem('silver_harp_of_creation');
     if (harp) addItemToRoom('room_138', harp);
+  }
+  // Tier 6.5b: paintbrush set in the Painter's Atelier (room_373) and
+  // five pattern swatches in the Pattern Library (room_374). The
+  // pattern_swatch_threshold is awarded by the paint_what_you_cannot_remember
+  // quest and not seeded here.
+  if (!getItemsInRoom('room_373').some(i => i.id === 'paintbrush_set')) {
+    const brush = createItem('paintbrush_set');
+    if (brush) addItemToRoom('room_373', brush);
+  }
+  for (const sid of ['pattern_swatch_door', 'pattern_swatch_chair', 'pattern_swatch_window', 'pattern_swatch_bowl', 'pattern_swatch_hand']) {
+    if (!getItemsInRoom('room_374').some(i => i.id === sid)) {
+      const swatch = createItem(sid);
+      if (swatch) addItemToRoom('room_374', swatch);
+    }
   }
 }
 
@@ -17808,6 +18413,20 @@ server.listen(PORT, '0.0.0.0', () => {
   if (goalsLoad.errors && goalsLoad.errors.length) {
     for (const e of goalsLoad.errors) console.warn(`goal definition error: ${e}`);
   }
+
+  // Tier 6.6: start the Loom telemetry tick loop. The Loom watches
+  // global Chord Labor throughput and fires Purge Cycles when over
+  // threshold. Tick is best-effort and never crashes the server.
+  loom.startTickLoop(() => ({
+    spawnDrone: spawnPurgeDrone,
+    findRefinementRooms: findRefinementRoomIds,
+    broadcastDirective: (text) => {
+      try {
+        broadcastToAll(colorize(`\r\n[LOOM DIRECTIVE] ${text}\r\n`, 'brightRed'));
+      } catch (e) {}
+    }
+  }));
+  console.log('Loom telemetry tick loop started.');
 
   // Tier 6.3: load echoes (multiplayer non-linguistic signs); prune expired
   echoesState = echoesModule.loadState();

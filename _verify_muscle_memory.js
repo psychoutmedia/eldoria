@@ -150,7 +150,7 @@ function check(label, pass, detail) {
   check('Coherence-eject path (combat) credits muscle memory',
     /batchesAtCollapse[\s\S]{0,500}creditShiftMemories\(player, batchesAtCollapse\)/.test(src));
   check('handleApplyVerb eject path also credits muscle memory',
-    /handleApplyVerb[\s\S]{0,5000}batchesAtCollapse[\s\S]{0,500}creditShiftMemories/.test(src));
+    /handleApplyVerb[\s\S]{0,8000}batchesAtCollapse[\s\S]{0,500}creditShiftMemories/.test(src));
   check('playerAttackMonster consumes muscle_quota_grit',
     /muscle_quota_grit[\s\S]{0,200}delete player\.effects\.muscle_quota_grit/.test(src));
   check('quota_grit applies +25%',

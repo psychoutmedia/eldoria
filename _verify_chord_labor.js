@@ -28,8 +28,8 @@ function check(label, pass, detail) {
   check('RAPID_BONUS_THRESHOLD_MS is 60000', chord.RAPID_BONUS_THRESHOLD_MS === 60_000);
   check('RAPID_BONUS_MULTIPLIER is 1.5', chord.RAPID_BONUS_MULTIPLIER === 1.5);
   check('FLOOR_QUOTA_TARGET is 3', chord.FLOOR_QUOTA_TARGET === 3);
-  check('TERMINAL_PROFILES has 4 entries',
-    Object.keys(chord.TERMINAL_PROFILES).length === 4);
+  check('TERMINAL_PROFILES has 10 entries (4 original + 6 from 6.4b cluster 355-360)',
+    Object.keys(chord.TERMINAL_PROFILES).length === 10);
   check('TERMINAL_PROFILES room_313 has rowCount 4',
     chord.TERMINAL_PROFILES.room_313.rowCount === 4);
   check('TERMINAL_PROFILES room_319 has rowCount 5',
@@ -74,7 +74,7 @@ function check(label, pass, detail) {
   const b = chord.generateBatch('room_315', () => 0); // all signal, 4 rows
   const s = chord.describeBatch(b);
   check('describeBatch mentions row count', /4 rows/.test(s));
-  check('describeBatch shows uncleared marker', /\[ \] 1\. signal -> use sort/.test(s));
+  check('describeBatch shows uncleared marker (with 6.4 retro temper hint)', /\[ \] 1\. signal\/(dread|frolic|malice|woe) -> use sort/.test(s));
   b.rows[0].cleared = true;
   const s2 = chord.describeBatch(b);
   check('describeBatch shows cleared marker after clear', /\[X\] 1\. \(cleared\)/.test(s2));
@@ -220,7 +220,7 @@ function check(label, pass, detail) {
   check('handleApplyVerb increments cycleBatchesCompleted + leaderboard',
     /handleApplyVerb[\s\S]{0,4000}cycleBatchesCompleted[\s\S]{0,200}updateCycleLeaderboard\(player\.name, 'batches'/.test(src));
   check('handleApplyVerb forced eject on coherence collapse',
-    /handleApplyVerb[\s\S]{0,5000}YOUR COHERENCE COLLAPSES[\s\S]{0,400}ejectToLifeState/.test(src));
+    /handleApplyVerb[\s\S]{0,8000}YOUR COHERENCE COLLAPSES[\s\S]{0,400}ejectToLifeState/.test(src));
   check('handleTask pull rejects under quota_lock',
     /handleTask[\s\S]{0,2500}quota_lock[\s\S]{0,200}quota period is in effect/.test(src));
 }

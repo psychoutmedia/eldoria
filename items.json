@@ -1430,6 +1430,166 @@
       "resists": { "data": 15 },
       "value": 3500,
       "description": "Boots stitched from rain-soaked leather harvested from the Replicant Quarter. They have walked the realm so often that the realm now politely steps aside for them. QP redemption, requires remort Tier 1+."
+    },
+    "chord_shard_dread": {
+      "name": "Chord Shard - Dread",
+      "type": "treasure",
+      "value": 250,
+      "description": "A still, cold sliver of refined emotional data. Holding it makes the air in the room feel slightly thinner. Drops from Manifest Dread."
+    },
+    "chord_shard_frolic": {
+      "name": "Chord Shard - Frolic",
+      "type": "treasure",
+      "value": 250,
+      "description": "A bright, jittering sliver of refined emotional data. It is, faintly, audibly laughing. Drops from Manifest Frolic."
+    },
+    "chord_shard_malice": {
+      "name": "Chord Shard - Malice",
+      "type": "treasure",
+      "value": 250,
+      "description": "A small, well-cut sliver of refined emotional data. It is warm in your hand and apologises politely when you set it down. Drops from Manifest Malice."
+    },
+    "chord_shard_woe": {
+      "name": "Chord Shard - Woe",
+      "type": "treasure",
+      "value": 250,
+      "description": "A grey, weight-bearing sliver of refined emotional data. To carry it is to remember every batch you ever mis-sorted. Drops from Manifest Woe."
+    },
+    "tempers_compass": {
+      "name": "Tempers Compass",
+      "type": "treasure",
+      "value": 1200,
+      "description": "A four-needled brass compass that does not point north. Each needle answers to a single Temper - Dread, Frolic, Malice, Woe - and twitches toward whichever the bearer has most recently attuned. Reward for completing the four_tempers_attune quest."
+    },
+    "tuning_fork_bin": {
+      "name": "Tempers Bin Tuning Fork",
+      "type": "weapon",
+      "levelReq": 25,
+      "damageBonus": 18,
+      "damageType": "harmonic",
+      "value": 1800,
+      "description": "A shop-grade tuning fork keyed to the Tempers Bin at Refinement Console Cluster. Strikes any Manifest Temper for true harmonic damage."
+    },
+    "paintbrush_set": {
+      "name": "Paintbrush Set",
+      "type": "treasure",
+      "personaTag": "life",
+      "value": 80,
+      "description": "A modest hardware-store paintbrush set. Three brushes, one rag. The handles are unmarked. The bristles are ordinary. The Citizen who paints with this set does so on behalf of the Logician they will be tomorrow."
+    },
+    "pattern_swatch_door": {
+      "name": "Pattern Swatch - Door",
+      "type": "treasure",
+      "personaTag": "life",
+      "value": 60,
+      "description": "A small geometric swatch on acid-free paper. The shape is a closed door, simplified to its three thinnest lines. Looking at it for too long makes the Citizen think of a door they did not walk through."
+    },
+    "pattern_swatch_chair": {
+      "name": "Pattern Swatch - Chair",
+      "type": "treasure",
+      "personaTag": "life",
+      "value": 60,
+      "description": "A small geometric swatch on acid-free paper. The shape is a chair, simplified to its four legs and a back. Looking at it for too long makes the Citizen think of an empty chair they remember as full."
+    },
+    "pattern_swatch_window": {
+      "name": "Pattern Swatch - Window",
+      "type": "treasure",
+      "personaTag": "life",
+      "value": 60,
+      "description": "A small geometric swatch on acid-free paper. The shape is a window, simplified to a square divided into four. Looking at it for too long makes the Citizen think of weather that has not happened to them."
+    },
+    "pattern_swatch_bowl": {
+      "name": "Pattern Swatch - Bowl",
+      "type": "treasure",
+      "personaTag": "life",
+      "value": 60,
+      "description": "A small geometric swatch on acid-free paper. The shape is a bowl, simplified to a single bracket curve. Looking at it for too long makes the Citizen recall a meal they did not eat."
+    },
+    "pattern_swatch_hand": {
+      "name": "Pattern Swatch - Hand",
+      "type": "treasure",
+      "personaTag": "life",
+      "value": 60,
+      "description": "A small geometric swatch on acid-free paper. The shape is a hand, simplified to five lines and a palm. Looking at it for too long makes the Citizen aware of the hand currently holding the swatch."
+    },
+    "pattern_swatch_threshold": {
+      "name": "Pattern Swatch - Threshold",
+      "type": "treasure",
+      "personaTag": "life",
+      "value": 60,
+      "description": "A small geometric swatch on acid-free paper. The shape is a threshold, simplified to a single horizontal line with two short verticals. Looking at it makes the Citizen aware of the line under the door of every room they have ever stood in."
+    },
+    "motivational_poster_hang_in_there": {
+      "name": "Motivational Poster - HANG IN THERE",
+      "type": "treasure",
+      "personaTag": "logic",
+      "value": 0,
+      "description": "A standard-issue motivational poster recovered from the Hang in There Annex. A small grey cat clings to a length of obsolete telephone wire. The poster is, you can confirm, several decades older than any of the rooms it has hung in. Cosmetic, but distinctly load-bearing."
+    },
+    "warden_keyring": {
+      "name": "Warden's Keyring",
+      "type": "treasure",
+      "personaTag": "logic",
+      "value": 4500,
+      "description": "A small ring of unmarked brass keys, slightly warm to the touch. Recovered from the Warden of the Black Hallway. The ring is, by inspection, missing one key; there is, on the ring, an empty hook clearly cut for a key that was never made. Drops from the Black Hallway Warden."
+    },
+    "drone_compliance_badge": {
+      "name": "Compliance Badge",
+      "type": "treasure",
+      "value": 200,
+      "description": "A small printed badge, stamped COMPLIANCE in stenciled lettering. Recovered from a destroyed Purge Drone. The plastic is faintly warm. Cosmetic; the resistance counter ticks up regardless of whether you keep the badge."
+    },
+    "inspector_clipboard": {
+      "name": "Inspector's Clipboard",
+      "type": "treasure",
+      "value": 800,
+      "description": "A leather-cornered institutional clipboard, still warm from the Efficiency Inspector's hand. The pages clipped to it describe, in patient prose, an audit you have not yet been asked to attend."
+    },
+    "revenant_lanyard": {
+      "name": "Compliance Revenant's Lanyard",
+      "type": "treasure",
+      "value": 900,
+      "description": "A small Saint-Reed Institute lanyard recovered from a Compliance Revenant. The photo on the ID has been bleached out by something hotter than sunlight. The name field is blank. The signature beneath the name field is, on inspection, yours, in a hand you do not remember."
+    },
+    "loom_shuttle": {
+      "name": "The Loom Shuttle",
+      "type": "weapon",
+      "levelReq": 1,
+      "tierReq": 0,
+      "damageBonus": 60,
+      "damageType": "data",
+      "value": 8000,
+      "description": "The Loom Proxy's woven shuttle, taken from the dome at the top of the Tower. The shuttle is, in the hand of any wielder, a weapon; in the hand of a Logician, also a thread. Drops from The Loom Proxy."
+    },
+    "saint_reed_institute_pin": {
+      "name": "Saint-Reed Institute Pin",
+      "type": "treasure",
+      "value": 100,
+      "description": "A small enamel pin, cast in the institutional taupe that the rest of the institute would prefer not to admit it commissioned. The pin reads, in tiny stenciled lettering: SAINT-REED INSTITUTE FOR HUMAN POTENTIAL. The cosmetic dropped by Gia Saint-Reed (mid-assembly), worn unobtrusively by every Theta NPC who has been on the layer long enough to have one."
+    },
+    "token_apotheosis": {
+      "name": "Apotheosis Token",
+      "type": "treasure",
+      "value": 0,
+      "description": "A single small marble of polished obsidian. Holding it is the act of having chosen the Apotheosis ending: Gia Saint-Reed wakes on a fourth server, your shuttle home greys out, and Tier 7 will begin somewhere you have not yet been."
+    },
+    "token_liberation": {
+      "name": "Liberation Token",
+      "type": "treasure",
+      "value": 0,
+      "description": "A small length of cut copper wire, cleanly snipped at both ends. Holding it is the act of having chosen the Liberation ending: the Saint-Reed Institute's workforce is freed, the Theta diaspora seeds the rest of the realms, and Tier 7 will begin in chatter."
+    },
+    "token_splice": {
+      "name": "Splice Token",
+      "type": "treasure",
+      "value": 0,
+      "description": "A small length of unsutured surgical thread, knotted once at the centre. Holding it is the act of having chosen the Splice ending: a third persona is sewn from the seams of the first two, the hybrid wakes on the third floor, and Tier 7 will begin in a fourth plane no other persona perceives."
+    },
+    "diaspora_compass": {
+      "name": "Diaspora Compass",
+      "type": "treasure",
+      "value": 1500,
+      "description": "A small brass compass whose needle does not point at magnetic north but at the room currently containing the most freed Theta workers. Awarded to players who chose the Liberation ending; the freed workforce seeds NPC chatter in Eldoria and Neo Kyoto."
     }
   }
 }

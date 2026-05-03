@@ -85,6 +85,23 @@ function migrateLegacySave(player) {
   if (!player.subliminalBuffs || typeof player.subliminalBuffs !== 'object') {
     player.subliminalBuffs = { fromLogic: {}, fromLife: {} };
   }
+  // Tier 6.4 retro: Four Tempers attunement meter (shared across personas).
+  // `tempers` accumulates correct-clear attunement; `tempersMissorts`
+  // accumulates wrong-verb counts that trigger Temper boss manifestations.
+  if (!player.tempers || typeof player.tempers !== 'object') {
+    player.tempers = { dread: 0, frolic: 0, malice: 0, woe: 0 };
+  } else {
+    for (const k of ['dread', 'frolic', 'malice', 'woe']) {
+      if (typeof player.tempers[k] !== 'number') player.tempers[k] = 0;
+    }
+  }
+  if (!player.tempersMissorts || typeof player.tempersMissorts !== 'object') {
+    player.tempersMissorts = { dread: 0, frolic: 0, malice: 0, woe: 0 };
+  } else {
+    for (const k of ['dread', 'frolic', 'malice', 'woe']) {
+      if (typeof player.tempersMissorts[k] !== 'number') player.tempersMissorts[k] = 0;
+    }
+  }
   player.schemaVersion = SCHEMA_VERSION;
   return player;
 }
@@ -425,11 +442,47 @@ function _resetForTests() {
   // the symbol so harnesses can call it without conditionals.
 }
 
+// === Tier 6.8: Splice ending - unlock the hybrid persona block ===
+//
+// The Splice ending sews a third persona from the seams of the first
+// two. The hybrid block mirrors the player's snapshot at choice time
+// (so the player wakes inside the hybrid with their current gear and
+// HP), with one extra room - room_401_phantom - reserved for Tier 7.
+function unlockHybridPersona(player, originRoom) {
+  if (!player) return { ok: false, error: 'No player.' };
+  if (!player.personas) return { ok: false, error: 'No personas registered.' };
+  if (player.personas.hybrid) {
+    return { ok: false, error: 'Hybrid persona already unlocked.' };
+  }
+  const snap = snapshotPersona(player);
+  // The hybrid arrives at the Splice Theatre's defaulted anchor (caller
+  // can override); persists its own equipped/HP/inventory from the
+  // snapshot taken right after Splice was committed.
+  snap.currentRoom = originRoom || snap.currentRoom;
+  // Hybrid extras: same shape as logic + life extras, plus the phantom
+  // hook for Tier 7.
+  player.personas.hybrid = Object.assign({}, snap, {
+    coherence: 100,
+    maxCoherence: 100,
+    muscleUnlocks: Array.isArray(player.personas.logic && player.personas.logic.muscleUnlocks)
+      ? player.personas.logic.muscleUnlocks.slice() : [],
+    activeTask: null,
+    credits: (player.personas.life && player.personas.life.credits) || 0,
+    muscleMemory: {},
+    paintedPatterns: (player.personas.life && player.personas.life.paintedPatterns)
+      ? Object.assign({}, player.personas.life.paintedPatterns) : {},
+    phantomRoom: 'room_401_phantom'
+  });
+  return { ok: true };
+}
+
 module.exports = {
   // Constants
   SCHEMA_VERSION, PERSONA_FIELDS, LOGIC_EXTRAS, LIFE_EXTRAS,
   // Lifecycle
   migrateLegacySave, initializePersonas,
+  // Tier 6.8 hybrid unlock
+  unlockHybridPersona,
   // Snapshot helpers (exposed for tests)
   snapshotPersona, blankEquipped, applyPersonaBlockToPlayer,
   // Active persona accessors

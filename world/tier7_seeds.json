@@ -1,0 +1,31 @@
+{
+  "_comment": "Tier 6.8 capstone seeds for Tier 7. Read by Tier 7 boot to materialise per-ending hooks. Do not edit by hand during a session.",
+  "schemaVersion": 1,
+  "endingsTaken": {
+    "apotheosis": 0,
+    "liberation": 0,
+    "splice": 0
+  },
+  "lastEndingTakenBy": null,
+  "lastEndingAt": 0,
+  "apotheosis": {
+    "active": false,
+    "room_401_origin_layer": "reserved-for-tier-7",
+    "shuttleStatus": "open",
+    "graysOutShuttleAt": null,
+    "minRemortTier": 3,
+    "requiresEnding": "apotheosis"
+  },
+  "liberation": {
+    "active": false,
+    "factionMarker": "theta_diaspora",
+    "diasporaSeedRooms": [],
+    "compassItemAwarded": "diaspora_compass"
+  },
+  "splice": {
+    "active": false,
+    "room_401_phantom": "resolves-only-in-hybrid-persona",
+    "hybridPersonaUnlocked": false
+  },
+  "history": []
+}
