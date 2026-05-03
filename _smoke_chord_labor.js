@@ -128,7 +128,9 @@ function send(sock, line) { sock.write(line + '\r\n'); }
 // Parse the verb to use against row N from a `task` describeBatch
 // output. Returns the verb string or null if not found.
 function verbForRow(taskOutput, n) {
-  const re = new RegExp(`\\[ \\] ${n}\\. (\\w+) -> use (\\w+)`);
+  // Tier 6.4 retro: rows now render as `signal/<temper> -> use sort`.
+  // Accept the legacy `signal -> use sort` shape as well.
+  const re = new RegExp(`\\[ \\] ${n}\\. (\\w+)(?:\\/\\w+)? -> use (\\w+)`);
   const m = taskOutput.match(re);
   return m ? { rowType: m[1], verb: m[2] } : null;
 }
@@ -247,7 +249,7 @@ async function main() {
 
   // Show task and parse rows
   send(sock, 'task');
-  const taskResp = await readUntil(sock, t => /Batch #\d+/.test(t) && /\[ \] \d+\. \w+ -> use \w+/.test(t), 6000);
+  const taskResp = await readUntil(sock, t => /Batch #\d+/.test(t) && /\[ \] \d+\. \w+(?:\/\w+)? -> use \w+/.test(t), 6000);
   check('task shows the active batch', /Batch #\d+/.test(taskResp));
 
   // Walk every row with the correct verb (parsed from describeBatch).

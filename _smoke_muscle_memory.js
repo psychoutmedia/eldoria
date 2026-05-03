@@ -123,8 +123,9 @@ function readUntil(sock, predicate, timeoutMs = 8000) {
 function send(sock, line) { sock.write(line + '\r\n'); }
 
 // Parse the verb to use against row N from a `task` describeBatch output.
+// Tier 6.4 retro added a `/<temper>` suffix to the row type; tolerate both shapes.
 function verbForRow(taskOutput, n) {
-  const re = new RegExp(`\\[ \\] ${n}\\. (\\w+) -> use (\\w+)`);
+  const re = new RegExp(`\\[ \\] ${n}\\. (\\w+)(?:\\/\\w+)? -> use (\\w+)`);
   const m = taskOutput.match(re);
   return m ? { rowType: m[1], verb: m[2] } : null;
 }
@@ -134,7 +135,7 @@ async function runOneBatch(sock) {
   send(sock, 'task pull');
   await readUntil(sock, t => /Batch #\d+/.test(t) && /\d+ rows:/.test(t), 8000);
   send(sock, 'task');
-  const taskResp = await readUntil(sock, t => /Batch #\d+/.test(t) && /\[ \] 4\. \w+ -> use \w+/.test(t), 8000);
+  const taskResp = await readUntil(sock, t => /Batch #\d+/.test(t) && /\[ \] 4\. \w+(?:\/\w+)? -> use \w+/.test(t), 8000);
   for (let n = 1; n <= 4; n++) {
     const v = verbForRow(taskResp, n);
     if (!v) throw new Error(`row ${n} verb not parsed`);
@@ -314,9 +315,11 @@ async function main() {
   check('Logician cannot spend muscle memory',
     /belongs to the Citizen|Swap to Life-State/.test(logRej));
 
-  // Logician's memory listing shows the same charges + a hint
+  // Logician's memory listing shows the same charges + a hint.
+  // Wait for the Swap-back hint specifically so we don't race the
+  // packet that carries it past `Floor Finesse`.
   send(sock, 'memory');
-  const logList = await readUntil(sock, t => /Muscle Memories:/i.test(t) && /Floor Finesse/.test(t), 6000);
+  const logList = await readUntil(sock, t => /Muscle Memories:/i.test(t) && /Floor Finesse/.test(t) && /Swap to Life-State to spend/.test(t), 6000);
   check('Logician memory list still shows Citizen charges',
     /\[4\][\s\S]{0,80}Refinement Reflex/.test(logList));
   check('Logician memory list shows the swap-back hint',

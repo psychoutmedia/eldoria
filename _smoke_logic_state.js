@@ -145,7 +145,8 @@ async function main() {
 
   // Verify rooms.json shape (cheap pre-flight)
   const rooms = require('./rooms.json');
-  check('rooms.json contains 331 rooms (300 + 30 Theta + 1 special)', Object.keys(rooms).length === 331);
+  // Tier 6 final: 300 base + 100 Theta (301-400) + 1 special (room_999) = 401.
+  check('rooms.json contains 401 rooms (300 + 100 Theta + 1 special)', Object.keys(rooms).length === 401);
   check('room_311 antechamber present', rooms.room_311 && /Antechamber/.test(rooms.room_311.name));
   check('room_320 supervisor office present', rooms.room_320 && /Supervisor/.test(rooms.room_320.name));
 
