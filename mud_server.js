@@ -1605,6 +1605,12 @@ function savePlayer(player, socket = null, silent = false) {
     personas: player.personas || null,
     pocketArtifacts: Array.isArray(player.pocketArtifacts) ? player.pocketArtifacts : [],
     subliminalBuffs: player.subliminalBuffs || { fromLogic: {}, fromLife: {} },
+    // Tier 6.4 retro: Four Tempers attunement + missort tally
+    tempers: player.tempers || { dread: 0, frolic: 0, malice: 0, woe: 0 },
+    tempersMissorts: player.tempersMissorts || { dread: 0, frolic: 0, malice: 0, woe: 0 },
+    // Tier 6.8: capstone progression flags
+    tier6BossDefeated: player.tier6BossDefeated === true,
+    tier6Ending: player.tier6Ending || null,
     // Tier 1
     abilities: player.abilities || { str: 10, dex: 10, con: 10, int: 10, wis: 10 },
     charClass: player.charClass || null,
@@ -1801,6 +1807,12 @@ function loadPlayer(playerName) {
       subliminalBuffs: data.subliminalBuffs && typeof data.subliminalBuffs === 'object'
         ? data.subliminalBuffs
         : { fromLogic: {}, fromLife: {} },
+      // Tier 6.4 retro: Four Tempers attunement + missort tally
+      tempers: data.tempers && typeof data.tempers === 'object' ? data.tempers : null,
+      tempersMissorts: data.tempersMissorts && typeof data.tempersMissorts === 'object' ? data.tempersMissorts : null,
+      // Tier 6.8: capstone progression flags
+      tier6BossDefeated: data.tier6BossDefeated === true,
+      tier6Ending: data.tier6Ending || null,
       schemaVersion: data.schemaVersion || 0
     };
 

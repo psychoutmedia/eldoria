@@ -245,11 +245,14 @@ async function main() {
   const q = await readUntil(sock, t => /Shift: \d+\/\d+/i.test(t), 6000);
   check('completed 12 batches in shift', /Shift: 12\/3/.test(q));
 
-  // Swap back out: expect muscle-memory credit announcement
+  // Swap back out: expect muscle-memory credit announcement.
+  // Wait for the final credit line (Floor Finesse, 12/12=1) so we
+  // don't race the packet that carries the credit lines past the
+  // announcement header.
   send(sock, 'transurf 311');
   await readUntil(sock, t => /Antechamber/i.test(t), 6000);
   send(sock, 'swap');
-  const swapOut = await readUntil(sock, t => /Muscle memory carries through/i.test(t), 8000);
+  const swapOut = await readUntil(sock, t => /Muscle memory carries through/i.test(t) && /\+ 1x Floor Finesse/i.test(t), 8000);
   check('swap-out announces muscle-memory credits', /Muscle memory carries through/.test(swapOut));
   check('credits include 4x Refinement Reflex (12/3)',
     /\+ 4x Refinement Reflex/.test(swapOut));
